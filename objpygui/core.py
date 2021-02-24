@@ -71,8 +71,6 @@ def register_item_type(item_type: str) -> Callable:
     return decorator
 
 
-_Callback = Callable[[str, Any], None]  # Type alias for DearPyGui callbacks
-
 def _generate_id(o: GuiItem) -> str:
     return o.__class__.__qualname__ + '@' + hex(id(o))
 
@@ -95,11 +93,7 @@ class ConfigProperty:
 class GuiItem:
     """Base class for GUI Items."""
 
-    # TODO: data sources and callbacks
-    # std::string source = "";
-    # std::string before = "";
-    # mvCallable callback = nullptr;
-    # mvCallableData callback_data = nullptr;
+    # TODO: data sources
 
     width: int = ConfigProperty()
     height: int = ConfigProperty()
@@ -127,13 +121,18 @@ class GuiItem:
 
     ## Callbacks
 
-    @property
-    def callback(self) -> _Callback:
-        return gui_core.get_item_callback(self.id)
+    def callback(self, data: Optional[Any]) -> Callable:
+        """A function decorator that sets the item's callback, and optionally, the callback data."""
+        def decorator(callback: Callable):
+            gui_core.set_item_callback(self.id, callback, callback_data=data)
+            return callback
+        return decorator
 
-    @callback.setter
-    def callback(self, callback: _Callback) -> None:
+    def set_callback(self, callback: Callable) -> None:
         gui_core.set_item_callback(self.id, callback)
+
+    def get_callback(self) -> Any:
+        return gui_core.get_item_callback(self.id)
 
     @property
     def callback_data(self) -> Any:
@@ -143,10 +142,6 @@ class GuiItem:
     def callback_data(self, data: Any) -> None:
         gui_core.set_item_callback_data(self.id, data)
 
-    # in case you want to set callback and data on the same line
-    def set_callback(self, callback: _Callback, data: Any) -> GuiItem:
-        gui_core.set_item_callback(self.id, callback, callback_data=data)
-        return self
 
     ## Containers/Children
 
