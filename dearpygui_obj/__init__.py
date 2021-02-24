@@ -22,10 +22,9 @@ _ITEM_TYPES: Dict[str, Callable[..., ItemWrapper]] = {}
 def get_item_by_id(name: str) -> ItemWrapper:
     """Retrieve an item using its unique name.
 
-    This function will create wrapper objects for GUI items that were not created using the object
-    wrapper library.
-
-    An attempt is made to ensure that calling this function on the same name will produce the same object.
+    If the item was created by instantiating an ItemWrapper object, this will return that object.
+    Otherwise, a new wrapper object will be created for that item and returned. Future calls for the
+    same ID will return the same object.
 
     Raises:
         KeyError: if name refers to an item that is invalid (deleted) or does not exist.
@@ -41,7 +40,10 @@ def get_item_by_id(name: str) -> ItemWrapper:
     return ctor(name = name)
 
 def iter_all_items() -> Iterable[ItemWrapper]:
-    """Iterate all GUI items."""
+    """Iterate all items and yield their wrapper objects.
+
+    This uses :func:`get_item_by_id` to retrieve the object for each ID provided by DearPyGui.
+    """
     for name in gui_core.get_all_items():
         yield get_item_by_id(name)
 
@@ -61,13 +63,14 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
 
 
 def register_item_type(item_type: str) -> Callable:
-    """This decorator is applied to a GuiItem constructor in order to register it with a DearPyGui
-    item type as returned by dearpygui.core.get_item_type(). Constructors that are registered in
-    this way are used by get_item_by_id() to create new instances when getting an item that was
-    created outside of the object wrapper library.
+    """This decorator can be applied to a :class:`ItemWrapper` to associate it with a DearPyGui
+    item type as returned by :func:`dearpygui.core.get_item_type`. This will let the wrapper object
+    library know which constructor to use when :func:`get_item_by_id` is used to get an item that
+    does not yet have a wrapper object.
 
-    Constructors that are registered using this decorator are must have an __init__ that takes a
-    'name' keyword parameter, which is used to supply the DearPyGui widget ID.
+    This constructor may be applied directly to :class:`ItemWrapper` subclasses, or it may be
+    applied to any callable that can serve as a constructor. The only requirement is that the
+    callable must have a 'name' keyword parameter that takes the unique name used by DearPyGui.
     """
     def decorator(ctor: Callable[..., ItemWrapper]):
         if item_type in _ITEM_TYPES:
@@ -77,10 +80,16 @@ def register_item_type(item_type: str) -> Callable:
     return decorator
 
 class ConfigProperty:
-    """Data descriptor that accesses a GuiItem's config.
+    """Data descriptor used to get or set an item's configuration through attribute access.
 
-    Can optionally suppy **fvalue** and **fconfig** converter functions to customize how the
-    object's API maps to config keys provided by DearPyGui.
+    This class provides a data descriptor API over top of the :func:`configure_item` and
+    :func:`get_item_configuration` functions provided by DearPyGui.
+
+    By default, it is used to get or set a single configuration key, which itself defaults to the
+    attribute name given to the descriptor.
+
+    This default behavior can be overidden by providing **fvalue** and **fconfig** converter
+    functions, analogous to the way normal Python properties work.
 
     **fvalue** should be a function that takes a dictionary of config values produced by
     :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
@@ -93,8 +102,9 @@ class ConfigProperty:
     ``fvalue(fconfig(value)) == value`` and ``fconfig(fvalue(config)) == config``
     in order for configuration values to be stable.
 
-    If **no_keyword** is ``False`` (the default) and **fconfig** is provided, a keyword parameter of
-    the same name will be added to the class using **fconfig** to process it's value.
+    Also, if an **fconfig** function is given, adding the descriptor to an :class:`ItemWrapper`
+    class will automatically create a custom keyword parameter. This can be prevented using the
+    **no_keyword** argument.
     """
 
     _fvalue: Callable[[Mapping[str, Any]], Any]
@@ -103,11 +113,19 @@ class ConfigProperty:
     def __init__(self,
                  fvalue: Optional[Callable] = None,
                  fconfig: Optional[Callable] = None,
-                 name: Optional[str] = None,
+                 key: Optional[str] = None,
                  no_keyword: bool = False,
                  doc: str = ''):
+        """
+        Parameters:
+            fvalue: optional function to get a value from configuration.
+            fconfig: optional function to get configuration data from an assigned value.
+            key: the config key to get/set if **fvalue** and **fconfig** are not provided.
+            no_keyword: if ``True``, don't add a custom keyword parameter to the owner of the descriptor.
+            doc: custom docstring.
+        """
 
-        self.name = name
+        self.key = key
         self.no_keyword = no_keyword
         self.__doc__ = doc
 
@@ -119,36 +137,38 @@ class ConfigProperty:
 
     def __set_name__(self, owner: Type[ItemWrapper], name: str):
         self.owner = owner
-        self.attr_name = name
+        self.name = name
 
-        if self.name is None:
-            self.name = name
+        if self.key is None:
+            self.key = name
 
         if not self.__doc__:
-            self.__doc__ = f'Access the \'{self.name}\' config property.'
+            self.__doc__ = f'Access the \'{self.key}\' config property.'
 
         if not self.no_keyword and self._fconfig is not None:
-            owner.add_keyword_parameter(self.attr_name, self._fconfig)
+            owner.add_keyword_parameter(self.name, self._fconfig)
 
     def __get__(self, instance: Optional[ItemWrapper], owner: Type[ItemWrapper]) -> Any:
+        """Read the item configuration and return a value."""
         if instance is None:
             return self
 
         config = gui_core.get_item_configuration(instance.id)
         return (
             self._fvalue(config) if self._fvalue is not None
-            else config[self.name]
+            else config[self.key]
         )
 
     def __set__(self, instance: ItemWrapper, value: Any) -> None:
+        """Modify the item configuration using the assigned value."""
         config = (
             self._fconfig(value) if self._fconfig is not None
-            else {self.name : value}
+            else {self.key : value}
         )
         gui_core.configure_item(instance.id, **config)
 
     def __call__(self, fvalue: Callable):
-        """Allows the ConfigProperty itself to be used as a decorator which sets :attr:`fvalue`.
+        """Allows the ConfigProperty class itself to be used as a decorator which sets :attr:`fvalue`.
 
         This enables convenient syntax such as:
 
@@ -174,10 +194,32 @@ class ConfigProperty:
         """Set :attr:`fconfig` using a decorator."""
         self._fconfig = fconfig
         if not self.no_keyword and self.owner is not None and fconfig is not None:
-            self.owner.add_keyword_parameter(self.attr_name, fconfig)
+            self.owner.add_keyword_parameter(self.name, fconfig)
         return self
 
-config_property = ConfigProperty #: Convenience constructor for :class:`ConfigProperty`
+#: Alias for :class:`ConfigProperty`, for use as a decorator.
+#:
+#: For example:
+#:
+#: .. code-block:: python
+#:
+#:     class ExampleWidget(ItemWrapper):
+#:         simple_config_example: int = config_property()
+#:
+#:         @config_property()
+#:         def custom_config_example(config) -> str:
+#:             ...
+#:
+#:         @custom_config_example.getconfig
+#:         def custom_config_example(value: str) -> Dict[str, Any]:
+#:             ...
+#:
+#:      with Window('Example Window'):
+#:          wid = ExampleWidget('Label')
+#:          wid.simple_config_example = 3
+#:          print('config value:', wid.custom_config_example)
+#:
+config_property = ConfigProperty
 
 class ItemWrapper:
     """This is the base class for all GUI item wrapper objects.
@@ -228,7 +270,7 @@ class ItemWrapper:
     show: bool = config_property()
     enabled: bool = config_property()
 
-    @config_property(name='source')
+    @config_property(key='source')
     def data_source(config) -> Optional[GuiData]:
         """Get the :class:`GuiData` used as the data source, if any."""
         source = config.get('source')
@@ -357,11 +399,12 @@ class ItemWrapper:
 
         .. code-block:: python
 
-            button = Button()
+            with Window('Example Window'):
+                button = Button('Callback Button')
 
-            @button.callback('some data')
-            def callback(sender, data):
-                ...
+                @button.callback('some data')
+                def callback(sender, data):
+                    ...
         """
         def decorator(callback: Callable):
             gui_core.set_item_callback(self.id, callback, callback_data=data)

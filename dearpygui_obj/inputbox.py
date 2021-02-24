@@ -92,8 +92,8 @@ class InputInt(ItemWrapper):
     """An integer input box."""
     format: str = config_property()
     on_enter: bool = config_property()
-    step: float = config_property()
-    step_fast: float = config_property()
+    step: int = config_property()
+    step_fast: int = config_property()
     readonly: bool = config_property()
 
     @config_property

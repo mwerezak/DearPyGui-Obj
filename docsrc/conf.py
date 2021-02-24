@@ -101,10 +101,10 @@ autoclass_content = 'both'
 napoleon_numpy_docstring = False
 
 
-# def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
-# 	if what in ('class', 'exception'):
-# 		signature = None
-# 	return (signature, return_annotation)
+def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
+	if what in ('class', 'exception'):
+		signature = None
+	return (signature, return_annotation)
 
-# def setup(app):
-# 	app.connect('autodoc-process-signature', autodoc_process_signature)
+def setup(app):
+	app.connect('autodoc-process-signature', autodoc_process_signature)

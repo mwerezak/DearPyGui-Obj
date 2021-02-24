@@ -18,6 +18,8 @@ class ButtonArrow(Enum):
 
 @register_item_type('mvAppItemType::Button')
 class Button(ItemWrapper):
+    """A simple button."""
+
     small: bool = config_property()
 
     @config_property()
