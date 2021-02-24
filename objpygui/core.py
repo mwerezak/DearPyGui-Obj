@@ -71,12 +71,6 @@ def register_item_type(item_type: str) -> Callable:
         return ctor
     return decorator
 
-def add_init_parameter(name: str, getconfig: Optional[Callable] = None):
-    """Convenience decorator that calls the add_init_parameter() class method."""
-    def decorator(cls: Type[GuiItem]):
-        cls.add_init_parameter(name, getconfig)
-        return cls
-    return decorator
 
 class ConfigProperty:
     """Data descriptor that accesses a GuiItem's config.
@@ -97,47 +91,66 @@ class ConfigProperty:
     """
     def __init__(self,
                  name: Optional[str] = None,
-                 get_value: Optional[Callable] = None,
-                 get_config: Optional[Callable] = None,
-                 add_parameter: bool = True):
+                 fvalue: Optional[Callable] = None,
+                 fconfig: Optional[Callable] = None,
+                 no_init: bool = False):
 
         self.name = name
-        self.get_value = get_value or self._default_get_value
-        self.get_config = get_config or self._default_get_config
-        self.add_parameter = add_parameter
+        self.fvalue = fvalue
+        self.fconfig = fconfig
+        self.no_init = no_init
 
     def __set_name__(self, owner: Type[GuiItem], name: str):
         if self.name is None:
             self.name = name
-        if self.add_parameter:
-            # always use the attribute name for init parameters
-            owner.add_init_parameter(name, self.get_config)
+
+        if not self.no_init and self.fconfig is not None:
+            # use the attribute name for config parameters
+            owner.add_config_setup(name, self.fconfig)
 
     def __get__(self, instance: Optional[GuiItem], owner: Type[GuiItem]) -> Any:
         if instance is None:
             return self
-        return self.get_value(**gui_core.get_item_configuration(instance.id))
+
+        config = gui_core.get_item_configuration(instance.id)
+        return (
+            self.fvalue(config) if self.fvalue is not None
+            else config[self.name]
+        )
 
     def __set__(self, instance: GuiItem, value: Any) -> None:
-        gui_core.configure_item(instance.id, **self.get_config(value))
-
-    def _default_get_value(self, **config: Any) -> Any:
-        return config[self.name]
-
-    def _default_get_config(self, value: Any) -> Dict[str, Any]:
-        return { self.name: value }
+        config = (
+            self.fconfig(value) if self.fconfig is not None
+            else {self.name : value}
+        )
+        gui_core.configure_item(instance.id, **config)
 
     def getvalue(self, converter: Callable):
         """Set get_value using a decorator."""
-        self.get_value = converter
+        self.fvalue = converter
+        return self
 
     def getconfig(self, converter: Callable):
         """Set setting get_config using a decorator."""
-        self.get_config = converter
+        self.fconfig = converter
+        return self
 
 
 class GuiItem:
     """Base class for GUI Items."""
+
+    _config_setup: ChainMap[str, Callable] = ChainMap[str, Callable]()
+
+    @classmethod
+    def add_config_setup(cls, name: str, getconfig: Optional[Callable] = None) -> None:
+        # setup each subclass's config setup mapping
+        config = cls.__dict__.get('_config_setup')
+        if config is None:
+            config = cls._config_setup.new_child({}) # inherit config setup from parent
+            setattr(cls, '_config_setup', config)
+        config[name] = getconfig
+
+
     label: str = ConfigProperty()
     tip: str = ConfigProperty()
     width: int = ConfigProperty()
@@ -145,21 +158,10 @@ class GuiItem:
     show: bool = ConfigProperty()
     enabled: bool = ConfigProperty()
 
-    data: Union[GuiData, str] = ConfigProperty(
-        get_value = lambda **config: GuiData(config['source']),
-        get_config = lambda value: {'source' : str(value)},
+    data_source: Optional[GuiData] = ConfigProperty(
+        fvalue = lambda config: GuiData(name=source) if (source := config.get('source')) else None,
+        fconfig = lambda value: {'source' : str(value) if value else ''},
     )
-
-    _config_setup: ChainMap[str, Callable] = ChainMap[str, Callable]()
-
-    @classmethod
-    def add_init_parameter(cls, name: str, getconfig: Optional[Callable] = None) -> None:
-        # setup each subclass's config setup mapping
-        config = cls.__dict__.get('_config_setup')
-        if config is None:
-            config = cls._config_setup.new_child({}) # inherit properties from parent
-            setattr(cls, '_config_setup', config)
-        config[name] = getconfig
 
     def __init__(self,
                  label: Optional[str] = None, *,
@@ -188,10 +190,7 @@ class GuiItem:
     def _create_config(cls, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         config = {}
         for name, value in kwargs.items():
-            if name not in cls._config_setup:
-                raise KeyError(f'{cls} does not have config parameter "{name}"')
-
-            get_config = cls._config_setup[name]
+            get_config = cls._config_setup.get(name)
             if get_config is not None:
                 config.update(get_config(value))
             else:
@@ -227,7 +226,7 @@ class GuiItem:
 
     ## Callbacks
 
-    def callback(self, data: Optional[Any]) -> Callable:
+    def callback(self, data: Optional[Any] = None) -> Callable:
         """A function decorator that sets the item's callback, and optionally, the callback data."""
         def decorator(callback: Callable):
             gui_core.set_item_callback(self.id, callback, callback_data=data)
@@ -284,7 +283,7 @@ class GuiData:
             gui_core.add_value(self.name, value)
 
     def __repr__(self) -> str:
-        return f'{self.__class__.__name__}({self.name})'
+        return f'{self.__class__.__name__}({self.name!r})'
 
     def __str__(self) -> str:
         return self.name

@@ -16,12 +16,12 @@ class ButtonArrow(Enum):
     Up      = 2
     Down    = 3
 
-def _arrow_get_value(**config):
+def _arrow_value(**config):
     if not config['arrow']:
         return None
     return ButtonArrow(config['direction'])
 
-def _arrow_get_config(arrow):
+def _arrow_config(arrow):
     if arrow is None:
         return {'arrow' : False}
     return {'arrow' : True, 'direction' : arrow.value}
@@ -29,9 +29,10 @@ def _arrow_get_config(arrow):
 @register_item_type('mvAppItemType::Button')
 class Button(GuiItem):
     small: bool = ConfigProperty()
+
     arrow: Optional[ButtonArrow] = ConfigProperty(
-        get_value = _arrow_get_value,
-        get_config = _arrow_get_config,
+        fvalue = _arrow_value,
+        fconfig = _arrow_config,
     )
 
     def _setup_add_item(self, config) -> None:
@@ -44,8 +45,14 @@ if __name__ == '__main__':
     from objpygui.window import Window
 
     with Window('Test Window') as window:
-        Button('Regular Button')
-        Button(arrow=ButtonArrow.Left)
+        b1 = Button('Regular Button')
+        @b1.callback()
+        def callback(source, data):
+            print(source, data)
+
+        b2 = Button(arrow=ButtonArrow.Left)
+
+
 
     start_dearpygui()
 

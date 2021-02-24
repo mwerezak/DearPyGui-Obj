@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 from objpygui.core import (
-    GuiItem, ConfigProperty, register_item_type, add_init_parameter
+    GuiItem, ConfigProperty, register_item_type
 )
 
 if TYPE_CHECKING:
@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 
 
 @register_item_type('mvAppItemType::InputText')
-@add_init_parameter('default_value')
 class InputText(GuiItem):
     hint: str = ConfigProperty()
     multiline: bool = ConfigProperty()
@@ -30,7 +29,7 @@ class InputText(GuiItem):
         gui_core.add_input_text(self.id, **config)
 
 
-def _min_clamped_value(**config):
+def _min_clamped_value(config):
     if not config.get('min_clamped'):
         return None
     return config['min_value']
@@ -40,7 +39,7 @@ def _min_clamped_config(value: Optional[float]):
         return {'min_clamped' : False}
     return {'min_clamped' : True, 'min_value' : value}
 
-def _max_clamped_value(**config):
+def _max_clamped_value(config):
     if not config.get('max_clamped'):
         return None
     return config['max_value']
@@ -52,7 +51,6 @@ def _max_clamped_config(value: Optional[float]):
 
 
 @register_item_type('mvAppItemType::InputFloat')
-@add_init_parameter('default_value')
 class InputFloat(GuiItem):
     format: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
@@ -61,13 +59,13 @@ class InputFloat(GuiItem):
     readonly: bool = ConfigProperty()
 
     min_value: Optional[float] = ConfigProperty(
-        get_value = _min_clamped_value,
-        get_config = _min_clamped_config,
+        fvalue = _min_clamped_value,
+        fconfig = _min_clamped_config,
     )
     
     max_value: Optional[float] = ConfigProperty(
-        get_value = _max_clamped_value,
-        get_config = _max_clamped_config,
+        fvalue = _max_clamped_value,
+        fconfig = _max_clamped_config,
     )
 
     def _setup_add_item(self, config) -> None:
@@ -90,7 +88,6 @@ class InputFloat4(InputFloat):
 
 
 @register_item_type('mvAppItemType::InputInt')
-@add_init_parameter('default_value')
 class InputInt(GuiItem):
     format: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
@@ -99,13 +96,13 @@ class InputInt(GuiItem):
     readonly: bool = ConfigProperty()
 
     min_value: Optional[int] = ConfigProperty(
-        get_value = _min_clamped_value,
-        get_config = _min_clamped_config,
+        fvalue = _min_clamped_value,
+        fconfig = _min_clamped_config,
     )
 
     max_value: Optional[int] = ConfigProperty(
-        get_value = _max_clamped_value,
-        get_config = _max_clamped_config,
+        fvalue = _max_clamped_value,
+        fconfig = _max_clamped_config,
     )
 
     def _setup_add_item(self, config) -> None:
@@ -138,9 +135,9 @@ if __name__ == '__main__':
         t = InputText('InputText')
         f = InputFloat('InputFloat', default_value=4.3)
         f2 = InputFloat2('InputFloat2', tip='tooltip')
-        i = InputInt('InputInt')
-        i2 = InputInt2('InputInt2', data = linked_ints)
-        i4 = InputInt4('InputInt4', data = linked_ints)
+        i = InputInt('InputInt', data_source = linked_ints)
+        i2 = InputInt2('InputInt2', data_source = linked_ints)
+        i4 = InputInt4('InputInt4', data_source = linked_ints)
 
     get_item_type(f2.id)
     print(f2.tip)
@@ -148,4 +145,4 @@ if __name__ == '__main__':
     from dearpygui.simple import *
     show_documentation()
 
-    start_dearpygui()
+    # start_dearpygui()
