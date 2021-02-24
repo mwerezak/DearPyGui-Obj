@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from objpygui import ItemWrapper, register_item_type, config_property
+from dearpygui_obj import ItemWrapper, register_item_type, config_property
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -41,7 +41,7 @@ class Button(ItemWrapper):
 
 if __name__ == '__main__':
     from dearpygui.core import *
-    from objpygui.window import Window
+    from dearpygui_obj.window import Window
 
     with Window('Test Window') as window:
         b1 = Button('Regular Button')

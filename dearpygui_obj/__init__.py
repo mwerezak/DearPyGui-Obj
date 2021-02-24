@@ -104,16 +104,18 @@ class ConfigProperty:
                  fvalue: Optional[Callable] = None,
                  fconfig: Optional[Callable] = None,
                  name: Optional[str] = None,
-                 no_keyword: bool = False):
+                 no_keyword: bool = False,
+                 doc: str = ''):
 
-        self._fvalue = fvalue
-        self._fconfig = fconfig
         self.name = name
         self.no_keyword = no_keyword
+        self.__doc__ = doc
 
         self.attr_name = None
         self.owner = None
-        self.__doc__ = fvalue.__doc__ if fvalue is not None else ''
+
+        self.getvalue(fvalue)
+        self.getconfig(fconfig)
 
     def __set_name__(self, owner: Type[ItemWrapper], name: str):
         self.owner = owner
@@ -121,6 +123,9 @@ class ConfigProperty:
 
         if self.name is None:
             self.name = name
+
+        if not self.__doc__:
+            self.__doc__ = f'Access the \'{self.name}\' config property.'
 
         if not self.no_keyword and self._fconfig is not None:
             owner.add_keyword_parameter(self.attr_name, self._fconfig)
@@ -143,20 +148,33 @@ class ConfigProperty:
         gui_core.configure_item(instance.id, **config)
 
     def __call__(self, fvalue: Callable):
-        """Allows the ConfigProperty itself to be used as a decorator which sets :attr:`fvalue`."""
-        self._fvalue = fvalue
+        """Allows the ConfigProperty itself to be used as a decorator which sets :attr:`fvalue`.
+
+        This enables convenient syntax such as:
+
+        .. code-block:: python
+
+            class Widget(ItemWrapper):
+                @config_property
+                def property_name(config):
+                    ...
+
+        """
+        self.getvalue(fvalue)
         return self
 
     def getvalue(self, fvalue: Callable):
         """Set :attr:`fvalue` using a decorator."""
         self._fvalue = fvalue
+        if fvalue is not None:
+            self.__doc__ = fvalue.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
     def getconfig(self, fconfig: Callable):
         """Set :attr:`fconfig` using a decorator."""
         self._fconfig = fconfig
-        if not self.no_keyword and self.owner is not None:
-            self.owner.add_keyword_parameter(self.attr_name, self._fconfig)
+        if not self.no_keyword and self.owner is not None and fconfig is not None:
+            self.owner.add_keyword_parameter(self.attr_name, fconfig)
         return self
 
 config_property = ConfigProperty #: Convenience constructor for :class:`ConfigProperty`
@@ -203,7 +221,7 @@ class ItemWrapper:
 
     @config_property(name='source')
     def data_source(config) -> Optional[GuiData]:
-        """Access the 'source' config key on GUI items."""
+        """Get the :class:`GuiData` used as the data source, if any."""
         source = config.get('source')
         return GuiData(name=source) if source else None
 
@@ -304,7 +322,7 @@ class ItemWrapper:
         return gui_core.does_item_exist(self.id)
 
     def delete(self) -> None:
-        """This method will invalidate the item and all its children."""
+        """Delete the item, this will invalidate the item and all its children."""
         _unregister_item(self.id)
         gui_core.delete_item(self.id)
 
@@ -312,16 +330,16 @@ class ItemWrapper:
     ## Callbacks
 
     def set_callback(self, callback: Callable) -> None:
-        """Set the callback."""
+        """Set the callback used by DearPyGui."""
         gui_core.set_item_callback(self.id, callback)
 
     def get_callback(self) -> Any:
-        """Get the callback."""
+        """Get the callback used by DearPyGui."""
         return gui_core.get_item_callback(self.id)
 
     @property
     def callback_data(self) -> Any:
-        """Access the callback data."""
+        """Get or set the callback data."""
         return gui_core.get_item_callback_data(self.id)
 
     @callback_data.setter
@@ -367,17 +385,24 @@ class ItemWrapper:
 
 
 class GuiData:
-    """Manipulate DearPyGui Value Storage.
+    """Manipulate DearPyGui Value Storage."""
 
-    If an init_value provided, then the value is created in DearPyGui's Value Storage system.
-    Otherwise, it is assumed that the object is another reference to an already existing value.
-
-    Note that as of DearPyGui 0.6, if the initial attempt to create the value fails, attempts to
-    manipulate the value will also fail silently, and attempts to retrieve the value will produce
-    None. This appears to be undocumented implementation details of DearPyGui.
-    """
     def __init__(self, value: Optional[Any] = None, name: Optional[str] = None):
-        self.name = name or f'{id(self):x}'
+        """If a value is provided, then the value is created in DearPyGui's Value Storage system.
+        Otherwise, it is assumed that the object is another reference to an already existing value.
+
+        Note that if the GuiData's name does not reference a value that exists, attempts to
+        manipulate the value will also fail silently, and attempts to retrieve the value will
+        produce ``None``. DearPyGui does not provide a function like :func:`does_item_exist` for
+        values so it is impossible to detect this.
+
+        Parameters:
+            value: the value to store. If not provided, this will create a reference an existing
+                value instead of creating a new value.
+            name: The name of the value in the Value Storage system.
+                If not provided, a name will be autogenerated. Must be given if **value** is not provided.
+        """
+        self.name = name or f'{id(self):x}' #: The name of the value.
         if value is not None:
             gui_core.add_value(self.name, value)
 
@@ -389,6 +414,7 @@ class GuiData:
 
     @property
     def value(self) -> Any:
+        """Get or set the value."""
         return gui_core.get_value(self.name)
 
     @value.setter

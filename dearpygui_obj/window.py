@@ -3,13 +3,25 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 
-from objpygui import ItemWrapper, config_property, register_item_type
+from dearpygui_obj import ItemWrapper, config_property, register_item_type
 
 if TYPE_CHECKING:
     from typing import Optional
 
 @register_item_type('mvAppItemType::Window')
 class Window(ItemWrapper):
+    """Creates a new window for items to be added to.
+
+    This is a container item that should be used as a context manager. For example:
+
+    .. code-block:: python
+
+        with Window('Example Window'):
+            TextInput('Child Input')
+            Button('Child Button')
+
+    """
+
     x_pos: int = config_property()
     y_pos: int = config_property()
     autosize: bool = config_property()

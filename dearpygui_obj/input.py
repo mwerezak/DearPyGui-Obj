@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from objpygui import (
+from dearpygui_obj import (
     ItemWrapper, config_property, register_item_type
 )
 
@@ -133,8 +133,8 @@ class InputInt4(InputInt):
 
 if __name__ == '__main__':
     from dearpygui.core import *
-    from objpygui import GuiData
-    from objpygui.window import Window
+    from dearpygui_obj import GuiData
+    from dearpygui_obj.window import Window
 
     linked_ints = GuiData([0, 3, -1, 2])
 
