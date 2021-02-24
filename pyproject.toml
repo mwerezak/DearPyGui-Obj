@@ -1,0 +1,7 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "dearpygui>=0.6.213",
+]
+build-backend = "setuptools.build_meta"
