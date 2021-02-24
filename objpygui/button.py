@@ -39,12 +39,12 @@ class Button(GuiItem):
         return ButtonArrow(self._arrow_dir)
 
     @arrow.setter
-    def arrow(self, value: Optional[ButtonArrow]) -> None:
-        if value is None:
+    def arrow(self, adir: Optional[ButtonArrow]) -> None:
+        if adir is None:
             self._is_arrow = False
         else:
             self._is_arrow = True
-            self._arrow_dir = value.value
+            self._arrow_dir = adir.value
 
 
 if __name__ == '__main__':

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from warnings import warn
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import dearpygui.core as gui_core
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Type, Dict, Iterable, Callable
+    from typing import Any, Optional, Type, Dict, Iterable
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
 _ITEM_LOOKUP: Dict[str, GuiItem] = {}
@@ -47,11 +47,11 @@ def _register_item(name: str, instance: GuiItem) -> None:
         warn(f'item with name "{name}" already exists in global item registry, overwriting')
     _ITEM_LOOKUP[name] = instance
 
-def _unregister_item(name: str, children: bool = True) -> None:
+def _unregister_item(name: str, unregister_children: bool = True) -> None:
     _ITEM_LOOKUP.pop(name, None)
-    if children:
+    if unregister_children:
         for child_name in gui_core.get_item_children(name):
-            _ITEM_LOOKUP.pop(child_name, None)
+            _unregister_item(child_name, True)
 
 
 def register_item_type(item_type: str) -> Callable:
@@ -70,6 +70,8 @@ def register_item_type(item_type: str) -> Callable:
         return ctor
     return decorator
 
+
+_Callback = Callable[[str, Any], None]  # Type alias for DearPyGui callbacks
 
 def _generate_id(o: GuiItem) -> str:
     return o.__class__.__qualname__ + '@' + hex(id(o))
@@ -121,6 +123,32 @@ class GuiItem:
         """This will invalidate an item and all its children."""
         _unregister_item(self.id)
         gui_core.delete_item(self.id)
+
+
+    ## Callbacks
+
+    @property
+    def callback(self) -> _Callback:
+        return gui_core.get_item_callback(self.id)
+
+    @callback.setter
+    def callback(self, callback: _Callback) -> None:
+        gui_core.set_item_callback(self.id, callback)
+
+    @property
+    def callback_data(self) -> Any:
+        return gui_core.get_item_callback_data(self.id)
+
+    @callback_data.setter
+    def callback_data(self, data: Any) -> None:
+        gui_core.set_item_callback_data(self.id, data)
+
+    # in case you want to set callback and data on the same line
+    def set_callback(self, callback: _Callback, data: Any) -> GuiItem:
+        gui_core.set_item_callback(self.id, callback, callback_data=data)
+        return self
+
+    ## Containers/Children
 
     def is_container(self) -> bool:
         return gui_core.is_item_container(self.id)
