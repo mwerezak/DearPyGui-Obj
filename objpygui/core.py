@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from warnings import warn
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, ChainMap
 
 import dearpygui.core as gui_core
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Type, Dict, Iterable
+    from typing import Any, Optional, Type, Dict, Iterable, Union
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
 _ITEM_LOOKUP: Dict[str, GuiItem] = {}
@@ -76,34 +76,123 @@ def _generate_id(o: Any) -> str:
     return o.__class__.__qualname__ + '@' + hex(id(o))
 
 class ConfigProperty:
-    def __init__(self, name: Optional[str] = None):
+    """Data descriptor that accesses a GuiItem's config.
+
+    Can optionally apply converters to customize the object's API:
+
+    get_value(**config) is given the configuration of the item as keyword arguments, and should
+    output a value that will be returned when the property is accessed.
+
+    config_conv(value) is given a value, and should produce a dictionary of config items to update.
+
+    Ideally,
+    get_value(**get_config(value)) == value and get_config(get_value(**config)) == config
+    in order for values to be stable.
+
+    ConfigProperties that are defined on a GuiItem will register themselves with the GuiItem, and
+    their converters will be used to build the item's initial configuration. ConfigProperties that
+    are added to a class after it is defined should be manually registered.
+    """
+    def __init__(self,
+                 name: Optional[str] = None,
+                 get_value: Optional[Callable] = None,
+                 get_config: Optional[Callable] = None,
+                 config_setup: bool = True):
+
         self.name = name
+        self._get_value = get_value or self._default_get_value
+        self._get_config = get_config or self._default_get_config
+        self.config_setup = config_setup
 
     def __set_name__(self, owner: Type[GuiItem], name: str):
         if self.name is None:
             self.name = name
+        if self.config_setup:
+            owner.add_config_setup(self.name, self._get_config)
 
     def __get__(self, instance: Optional[GuiItem], owner: Type[GuiItem]) -> Any:
         if instance is None:
             return self
-        return gui_core.get_item_configuration(instance.id)[self.name]
+        return self._get_value(**gui_core.get_item_configuration(instance.id))
 
     def __set__(self, instance: GuiItem, value: Any) -> None:
-        gui_core.configure_item(instance.id, **{self.name : value})
+        gui_core.configure_item(instance.id, **self._get_config(value))
+
+    def _default_get_value(self, **config: Any) -> Any:
+        return config[self.name]
+
+    def _default_get_config(self, value: Any) -> Dict[str, Any]:
+        return { self.name: value }
+
+    def get_value(self, converter: Callable):
+        """Set get_value using a decorator."""
+        self._get_value = converter
+
+    def get_config(self, converter: Callable):
+        """Set setting get_config using a decorator."""
+        self._get_config = converter
+
 
 class GuiItem:
     """Base class for GUI Items."""
-
-    # TODO: data sources
+    label: str = ConfigProperty()
     tip: str = ConfigProperty()
     width: int = ConfigProperty()
     height: int = ConfigProperty()
     show: bool = ConfigProperty()
     enabled: bool = ConfigProperty()
 
-    def __init__(self, name: Optional[str]):
+    source: Union[GuiData, str] = ConfigProperty(
+        get_value = lambda **config: GuiData(config['source']),
+        get_config = lambda value: {'source' : str(value)},
+    )
+
+    _config_setup: ChainMap[str, Callable] = ChainMap[str, Callable]()
+
+    @classmethod
+    def add_config_setup(cls, name: str, get_config: Callable) -> None:
+        # setup each subclass's config setup mapping
+        config = cls.__dict__.get('_config_setup')
+        if config is None:
+            config = cls._config_setup.new_child({}) # inherit properties from parent
+            setattr(cls, '_config_setup', config)
+        config[name] = get_config
+
+    def __init__(self,
+                 label: Optional[str] = None, *,
+                 name: Optional[str] = None,
+                 **kwargs: Any):
+
         self._name = name or _generate_id(self)
+
+        if not gui_core.does_item_exist(self._name):
+            config = self._create_config(kwargs)
+            if label is not None:
+                config['label'] = label
+            print(config)
+            self._setup_add_item(kwargs)
+        else:
+            self._setup_prexisting()
+
         _register_item(self._name, self)
+
+    @classmethod
+    def _create_config(cls, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+        config = {}
+        for name, value in kwargs.items():
+            if name not in cls._config_setup:
+                raise KeyError(f'{cls} does not have config parameter "{name}"')
+            get_config = cls._config_setup[name]
+            config.update(get_config(value))
+        return config
+
+    ## Overrides
+
+    def _setup_add_item(self, config: Dict[str, Any]) -> None:
+        pass
+
+    def _setup_prexisting(self) -> None:
+        pass
 
     @property
     def id(self) -> str:
