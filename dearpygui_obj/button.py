@@ -10,13 +10,11 @@ if TYPE_CHECKING:
     from typing import Optional
 
 class ButtonArrow(Enum):
-    Invalid = -1
+    """Specifies direction for arrow buttons."""
     Left    = 0
     Right   = 1
     Up      = 2
     Down    = 3
-
-
 
 @register_item_type('mvAppItemType::Button')
 class Button(ItemWrapper):
@@ -24,6 +22,12 @@ class Button(ItemWrapper):
 
     @config_property()
     def arrow(config) -> Optional[ButtonArrow]:
+        """Configure the button as an arrow button.
+
+        If the button is an arrow button, the value will be the arrow direction.
+        Otherwise the value will be ``None``.
+
+        Assigning to this property will enable/disable the arrow and/or set the direction."""
         if not config['arrow']:
             return None
         return ButtonArrow(config['direction'])

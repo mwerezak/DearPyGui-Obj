@@ -14,8 +14,8 @@ Get/Iterate Items
 .. autofunction:: iter_all_items
 
 
-ItemWrapper Base Class
-----------------------
+Item Wrapper Class
+------------------
 
 .. autoclass:: ItemWrapper
     :members:
@@ -38,5 +38,27 @@ Windows
 .. automodule:: dearpygui_obj.window
 
 .. autoclass:: Window
+    :members:
+    :undoc-members:
+
+Buttons
+-------
+
+.. automodule:: dearpygui_obj.button
+
+.. autoclass:: ButtonArrow
+    :members:
+    :undoc-members:
+
+.. autoclass:: Button
+    :members:
+    :undoc-members:
+
+Input Boxes
+-----------
+
+.. automodule:: dearpygui_obj.inputbox
+
+.. autoclass:: InputText
     :members:
     :undoc-members:

@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
 @register_item_type('mvAppItemType::InputText')
 class InputText(ItemWrapper):
+    """A text input box."""
+
     hint: str = config_property()
     multiline: bool = config_property()
     no_spaces: bool = config_property()
@@ -31,6 +33,8 @@ class InputText(ItemWrapper):
 
 @register_item_type('mvAppItemType::InputFloat')
 class InputFloat(ItemWrapper):
+    """A float input box."""
+
     format: str = config_property()
     on_enter: bool = config_property()
     step: float = config_property()
@@ -66,22 +70,26 @@ class InputFloat(ItemWrapper):
 
 @register_item_type('mvAppItemType::InputFloat2')
 class InputFloat2(InputFloat):
+    """An input box for 2 floats."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_float2(self.id, **config)
 
 @register_item_type('mvAppItemType::InputFloat3')
 class InputFloat3(InputFloat):
+    """An input box for 3 floats."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_float3(self.id, **config)
 
 @register_item_type('mvAppItemType::InputFloat4')
 class InputFloat4(InputFloat):
+    """An input box for 4 floats."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_float4(self.id, **config)
 
 
 @register_item_type('mvAppItemType::InputInt')
 class InputInt(ItemWrapper):
+    """An integer input box."""
     format: str = config_property()
     on_enter: bool = config_property()
     step: float = config_property()
@@ -117,16 +125,19 @@ class InputInt(ItemWrapper):
 
 @register_item_type('mvAppItemType::InputInt2')
 class InputInt2(InputInt):
+    """An input box for 2 ints."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_int2(self.id, **config)
 
 @register_item_type('mvAppItemType::InputInt3')
 class InputInt3(InputInt):
+    """An input box for 3 ints."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_int3(self.id, **config)
 
 @register_item_type('mvAppItemType::InputInt4')
 class InputInt4(InputInt):
+    """An input box for 4 ints."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_int4(self.id, **config)
 
