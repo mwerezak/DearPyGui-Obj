@@ -16,35 +16,27 @@ class ButtonArrow(Enum):
     Up      = 2
     Down    = 3
 
+def _arrow_get_value(**config):
+    if not config['arrow']:
+        return None
+    return ButtonArrow(config['direction'])
+
+def _arrow_get_config(arrow):
+    if arrow is None:
+        return {'arrow' : False}
+    return {'arrow' : True, 'direction' : arrow.value}
+
 @register_item_type('mvAppItemType::Button')
 class Button(GuiItem):
     small: bool = ConfigProperty()
+    arrow: Optional[ButtonArrow] = ConfigProperty(
+        get_value = _arrow_get_value,
+        get_config = _arrow_get_config,
+    )
 
-    _is_arrow: bool = ConfigProperty('arrow')
-    _arrow_dir: int = ConfigProperty('direction')
+    def _setup_add_item(self, config) -> None:
+        gui_core.add_button(self.id, **config)
 
-    def __init__(self, label: str, *,
-                 name: Optional[str] = None,
-                 arrow: Optional[ButtonArrow] = None,
-                 **config):
-
-        super().__init__(name)
-        gui_core.add_button(self.id, label=label, **config)
-        self.arrow = arrow
-
-    @property
-    def arrow(self) -> Optional[ButtonArrow]:
-        if not self._is_arrow:
-            return None
-        return ButtonArrow(self._arrow_dir)
-
-    @arrow.setter
-    def arrow(self, adir: Optional[ButtonArrow]) -> None:
-        if adir is None:
-            self._is_arrow = False
-        else:
-            self._is_arrow = True
-            self._arrow_dir = adir.value
 
 
 if __name__ == '__main__':
@@ -52,8 +44,8 @@ if __name__ == '__main__':
     from objpygui.window import Window
 
     with Window('Test Window') as window:
-        button = Button('Test', arrow=ButtonArrow.Up)
+        Button('Regular Button')
+        Button(arrow=ButtonArrow.Left)
 
-    print(get_item_type(button.id))
-
+    start_dearpygui()
 

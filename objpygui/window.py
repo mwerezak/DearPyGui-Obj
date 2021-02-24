@@ -26,7 +26,8 @@ class Window(GuiItem):
     no_background: bool = ConfigProperty()
 
     def _setup_add_item(self, config) -> None:
-        gui_core.add_window(self.id, label='foobar')
+        print(config)
+        gui_core.add_window(self.id, **config)
 
     def __enter__(self) -> Window:
         return self
@@ -39,8 +40,7 @@ if __name__ == '__main__':
     from dearpygui.core import *
 
     with Window('Test Window') as window:
-        add_button('Button')
+        pass
 
-    print(window.id)
-
+    start_dearpygui()
 

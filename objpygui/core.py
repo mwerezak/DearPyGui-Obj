@@ -71,9 +71,12 @@ def register_item_type(item_type: str) -> Callable:
         return ctor
     return decorator
 
-
-def _generate_id(o: Any) -> str:
-    return o.__class__.__qualname__ + '@' + hex(id(o))
+def add_init_parameter(name: str, getconfig: Optional[Callable] = None):
+    """Convenience decorator that calls the add_init_parameter() class method."""
+    def decorator(cls: Type[GuiItem]):
+        cls.add_init_parameter(name, getconfig)
+        return cls
+    return decorator
 
 class ConfigProperty:
     """Data descriptor that accesses a GuiItem's config.
@@ -89,34 +92,34 @@ class ConfigProperty:
     get_value(**get_config(value)) == value and get_config(get_value(**config)) == config
     in order for values to be stable.
 
-    ConfigProperties that are defined on a GuiItem will register themselves with the GuiItem, and
-    their converters will be used to build the item's initial configuration. ConfigProperties that
-    are added to a class after it is defined should be manually registered.
+    If add_parameter is True (the default), a keyword parameter of the same name will be added to
+    the class holding this descriptor.
     """
     def __init__(self,
                  name: Optional[str] = None,
                  get_value: Optional[Callable] = None,
                  get_config: Optional[Callable] = None,
-                 config_setup: bool = True):
+                 add_parameter: bool = True):
 
         self.name = name
-        self._get_value = get_value or self._default_get_value
-        self._get_config = get_config or self._default_get_config
-        self.config_setup = config_setup
+        self.get_value = get_value or self._default_get_value
+        self.get_config = get_config or self._default_get_config
+        self.add_parameter = add_parameter
 
     def __set_name__(self, owner: Type[GuiItem], name: str):
         if self.name is None:
             self.name = name
-        if self.config_setup:
-            owner.add_config_setup(self.name, self._get_config)
+        if self.add_parameter:
+            # always use the attribute name for init parameters
+            owner.add_init_parameter(name, self.get_config)
 
     def __get__(self, instance: Optional[GuiItem], owner: Type[GuiItem]) -> Any:
         if instance is None:
             return self
-        return self._get_value(**gui_core.get_item_configuration(instance.id))
+        return self.get_value(**gui_core.get_item_configuration(instance.id))
 
     def __set__(self, instance: GuiItem, value: Any) -> None:
-        gui_core.configure_item(instance.id, **self._get_config(value))
+        gui_core.configure_item(instance.id, **self.get_config(value))
 
     def _default_get_value(self, **config: Any) -> Any:
         return config[self.name]
@@ -124,13 +127,13 @@ class ConfigProperty:
     def _default_get_config(self, value: Any) -> Dict[str, Any]:
         return { self.name: value }
 
-    def get_value(self, converter: Callable):
+    def getvalue(self, converter: Callable):
         """Set get_value using a decorator."""
-        self._get_value = converter
+        self.get_value = converter
 
-    def get_config(self, converter: Callable):
+    def getconfig(self, converter: Callable):
         """Set setting get_config using a decorator."""
-        self._get_config = converter
+        self.get_config = converter
 
 
 class GuiItem:
@@ -142,7 +145,7 @@ class GuiItem:
     show: bool = ConfigProperty()
     enabled: bool = ConfigProperty()
 
-    source: Union[GuiData, str] = ConfigProperty(
+    data: Union[GuiData, str] = ConfigProperty(
         get_value = lambda **config: GuiData(config['source']),
         get_config = lambda value: {'source' : str(value)},
     )
@@ -150,27 +153,32 @@ class GuiItem:
     _config_setup: ChainMap[str, Callable] = ChainMap[str, Callable]()
 
     @classmethod
-    def add_config_setup(cls, name: str, get_config: Callable) -> None:
+    def add_init_parameter(cls, name: str, getconfig: Optional[Callable] = None) -> None:
         # setup each subclass's config setup mapping
         config = cls.__dict__.get('_config_setup')
         if config is None:
             config = cls._config_setup.new_child({}) # inherit properties from parent
             setattr(cls, '_config_setup', config)
-        config[name] = get_config
+        config[name] = getconfig
 
     def __init__(self,
                  label: Optional[str] = None, *,
                  name: Optional[str] = None,
                  **kwargs: Any):
 
-        self._name = name or _generate_id(self)
+        if name is not None:
+            self._name = name
+        else:
+            self._name = f'{label or self.__class__.__name__}##{id(self):x}'
 
         if not gui_core.does_item_exist(self._name):
             config = self._create_config(kwargs)
             if label is not None:
                 config['label'] = label
-            print(config)
-            self._setup_add_item(kwargs)
+
+            # at no point should a GuiItem object exist for an item that hasn't
+            # actually been added, so it is important to call this in __init__
+            self._setup_add_item(config)
         else:
             self._setup_prexisting()
 
@@ -182,15 +190,23 @@ class GuiItem:
         for name, value in kwargs.items():
             if name not in cls._config_setup:
                 raise KeyError(f'{cls} does not have config parameter "{name}"')
+
             get_config = cls._config_setup[name]
-            config.update(get_config(value))
+            if get_config is not None:
+                config.update(get_config(value))
+            else:
+                config[name] = value
+
         return config
 
     ## Overrides
 
+    # This should be overriden to add the item using the given config.
     def _setup_add_item(self, config: Dict[str, Any]) -> None:
         pass
 
+    # There shouldn't usually be any extra setup required, as members should draw from the
+    # DearPyGui functions instead of duplicating state. But this can be overriden in case.
     def _setup_prexisting(self) -> None:
         pass
 
@@ -262,10 +278,10 @@ class GuiData:
     manipulate the value will also fail silently, and attempts to retrieve the value will produce
     None. This appears to be undocumented implementation details of DearPyGui.
     """
-    def __init__(self, name: str, init_value: Optional[Any] = None):
-        self.name = name
-        if init_value is not None:
-            gui_core.add_value(self.name, init_value)
+    def __init__(self, value: Optional[Any] = None, name: Optional[str] = None):
+        self.name = name or f'{id(self):x}'
+        if value is not None:
+            gui_core.add_value(self.name, value)
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}({self.name})'
