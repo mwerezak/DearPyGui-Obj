@@ -92,7 +92,7 @@ autodoc_type_aliases = {
 # autosectionlabel_prefix_document = True
 # autosectionlabel_maxdepth = None
 
-# autoclass_content = 'both'
+autoclass_content = 'both'
 napoleon_numpy_docstring = False
 
 

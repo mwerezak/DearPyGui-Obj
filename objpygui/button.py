@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from objpygui.core import ItemWrapper, ConfigProperty, register_item_type
+from objpygui import ItemWrapper, register_item_type, config_property
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -16,24 +16,23 @@ class ButtonArrow(Enum):
     Up      = 2
     Down    = 3
 
-def _arrow_value(**config):
-    if not config['arrow']:
-        return None
-    return ButtonArrow(config['direction'])
 
-def _arrow_config(arrow):
-    if arrow is None:
-        return {'arrow' : False}
-    return {'arrow' : True, 'direction' : arrow.value}
 
 @register_item_type('mvAppItemType::Button')
 class Button(ItemWrapper):
-    small: bool = ConfigProperty()
+    small: bool = config_property()
 
-    arrow: Optional[ButtonArrow] = ConfigProperty(
-        fvalue = _arrow_value,
-        fconfig = _arrow_config,
-    )
+    @config_property()
+    def arrow(config) -> Optional[ButtonArrow]:
+        if not config['arrow']:
+            return None
+        return ButtonArrow(config['direction'])
+
+    @arrow.getconfig
+    def arrow(adir: Optional[ButtonArrow]):
+        if adir is None:
+            return {'arrow': False}
+        return {'arrow': True, 'direction': adir.value}
 
     def _setup_add_item(self, config) -> None:
         gui_core.add_button(self.id, **config)

@@ -3,30 +3,29 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 
-from objpygui.core import ItemWrapper, ConfigProperty, register_item_type
+from objpygui import ItemWrapper, config_property, register_item_type
 
 if TYPE_CHECKING:
     from typing import Optional
 
 @register_item_type('mvAppItemType::Window')
 class Window(ItemWrapper):
-    x_pos: int = ConfigProperty()
-    y_pos: int = ConfigProperty()
-    autosize: bool = ConfigProperty()
-    no_resize: bool = ConfigProperty()
-    no_title_bar: bool = ConfigProperty()
-    no_move: bool = ConfigProperty()
-    no_scrollbar: bool = ConfigProperty()
-    no_collapse: bool = ConfigProperty()
-    horizontal_scrollbar: bool = ConfigProperty()
-    no_focus_on_appearing: bool = ConfigProperty()
-    no_bring_to_front_on_focus: bool = ConfigProperty()
-    menubar: bool = ConfigProperty()
-    no_close: bool = ConfigProperty()
-    no_background: bool = ConfigProperty()
+    x_pos: int = config_property()
+    y_pos: int = config_property()
+    autosize: bool = config_property()
+    no_resize: bool = config_property()
+    no_title_bar: bool = config_property()
+    no_move: bool = config_property()
+    no_scrollbar: bool = config_property()
+    no_collapse: bool = config_property()
+    horizontal_scrollbar: bool = config_property()
+    no_focus_on_appearing: bool = config_property()
+    no_bring_to_front_on_focus: bool = config_property()
+    menubar: bool = config_property()
+    no_close: bool = config_property()
+    no_background: bool = config_property()
 
     def _setup_add_item(self, config) -> None:
-        print(config)
         gui_core.add_window(self.id, **config)
 
     def __enter__(self) -> Window:
@@ -41,6 +40,7 @@ if __name__ == '__main__':
 
     with Window('Test Window') as window:
         pass
+    print(window.label)
 
     start_dearpygui()
 

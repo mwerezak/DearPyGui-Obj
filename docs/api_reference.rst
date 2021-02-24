@@ -6,11 +6,16 @@ API Reference
 .. contents:: Contents
     :local:
 
-.. py:currentmodule:: objpygui.core
+Get/Iterate GUI Items
+---------------------
 
 .. autofunction:: get_item_by_id
 
 .. autofunction:: iter_all_items
+
+
+ItemWrapper
+-----------
 
 .. autoclass:: ItemWrapper
     :members:
