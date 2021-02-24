@@ -1,7 +1,7 @@
 API Reference
 =============
 
-.. automodule:: objpygui
+.. automodule:: dearpygui_obj
 
 .. contents:: Contents
     :local:
@@ -32,3 +32,11 @@ Value Storage System
     :undoc-members:
 
 
+Windows
+-------
+
+.. automodule:: dearpygui_obj.window
+
+.. autoclass:: Window
+    :members:
+    :undoc-members:
