@@ -14,11 +14,6 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-try:
-	import dearpygui
-except:
-	pass
-
 
 # -- Project information -----------------------------------------------------
 
@@ -93,6 +88,8 @@ autodoc_default_options = {
 
 autodoc_type_aliases = {
 }
+
+autodoc_mock_imports = ['dearpygui']
 
 # autosectionlabel_prefix_document = True
 # autosectionlabel_maxdepth = None
