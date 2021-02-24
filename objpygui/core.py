@@ -163,3 +163,31 @@ class GuiItem:
             yield get_item_by_id(child)
 
 
+class GuiData:
+    """Manipulate DearPyGui Value Storage.
+
+    If an init_value provided, then the value is created in DearPyGui's Value Storage system.
+    Otherwise, it is assumed that the object is another reference to an already existing value.
+
+    Note that as of DearPyGui 0.6, if the initial attempt to create the value fails, attempts to
+    manipulate the value will also fail silently, and attempts to retrieve the value will produce
+    None. This appears to be undocumented implementation details of DearPyGui.
+    """
+    def __init__(self, name: str, init_value: Optional[Any] = None):
+        self.name = name
+        if init_value is not None:
+            gui_core.add_value(self.name, init_value)
+
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}({self.name})'
+
+    def __str__(self) -> str:
+        return self.name
+
+    @property
+    def value(self) -> Any:
+        return gui_core.get_value(self.name)
+
+    @value.setter
+    def value(self, new_value: Any) -> None:
+        gui_core.set_value(self.name, new_value)

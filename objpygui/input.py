@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from objpygui.data import GuiData
 from objpygui.core import GuiItem, ConfigProperty, register_item_type
 
 if TYPE_CHECKING:
@@ -44,6 +43,7 @@ class InputText(InputItem):
 if __name__ == '__main__':
     from dearpygui.core import *
     from objpygui.window import Window
+    from objpygui.core import GuiData
 
     data = GuiData('data', '')
 
