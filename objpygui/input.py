@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 from objpygui.core import (
-    GuiItem, ConfigProperty, register_item_type
+    ItemWrapper, ConfigProperty, register_item_type
 )
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @register_item_type('mvAppItemType::InputText')
-class InputText(GuiItem):
+class InputText(ItemWrapper):
     hint: str = ConfigProperty()
     multiline: bool = ConfigProperty()
     no_spaces: bool = ConfigProperty()
@@ -51,7 +51,7 @@ def _max_clamped_config(value: Optional[float]):
 
 
 @register_item_type('mvAppItemType::InputFloat')
-class InputFloat(GuiItem):
+class InputFloat(ItemWrapper):
     format: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
     step: float = ConfigProperty()
@@ -88,7 +88,7 @@ class InputFloat4(InputFloat):
 
 
 @register_item_type('mvAppItemType::InputInt')
-class InputInt(GuiItem):
+class InputInt(ItemWrapper):
     format: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
     step: float = ConfigProperty()

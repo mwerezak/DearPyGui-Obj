@@ -1,22 +1,23 @@
 from __future__ import annotations
 
 from warnings import warn
-from typing import TYPE_CHECKING, Callable, ChainMap
+from collections import ChainMap
+from typing import TYPE_CHECKING, Callable
 
 import dearpygui.core as gui_core
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Type, Dict, Iterable, Union
+    from typing import Any, Optional, Type, Dict, Iterable, Mapping
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
-_ITEM_LOOKUP: Dict[str, GuiItem] = {}
+_ITEM_LOOKUP: Dict[str, ItemWrapper] = {}
 
 # Used to construct the correct type when getting an item
 # that was created outside the object wrapper library
-_ITEM_TYPES: Dict[str, Callable[..., GuiItem]] = {}
+_ITEM_TYPES: Dict[str, Callable[..., ItemWrapper]] = {}
 
 
-def get_item_by_id(name: str) -> GuiItem:
+def get_item_by_id(name: str) -> ItemWrapper:
     """Retrieve an item using its unique name.
 
     This function can be used to create wrapper objects for DearPyGui items that were not created
@@ -33,16 +34,16 @@ def get_item_by_id(name: str) -> GuiItem:
     if item is not None:
         return item
 
-    ctor = _ITEM_TYPES.get(gui_core.get_item_type(name), GuiItem)
+    ctor = _ITEM_TYPES.get(gui_core.get_item_type(name), ItemWrapper)
     return ctor(name = name)
 
-def iter_all_items() -> Iterable[GuiItem]:
+def iter_all_items() -> Iterable[ItemWrapper]:
     """Iterate all items."""
     for name in gui_core.get_all_items():
         yield get_item_by_id(name)
 
 
-def _register_item(name: str, instance: GuiItem) -> None:
+def _register_item(name: str, instance: ItemWrapper) -> None:
     if name in _ITEM_LOOKUP:
         warn(f'item with name "{name}" already exists in global item registry, overwriting')
     _ITEM_LOOKUP[name] = instance
@@ -63,7 +64,7 @@ def register_item_type(item_type: str) -> Callable:
     Constructors that are registered using this decorator are must have an __init__ that takes a
     'name' keyword parameter, which is used to supply the DearPyGui widget ID.
     """
-    def decorator(ctor: Callable[..., GuiItem]):
+    def decorator(ctor: Callable[..., ItemWrapper]):
         print(item_type, ctor)
         if item_type in _ITEM_TYPES:
             raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
@@ -75,15 +76,20 @@ def register_item_type(item_type: str) -> Callable:
 class ConfigProperty:
     """Data descriptor that accesses a GuiItem's config.
 
-    Can optionally apply converters to customize the object's API:
+    Can optionally suppy **fvalue** and **fconfig** converter functions to customize how the
+    object's API maps to config keys provided by DearPyGui.
 
-    get_value(**config) is given the configuration of the item as keyword arguments, and should
+    **fvalue** should be a function that takes a dictionary of config values produced by
+    :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
+    descriptor is accessed.
+
+    ``fvalue(config)`` is given the configuration of the item as keyword arguments, and should
     output a value that will be returned when the property is accessed.
 
-    config_conv(value) is given a value, and should produce a dictionary of config items to update.
+    ``fconfig(value)`` is given a value, and should produce a dictionary of config items to update.
 
     Ideally,
-    get_value(**get_config(value)) == value and get_config(get_value(**config)) == config
+    ``get_value(get_config(value)) == value`` and ``get_config(get_value(config)) == config``
     in order for values to be stable.
 
     If add_parameter is True (the default), a keyword parameter of the same name will be added to
@@ -100,15 +106,18 @@ class ConfigProperty:
         self.fconfig = fconfig
         self.no_init = no_init
 
-    def __set_name__(self, owner: Type[GuiItem], name: str):
+        self.__doc__ = fvalue.__doc__ if fvalue is not None else ''
+
+    def __set_name__(self, owner: Type[ItemWrapper], name: str):
         if self.name is None:
             self.name = name
 
         if not self.no_init and self.fconfig is not None:
             # use the attribute name for config parameters
-            owner.add_config_setup(name, self.fconfig)
+            # noinspection PyProtectedMember
+            owner.add_keyword_parameter(name, self.fconfig)
 
-    def __get__(self, instance: Optional[GuiItem], owner: Type[GuiItem]) -> Any:
+    def __get__(self, instance: Optional[ItemWrapper], owner: Type[ItemWrapper]) -> Any:
         if instance is None:
             return self
 
@@ -118,7 +127,7 @@ class ConfigProperty:
             else config[self.name]
         )
 
-    def __set__(self, instance: GuiItem, value: Any) -> None:
+    def __set__(self, instance: ItemWrapper, value: Any) -> None:
         config = (
             self.fconfig(value) if self.fconfig is not None
             else {self.name : value}
@@ -126,28 +135,40 @@ class ConfigProperty:
         gui_core.configure_item(instance.id, **config)
 
     def getvalue(self, converter: Callable):
-        """Set get_value using a decorator."""
+        """Set :attr:`fvalue` using a decorator."""
         self.fvalue = converter
         return self
 
     def getconfig(self, converter: Callable):
-        """Set setting get_config using a decorator."""
+        """Set :attr:`fconfig` using a decorator."""
         self.fconfig = converter
         return self
 
 
-class GuiItem:
-    """Base class for GUI Items."""
+class ItemWrapper:
+    """Base class for GUI item wrapper objects."""
 
-    _config_setup: ChainMap[str, Callable] = ChainMap[str, Callable]()
+    # Store custom keyword parameters
+    # This is normally inherited. To prevent this, subclasses can override the attribute with an empty dict.
+    _keyword_params = ChainMap()
 
     @classmethod
-    def add_config_setup(cls, name: str, getconfig: Optional[Callable] = None) -> None:
+    def add_keyword_parameter(cls, name: str, getconfig: Optional[Callable] = None) -> None:
+        """Can be used by subclasses to add custom keyword arguments.
+
+        Parameters:
+            name: the name of the keyword argument to add.
+            getconfig: a function that takes the value of the argument and produces a dictionary
+                of config items to be passed to :meth:`_setup_add_item`.
+        """
+
         # setup each subclass's config setup mapping
-        config = cls.__dict__.get('_config_setup')
+        config = cls.__dict__.get('_keyword_params')
         if config is None:
-            config = cls._config_setup.new_child({}) # inherit config setup from parent
-            setattr(cls, '_config_setup', config)
+            config = cls._keyword_params.new_child({}) # inherit keyword params from parent
+            setattr(cls, '_keyword_params', config)
+        elif not hasattr(config, 'new_child'):
+            setattr(cls, '_keyword_params', ChainMap(config))
         config[name] = getconfig
 
 
@@ -161,12 +182,21 @@ class GuiItem:
     data_source: Optional[GuiData] = ConfigProperty(
         fvalue = lambda config: GuiData(name=source) if (source := config.get('source')) else None,
         fconfig = lambda value: {'source' : str(value) if value else ''},
-    )
+    ) #: Accesses the 'source' config key on GUI items.
 
     def __init__(self,
                  label: Optional[str] = None, *,
                  name: Optional[str] = None,
                  **kwargs: Any):
+        """
+        Parameters:
+            label: optional initial value for the :attr:`label` property.
+            name: optional unique name used to identify the GUI item.
+                If omitted, a name will be autogenerated.
+            **kwargs: all other keyword arguments will be passed to the underlying `add_*()`
+                function used by DearPyGui. Subclasses may also specify custom keyword parameters
+                using the :meth:`add_config_setup` class method.
+        """
 
         if name is not None:
             self._name = name
@@ -182,7 +212,7 @@ class GuiItem:
             # actually been added, so it is important to call this in __init__
             self._setup_add_item(config)
         else:
-            self._setup_prexisting()
+            self._setup_pre_existing()
 
         _register_item(self._name, self)
 
@@ -190,7 +220,7 @@ class GuiItem:
     def _create_config(cls, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         config = {}
         for name, value in kwargs.items():
-            get_config = cls._config_setup.get(name)
+            get_config = cls._keyword_params.get(name)
             if get_config is not None:
                 config.update(get_config(value))
             else:
@@ -200,13 +230,31 @@ class GuiItem:
 
     ## Overrides
 
-    # This should be overriden to add the item using the given config.
     def _setup_add_item(self, config: Dict[str, Any]) -> None:
+        """This method should be overriden by subclasses to add the wrapped GUI item using
+        DearPyGui's ``add_*()`` functions.
+
+        For Example:
+
+        .. code-block:: python
+
+            class Button(ItemWrapper):
+                def _setup_add_item(config):
+                    dearpygui.core.add_button(**config)
+
+        Parameters:
+            config: a dictionary of config data that should be given to DearPyGui.
+        """
         pass
 
-    # There shouldn't usually be any extra setup required, as members should draw from the
-    # DearPyGui functions instead of duplicating state. But this can be overriden in case.
-    def _setup_prexisting(self) -> None:
+    def _setup_pre_existing(self) -> None:
+        """This can be overriden by subclasses to setup an object wrapper that has been created
+        for a pre-existing GUI item.
+
+        There shouldn't usually be any extra setup required, as subclasses should draw all their
+        data from DearPyGui's functions instead of duplicating state that already exists in
+        DearPyGui. But it's available just in case.
+        """
         pass
 
     @property
@@ -216,10 +264,11 @@ class GuiItem:
 
     @property
     def is_valid(self) -> bool:
+        """This property is ``False`` if the GUI item has been deleted."""
         return gui_core.does_item_exist(self.id)
 
     def delete(self) -> None:
-        """This will invalidate an item and all its children."""
+        """This method will invalidate the item and all its children."""
         _unregister_item(self.id)
         gui_core.delete_item(self.id)
 
@@ -227,20 +276,33 @@ class GuiItem:
     ## Callbacks
 
     def callback(self, data: Optional[Any] = None) -> Callable:
-        """A function decorator that sets the item's callback, and optionally, the callback data."""
+        """A function decorator that sets the item's callback, and optionally, the callback data.
+
+        Example:
+            .. code-block:: python
+
+                button = Button()
+
+                @button.callback
+                def callback(sender, data):
+                    ...
+        """
         def decorator(callback: Callable):
             gui_core.set_item_callback(self.id, callback, callback_data=data)
             return callback
         return decorator
 
     def set_callback(self, callback: Callable) -> None:
+        """Set the callback."""
         gui_core.set_item_callback(self.id, callback)
 
     def get_callback(self) -> Any:
+        """Get the callback."""
         return gui_core.get_item_callback(self.id)
 
     @property
     def callback_data(self) -> Any:
+        """Access the callback data."""
         return gui_core.get_item_callback_data(self.id)
 
     @callback_data.setter
@@ -253,13 +315,13 @@ class GuiItem:
     def is_container(self) -> bool:
         return gui_core.is_item_container(self.id)
 
-    def get_parent(self) -> Optional[GuiItem]:
+    def get_parent(self) -> Optional[ItemWrapper]:
         parent_id = gui_core.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
 
-    def iter_children(self) -> Iterable[GuiItem]:
+    def iter_children(self) -> Iterable[ItemWrapper]:
         children = gui_core.get_item_children(self.id)
         if not children:
             return

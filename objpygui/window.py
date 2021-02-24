@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 
-from objpygui.core import GuiItem, ConfigProperty, register_item_type
+from objpygui.core import ItemWrapper, ConfigProperty, register_item_type
 
 if TYPE_CHECKING:
     from typing import Optional
 
 @register_item_type('mvAppItemType::Window')
-class Window(GuiItem):
+class Window(ItemWrapper):
     x_pos: int = ConfigProperty()
     y_pos: int = ConfigProperty()
     autosize: bool = ConfigProperty()

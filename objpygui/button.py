@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from objpygui.core import GuiItem, ConfigProperty, register_item_type
+from objpygui.core import ItemWrapper, ConfigProperty, register_item_type
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -27,7 +27,7 @@ def _arrow_config(arrow):
     return {'arrow' : True, 'direction' : arrow.value}
 
 @register_item_type('mvAppItemType::Button')
-class Button(GuiItem):
+class Button(ItemWrapper):
     small: bool = ConfigProperty()
 
     arrow: Optional[ButtonArrow] = ConfigProperty(
