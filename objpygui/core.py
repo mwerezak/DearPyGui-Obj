@@ -64,6 +64,7 @@ def register_item_type(item_type: str) -> Callable:
     'name' keyword parameter, which is used to supply the DearPyGui widget ID.
     """
     def decorator(ctor: Callable[..., GuiItem]):
+        print(item_type, ctor)
         if item_type in _ITEM_TYPES:
             raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
         _ITEM_TYPES[item_type] = ctor
@@ -71,7 +72,7 @@ def register_item_type(item_type: str) -> Callable:
     return decorator
 
 
-def _generate_id(o: GuiItem) -> str:
+def _generate_id(o: Any) -> str:
     return o.__class__.__qualname__ + '@' + hex(id(o))
 
 class ConfigProperty:
@@ -94,7 +95,7 @@ class GuiItem:
     """Base class for GUI Items."""
 
     # TODO: data sources
-
+    tip: str = ConfigProperty()
     width: int = ConfigProperty()
     height: int = ConfigProperty()
     show: bool = ConfigProperty()
