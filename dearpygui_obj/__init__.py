@@ -337,8 +337,8 @@ class ItemWrapper:
         .. code-block:: python
 
             class Button(ItemWrapper):
-                def _setup_add_item(config):
-                    dearpygui.core.add_button(**config)
+                def _setup_add_item(self, config):
+                    dearpygui.core.add_button(self.id, **config)
 
         Parameters:
             config: a dictionary of config data that should be given to DearPyGui.
@@ -349,8 +349,8 @@ class ItemWrapper:
         """This can be overriden by subclasses to setup an object wrapper that has been created
         for a pre-existing GUI item.
 
-        There shouldn't usually be any extra setup required, as subclasses should draw all their
-        data from DearPyGui's functions instead of duplicating state that already exists in
+        There shouldn't usually be any extra setup required, as subclasses should try to draw all
+        their data from DearPyGui's functions instead of duplicating state that already exists in
         DearPyGui. But it's available just in case.
         """
         pass
