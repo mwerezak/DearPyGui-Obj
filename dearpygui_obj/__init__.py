@@ -22,9 +22,9 @@ _ITEM_TYPES: Dict[str, Callable[..., GuiWrapper]] = {}
 def get_item_by_id(name: str) -> GuiWrapper:
     """Retrieve an item using its unique name.
 
-    If the item was created by instantiating an ItemWrapper object, this will return that object.
-    Otherwise, a new wrapper object will be created for that item and returned. Future calls for the
-    same ID will return the same object.
+    If the item was created by instantiating a :class:`GuiWrapper` object, this will return that
+    object. Otherwise, a new wrapper object will be created for that item and returned. Future calls
+    for the same ID will return the same object.
 
     Raises:
         KeyError: if name refers to an item that is invalid (deleted) or does not exist.
@@ -69,14 +69,14 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
 
 
 def dearpygui_wrapper(item_type: str) -> Callable:
-    """Associate an :class:`ItemWrapper` class or constructor with a DearPyGui item type.
+    """Associate a :class:`GuiWrapper` class or constructor with a DearPyGui item type.
 
-    This decorator can be applied to a :class:`ItemWrapper` to associate it with a DearPyGui
+    This decorator can be applied to a :class:`GuiWrapper` to associate it with a DearPyGui
     item type as returned by :func:`dearpygui.core.get_item_type`. This will let the wrapper object
     library know which constructor to use when :func:`get_item_by_id` is used to get an item that
     does not yet have a wrapper object.
 
-    This constructor may be applied directly to :class:`ItemWrapper` subclasses, or it may be
+    This constructor may be applied directly to :class:`GuiWrapper` subclasses, or it may be
     applied to any callable that can serve as a constructor. The only requirement is that the
     callable must have a 'name' keyword parameter that takes the unique name used by DearPyGui.
     """
@@ -100,7 +100,7 @@ class ConfigProperty:
     methods, analogous to the way normal Python properties work.
 
     Both **fvalue** and **fconfig** must take exactly two arguments. The first argument for both
-    is the :class:`ItemWrapper` instance that holds the descriptor.
+    is the :class:`GuiWrapper` instance that holds the descriptor.
 
     **fvalue** should take as its 2nd argument a dictionary of config values produced by
     :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
@@ -112,10 +112,10 @@ class ConfigProperty:
 
     Ideally,
     ``fvalue(obj, fconfig(obj, value)) == value`` and
-    ``fconfig(obj, fvalue(obj, config)) == config`` should both be satisfied in order for
-    configuration values to be stable.
+    ``fconfig(obj, fvalue(obj, config)) == config``
+    should both be satisfied in order for configuration values to be stable.
 
-    Also, if an **fconfig** function is given, adding the descriptor to an :class:`ItemWrapper`
+    Also, if an **fconfig** function is given, adding the descriptor to an :class:`GuiWrapper`
     class will automatically create a custom keyword parameter. This can be prevented using the
     **no_keyword** argument.
     """
@@ -192,7 +192,7 @@ class ConfigProperty:
 
         .. code-block:: python
 
-            class Widget(ItemWrapper):
+            class Widget(GuiWrapper):
                 @config_property
                 def property_name(config):
                     ...
@@ -302,7 +302,7 @@ class GuiWrapper:
         if label is not None and hasattr(self, 'label'):
             kwargs['label'] = label
 
-        # at no point should a ItemWrapper object exist for an item that hasn't
+        # at no point should a GuiWrapper object exist for an item that hasn't
         # actually been added, so if the item doesn't exist we need to add it now.
         if not gui_core.does_item_exist(self._name):
             config = self._create_config(kwargs)
@@ -333,7 +333,7 @@ class GuiWrapper:
 
         .. code-block:: python
 
-            class Button(ItemWrapper):
+            class Button(GuiWrapper):
                 def _setup_add_item(self, config):
                     dearpygui.core.add_button(self.id, **config)
 
