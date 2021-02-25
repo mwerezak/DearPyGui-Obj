@@ -21,6 +21,8 @@ class Button(GuiWrapper):
     """A simple button."""
 
     label: str = config_property()
+    
+    #: If ``True``, makes the button a small button. Useful for embedding in text.
     small: bool = config_property()
 
     @config_property()
