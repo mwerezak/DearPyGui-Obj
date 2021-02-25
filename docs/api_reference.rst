@@ -159,6 +159,22 @@ Input Boxes
     :members:
     :undoc-members:
 
+Layout
+------
+
+.. automodule:: dearpygui_obj.layout
+
+.. autosummary:: 
+    :nosignatures:
+
+    ScrollView
+
+.. autoclass:: ScrollView
+    :members:
+    :undoc-members:
+
+
+
 Developer Tools
 ---------------
 
