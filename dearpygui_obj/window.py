@@ -81,11 +81,17 @@ class AboutWindow(Window):
 
 if __name__ == '__main__':
     from dearpygui.core import *
+    from dearpygui_obj import iter_all_windows
 
     with StyleEditorWindow() as win:
         pass
 
-    print(get_item_type(win.id))
+    with Window('1'): pass
+    with Window('2'): pass
+
+    print(list(iter_all_windows()))
+
+    set_render_callback(lambda s, d: print(get_active_window()))
 
     start_dearpygui()
 

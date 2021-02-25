@@ -40,13 +40,19 @@ def get_item_by_id(name: str) -> ItemWrapper:
     return ctor(name = name)
 
 def iter_all_items() -> Iterable[ItemWrapper]:
-    """Iterate all items and yield their wrapper objects.
-
-    This uses :func:`get_item_by_id` to retrieve the object for each ID provided by DearPyGui.
-    """
+    """Iterate all items (*NOT* windows) and yield their wrapper objects."""
     for name in gui_core.get_all_items():
         yield get_item_by_id(name)
 
+def iter_all_windows() -> Iterable[ItemWrapper]:
+    """Iterate all windows and yield their wrapper objects."""
+    for name in gui_core.get_windows():
+        yield get_item_by_id(name)
+
+def get_active_window() -> ItemWrapper:
+    """Get the active window."""
+    active = gui_core.get_active_window()
+    return get_item_by_id(active)
 
 def _register_item(name: str, instance: ItemWrapper) -> None:
     if name in _ITEM_LOOKUP:
