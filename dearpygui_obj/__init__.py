@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from warnings import warn
-from collections import ChainMap
-from typing import TYPE_CHECKING, Callable
+from collections import ChainMap as chain_map
+from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Type, Dict, Iterable, Mapping, Union
+    from typing import Callable, Any, Optional, Type, Dict, Iterable, Mapping, Union, ChainMap
+
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
 _ITEM_LOOKUP: Dict[str, GuiWrapper] = {}
@@ -87,6 +88,14 @@ def dearpygui_wrapper(item_type: str) -> Callable:
         return ctor
     return decorator
 
+
+## Type Aliases
+if TYPE_CHECKING:
+    GuiConfigData = Mapping[str, Any]  #: Alias for GUI item configuration data
+    GetValueFunc = Callable[['GuiWrapper', GuiConfigData], Any]
+    GetConfigFunc = Callable[['GuiWrapper', Any], GuiConfigData]
+
+
 class ConfigProperty:
     """Data descriptor used to get or set an item's configuration.
 
@@ -102,7 +111,7 @@ class ConfigProperty:
     Both **fvalue** and **fconfig** must take exactly two arguments. The first argument for both
     is the :class:`GuiWrapper` instance that holds the descriptor.
 
-    **fvalue** should take as its 2nd argument a dictionary of config values produced by
+    **fvalue**'s 2nd argument should take a dictionary of config values produced by
     :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
     descriptor is accessed.
 
@@ -120,13 +129,13 @@ class ConfigProperty:
     **no_keyword** argument.
     """
 
-    _fvalue: Callable[[GuiWrapper, Mapping[str, Any]], Any]
-    _fconfig: Callable[[GuiWrapper, Any], Mapping[str, Any]]
+    _fvalue: GetValueFunc
+    _fconfig: GetConfigFunc
 
     def __init__(self,
-                 fvalue: Optional[Callable] = None,
-                 fconfig: Optional[Callable] = None,
-                 key: Optional[str] = None,
+                 fvalue: GetValueFunc = None,
+                 fconfig: GetConfigFunc = None,
+                 key: str = None,
                  no_keyword: bool = False,
                  doc: str = ''):
         """
@@ -185,10 +194,10 @@ class ConfigProperty:
         )
         gui_core.configure_item(instance.id, **config)
 
-    def __call__(self, fvalue: Callable):
-        """Allows the ConfigProperty class itself to be used as a decorator which sets :attr:`fvalue`.
+    def __call__(self, fvalue: GetValueFunc):
+        """Allows the ConfigProperty class itself to be used as a decorator.
 
-        This enables convenient syntax such as:
+        Equivalent to :meth:`getvalue`. This enables convenient syntax such as:
 
         .. code-block:: python
 
@@ -201,14 +210,14 @@ class ConfigProperty:
         self.getvalue(fvalue)
         return self
 
-    def getvalue(self, fvalue: Callable):
+    def getvalue(self, fvalue: GetValueFunc):
         """Set :attr:`fvalue` using a decorator."""
         self._fvalue = fvalue
         if fvalue is not None:
             self.__doc__ = fvalue.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
-    def getconfig(self, fconfig: Callable):
+    def getconfig(self, fconfig: GetConfigFunc):
         """Set :attr:`fconfig` using a decorator."""
         self._fconfig = fconfig
         if not self.no_keyword and self.owner is not None and fconfig is not None:
@@ -228,10 +237,10 @@ class GuiWrapper:
     ## Custom keyword parameters
 
     # This is normally inherited. To prevent this, subclasses can override this attribute.
-    _keyword_params = ChainMap()
+    _keyword_params: ChainMap[str, GetConfigFunc] = chain_map()
 
     @classmethod
-    def add_keyword_parameter(cls, name: str, getconfig: Optional[Callable] = None) -> None:
+    def add_keyword_parameter(cls, name: str, getconfig: GetConfigFunc) -> None:
         """Can be used by subclasses to add custom keyword parameters.
 
         If **name** is given as a keyword parameter to ``__init__``, the value passed with that
@@ -250,15 +259,15 @@ class GuiWrapper:
         """
 
         # setup each subclass's config setup mapping
-        config = cls.__dict__.get('_keyword_params')
-        if config is None:
+        keyword_params = cls.__dict__.get('_keyword_params')
+        if keyword_params is None:
             # inherit keyword params from parent
             if hasattr(cls._keyword_params, 'new_child'):
-                config = cls._keyword_params.new_child({})
+                keyword_params = cls._keyword_params.new_child({})
             else:
-                config = ChainMap({}, cls._keyword_params)
-            setattr(cls, '_keyword_params', config)
-        config[name] = getconfig
+                keyword_params = chain_map({}, cls._keyword_params)
+            setattr(cls, '_keyword_params', keyword_params)
+        keyword_params[name] = getconfig
 
     ## Common GUI item properties
 
@@ -275,7 +284,7 @@ class GuiWrapper:
         return GuiData(name=source) if source else None
 
     @data_source.getconfig
-    def data_source(self, value: Optional[Union[GuiData, str]]):
+    def data_source(self, value: Union[GuiData, str, None]):
         # accept plain string in addition to GuiData
         return {'source' : str(value) if value else ''}
 
@@ -312,7 +321,7 @@ class GuiWrapper:
 
         _register_item(self._name, self)
 
-    def _create_config(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_config(self, kwargs: GuiConfigData) -> GuiConfigData:
         config = {}
         for name, value in kwargs.items():
             get_config = self._keyword_params.get(name)
@@ -325,7 +334,7 @@ class GuiWrapper:
 
     ## Overrides
 
-    def _setup_add_widget(self, config: Dict[str, Any]) -> None:
+    def _setup_add_widget(self, config: GuiConfigData) -> None:
         """This method should be overriden by subclasses to add the wrapped GUI item using
         DearPyGui's ``add_*()`` functions.
 
@@ -389,7 +398,7 @@ class GuiWrapper:
     def callback_data(self, data: Any) -> None:
         gui_core.set_item_callback_data(self.id, data)
 
-    def callback(self, *, data: Optional[Any] = None) -> Callable:
+    def callback(self, *, data: Any = None) -> Callable:
         """A convenience decorator that sets the item's callback, and optionally, the callback data.
 
         For example:
@@ -441,11 +450,10 @@ class GuiData:
             TextInput('Text1', data_source = linked_text)
             TextInput('Text2', data_source = linked_text)
     """
+    ALIAS = object()  #: Sentinel used to create :class:`GuiData` objects that reference existing values.
 
-    def __init__(self, value: Optional[Any] = None, name: Optional[str] = None):
-        """If a value is provided, then the value is created in DearPyGui's Value Storage system.
-        Otherwise, it is assumed that the object is another reference to an already existing value.
-
+    def __init__(self, value: Any = ALIAS, name: Optional[str] = None):
+        """
         Note:
             If the GuiData's name does not reference a value that exists, attempts to
             manipulate the value will also fail silently, and attempts to retrieve the value will
@@ -455,16 +463,20 @@ class GuiData:
             impossible to detect this.
 
         Parameters:
-            value: the value to store. If not provided, this will create a reference an existing
-                value instead of creating a new value.
+            value: the value to store. If the :attr:`ALIAS` sentinel value is provided, the
+                GuiData object will instead act as a reference to an existing value instead of
+                creating a new value.
             name: The name of the value in the Value Storage system.
-                If not provided, a name will be autogenerated. Must be given if **value** is not provided.
+                If not provided, a name will be autogenerated.
+                This argument is required if :attr:`ALIAS` is passed to **value**.
         """
+        if value is not self.ALIAS:
+            gui_core.add_value(name, value)
+        elif not name:
+            raise ValueError('a name is required to create a data alias')
+
         #: The unique name identifying the value in the Value Storage system.
         self.name = name or f'{id(self):x}'
-
-        if value is not None:
-            gui_core.add_value(self.name, value)
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}({self.name!r})'
