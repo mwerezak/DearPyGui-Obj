@@ -156,8 +156,13 @@ class ConfigProperty:
         if not self.__doc__:
             self.__doc__ = f'Access the \'{self.key}\' config property.'
 
-        if not self.no_keyword and self._fconfig is not None:
-            owner.add_keyword_parameter(self.name, self._fconfig)
+        if not self.no_keyword:
+            if self._fconfig is not None:
+                owner.add_keyword_parameter(name, self._fconfig)
+            elif self.key != name:
+                # ensure that keyword parameters still work for config properties
+                # that have a different name than the config key
+                owner.add_keyword_parameter(name, lambda instance, value: {self.key : value})
 
     def __get__(self, instance: Optional[ItemWrapper], owner: Type[ItemWrapper]) -> Any:
         """Read the item configuration and return a value."""
@@ -255,7 +260,7 @@ class ItemWrapper:
 
     ## Common GUI item properties
 
-    tip: str = config_property()
+    tooltip: str = config_property(key='tip')
     width: int = config_property()
     height: int = config_property()
     show: bool = config_property()
