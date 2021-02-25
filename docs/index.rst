@@ -12,6 +12,7 @@ DearPyGui-Obj
    :maxdepth: 2
    :caption: Contents:
 
+   widget_list
    api_reference/index
 
 
