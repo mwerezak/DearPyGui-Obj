@@ -79,38 +79,13 @@ Value Storage System
     :undoc-members:
 
 Windows
--------
+^^^^^^^
 
 .. automodule:: dearpygui_obj.window
-
-.. autosummary:: 
-    :nosignatures:
-
-    Window
-    DebugWindow
-    MetricsWindow
-    StyleEditorWindow
-    DocumentationWindow
-    AboutWindow
 
 .. autoclass:: Window
     :members:
     :undoc-members:
-
-Developer Tool Windows
-^^^^^^^^^^^^^^^^^^^^^^
-
-DearPyGui-Obj constains several useful developer tools which can help debug GUI applications.
-
-.. autoclass:: DebugWindow
-
-.. autoclass:: MetricsWindow
-
-.. autoclass:: StyleEditorWindow
-
-.. autoclass:: DocumentationWindow
-
-.. autoclass:: AboutWindow
 
 
 Basic Items
@@ -183,3 +158,29 @@ Input Boxes
 .. autoclass:: InputInt4
     :members:
     :undoc-members:
+
+Developer Tools
+---------------
+
+.. automodule:: dearpygui_obj.devtools
+
+DearPyGui-Obj constains several useful developer tools which can help debug GUI applications.
+
+.. autosummary:: 
+    :nosignatures:
+
+    DebugWindow
+    MetricsWindow
+    StyleEditorWindow
+    DocumentationWindow
+    AboutWindow
+
+.. autoclass:: DebugWindow
+
+.. autoclass:: MetricsWindow
+
+.. autoclass:: StyleEditorWindow
+
+.. autoclass:: DocumentationWindow
+
+.. autoclass:: AboutWindow

@@ -42,56 +42,24 @@ class Window(ItemWrapper):
     def __enter__(self) -> Window:
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         gui_core.end()
-
-## Dev tool windows
-
-@register_item_type('mvAppItemType::DebugWindow')
-class DebugWindow(Window):
-    """Developer tool, creates a window containing handy GUI debugging tools and info."""
-    def _setup_add_item(self, config) -> None:
-        gui_core.add_debug_window(self.id, **config)
-
-@register_item_type('mvAppItemType::MetricsWindow')
-class MetricsWindow(Window):
-    """Developer tool, creates a metrics window."""
-    def _setup_add_item(self, config) -> None:
-        gui_core.add_metrics_window(self.id, **config)
-
-@register_item_type('mvAppItemType::StyleWindow')
-class StyleEditorWindow(Window):
-    """Developer tool, creates a window containing a GUI style editor.."""
-    def _setup_add_item(self, config) -> None:
-        gui_core.add_style_window(self.id, **config)
-
-@register_item_type('mvAppItemType::DocWindow')
-class DocumentationWindow(Window):
-    """Developer tool, creates a window showing DearPyGui documentation."""
-    def _setup_add_item(self, config) -> None:
-        gui_core.add_doc_window(self.id, **config)
-
-@register_item_type('mvAppItemType::AboutWindow')
-class AboutWindow(Window):
-    """Developer tool, creates window containing information about DearPyGui."""
-    def _setup_add_item(self, config) -> None:
-        gui_core.add_about_window(self.id, **config)
-
 
 
 if __name__ == '__main__':
     from dearpygui.core import *
-    from dearpygui_obj import iter_all_windows
+    from dearpygui_obj.button import Button
 
-    with StyleEditorWindow() as win:
+    with DebugWindow():
         pass
 
-    with Window('1'): pass
-    with Window('2'): pass
+    with DocumentationWindow() as win:
+        pass
 
-    print(list(iter_all_windows()))
+    from dearpygui_obj import iter_all_windows
 
-    set_render_callback(lambda s, d: print(get_active_window()))
+    for win in iter_all_windows():
+        print(win.id, win.is_container())
 
     start_dearpygui()
 

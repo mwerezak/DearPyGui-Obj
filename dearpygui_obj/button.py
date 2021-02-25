@@ -20,6 +20,7 @@ class ButtonArrow(Enum):
 class Button(ItemWrapper):
     """A simple button."""
 
+    label: str = config_property()
     small: bool = config_property()
 
     @config_property()

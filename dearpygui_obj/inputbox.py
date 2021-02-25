@@ -40,6 +40,7 @@ class InputFloat(ItemWrapper):
     step: float = config_property()
     step_fast: float = config_property()
     readonly: bool = config_property()
+    label: str = config_property()
 
     @config_property
     def min_value(self, config) -> Optional[float]:
@@ -95,6 +96,7 @@ class InputInt(ItemWrapper):
     step: int = config_property()
     step_fast: int = config_property()
     readonly: bool = config_property()
+    label: str = config_property()
 
     @config_property
     def min_value(self, config) -> Optional[int]:

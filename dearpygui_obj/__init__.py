@@ -210,6 +210,7 @@ class ConfigProperty:
 
 config_property = ConfigProperty #: Alias for :class:`ConfigProperty` for use as a decorator.
 
+
 class ItemWrapper:
     """This is the base class for all GUI item wrapper objects.
 
@@ -254,7 +255,6 @@ class ItemWrapper:
 
     ## Common GUI item properties
 
-    label: str = config_property()
     tip: str = config_property()
     width: int = config_property()
     height: int = config_property()
@@ -292,7 +292,7 @@ class ItemWrapper:
         else:
             self._name = f'{label or self.__class__.__name__}##{id(self):x}'
 
-        if label is not None:
+        if label is not None and hasattr(self, 'label'):
             kwargs['label'] = label
 
         # at no point should a ItemWrapper object exist for an item that hasn't
