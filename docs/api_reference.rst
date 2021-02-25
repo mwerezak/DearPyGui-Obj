@@ -167,7 +167,17 @@ Layout
 .. autosummary:: 
     :nosignatures:
 
+    VSpacing
+    HAlignNext
     ScrollView
+
+.. autoclass:: VSpacing
+    :members:
+    :undoc-members:
+
+.. autoclass:: HAlignNext
+    :members:
+    :undoc-members:
 
 .. autoclass:: ScrollView
     :members:
