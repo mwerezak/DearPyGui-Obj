@@ -389,7 +389,7 @@ class GuiWrapper:
     def callback_data(self, data: Any) -> None:
         gui_core.set_item_callback_data(self.id, data)
 
-    def callback(self, data: Optional[Any] = None) -> Callable:
+    def callback(self, *, data: Optional[Any] = None) -> Callable:
         """A convenience decorator that sets the item's callback, and optionally, the callback data.
 
         For example:
