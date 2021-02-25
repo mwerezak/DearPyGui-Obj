@@ -2,13 +2,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from dearpygui_obj import ItemWrapper, config_property, dearpygui_wrapper
+from dearpygui_obj import GuiWrapper, config_property, dearpygui_wrapper
 
 if TYPE_CHECKING:
     pass
 
 @dearpygui_wrapper('mvAppItemType::Window')
-class Window(ItemWrapper):
+class Window(GuiWrapper):
     """Creates a new window.
 
     This is a container item that should be used as a context manager. For example:
@@ -36,7 +36,7 @@ class Window(ItemWrapper):
     no_close: bool = config_property()
     no_background: bool = config_property()
 
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_window(self.id, **config)
 
     def __enter__(self) -> Window:
@@ -48,13 +48,6 @@ class Window(ItemWrapper):
 
 if __name__ == '__main__':
     from dearpygui.core import *
-    from dearpygui_obj.button import Button
-
-    with DebugWindow():
-        pass
-
-    with DocumentationWindow() as win:
-        pass
 
     from dearpygui_obj import iter_all_windows
 

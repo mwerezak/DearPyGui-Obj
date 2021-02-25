@@ -2,40 +2,40 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from dearpygui_obj import ItemWrapper, dearpygui_wrapper, config_property
+from dearpygui_obj import GuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
     pass
 
 @dearpygui_wrapper('mvAppItemType::Spacing')
-class VSpacing(ItemWrapper):
+class VSpacing(GuiWrapper):
     """Adds vertical spacing."""
 
     space: int = config_property(key='count') #: The amount of vertical space.
 
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_spacing(name=self.id, **config)
 
 
 @dearpygui_wrapper('mvAppItemType::SameLine')
-class HAlignNext(ItemWrapper):
+class HAlignNext(GuiWrapper):
     """Places a widget on the same line as the previous widget.
     Can also be used for horizontal spacing."""
 
     xoffset: float = config_property() #: offset from containing window
     spacing: float = config_property() #: offset from previous widget
 
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_same_line(name=self.id, **config)
 
 
 @dearpygui_wrapper('mvAppItemType::Child')
-class ScrollView(ItemWrapper):
+class ScrollView(GuiWrapper):
     """Adds an embedded child window. Will show scrollbars when items do not fit.
 
-    This is a container item."""
+    This is a container widget."""
 
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_child(self.id, **config)
 
     def __enter__(self) -> ScrollView:

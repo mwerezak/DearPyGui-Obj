@@ -12,14 +12,14 @@ if TYPE_CHECKING:
     from typing import Any, Optional, Type, Dict, Iterable, Mapping, Union
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
-_ITEM_LOOKUP: Dict[str, ItemWrapper] = {}
+_ITEM_LOOKUP: Dict[str, GuiWrapper] = {}
 
 # Used to construct the correct type when getting an item
 # that was created outside the object wrapper library
-_ITEM_TYPES: Dict[str, Callable[..., ItemWrapper]] = {}
+_ITEM_TYPES: Dict[str, Callable[..., GuiWrapper]] = {}
 
 
-def get_item_by_id(name: str) -> ItemWrapper:
+def get_item_by_id(name: str) -> GuiWrapper:
     """Retrieve an item using its unique name.
 
     If the item was created by instantiating an ItemWrapper object, this will return that object.
@@ -36,25 +36,25 @@ def get_item_by_id(name: str) -> ItemWrapper:
     if item is not None:
         return item
 
-    ctor = _ITEM_TYPES.get(gui_core.get_item_type(name), ItemWrapper)
+    ctor = _ITEM_TYPES.get(gui_core.get_item_type(name), GuiWrapper)
     return ctor(name = name)
 
-def iter_all_items() -> Iterable[ItemWrapper]:
+def iter_all_items() -> Iterable[GuiWrapper]:
     """Iterate all items (*NOT* windows) and yield their wrapper objects."""
     for name in gui_core.get_all_items():
         yield get_item_by_id(name)
 
-def iter_all_windows() -> Iterable[ItemWrapper]:
+def iter_all_windows() -> Iterable[GuiWrapper]:
     """Iterate all windows and yield their wrapper objects."""
     for name in gui_core.get_windows():
         yield get_item_by_id(name)
 
-def get_active_window() -> ItemWrapper:
+def get_active_window() -> GuiWrapper:
     """Get the active window."""
     active = gui_core.get_active_window()
     return get_item_by_id(active)
 
-def _register_item(name: str, instance: ItemWrapper) -> None:
+def _register_item(name: str, instance: GuiWrapper) -> None:
     if name in _ITEM_LOOKUP:
         warn(f'item with name "{name}" already exists in global item registry, overwriting')
     _ITEM_LOOKUP[name] = instance
@@ -69,7 +69,9 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
 
 
 def dearpygui_wrapper(item_type: str) -> Callable:
-    """This decorator can be applied to a :class:`ItemWrapper` to associate it with a DearPyGui
+    """Associate an :class:`ItemWrapper` class or constructor with a DearPyGui item type.
+
+    This decorator can be applied to a :class:`ItemWrapper` to associate it with a DearPyGui
     item type as returned by :func:`dearpygui.core.get_item_type`. This will let the wrapper object
     library know which constructor to use when :func:`get_item_by_id` is used to get an item that
     does not yet have a wrapper object.
@@ -78,7 +80,7 @@ def dearpygui_wrapper(item_type: str) -> Callable:
     applied to any callable that can serve as a constructor. The only requirement is that the
     callable must have a 'name' keyword parameter that takes the unique name used by DearPyGui.
     """
-    def decorator(ctor: Callable[..., ItemWrapper]):
+    def decorator(ctor: Callable[..., GuiWrapper]):
         if item_type in _ITEM_TYPES:
             raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
         _ITEM_TYPES[item_type] = ctor
@@ -86,7 +88,7 @@ def dearpygui_wrapper(item_type: str) -> Callable:
     return decorator
 
 class ConfigProperty:
-    """Data descriptor used to get or set an item's configuration through attribute access.
+    """Data descriptor used to get or set an item's configuration.
 
     This class provides a data descriptor API over top of the :func:`configure_item` and
     :func:`get_item_configuration` functions provided by DearPyGui.
@@ -118,8 +120,8 @@ class ConfigProperty:
     **no_keyword** argument.
     """
 
-    _fvalue: Callable[[ItemWrapper, Mapping[str, Any]], Any]
-    _fconfig: Callable[[ItemWrapper, Any], Mapping[str, Any]]
+    _fvalue: Callable[[GuiWrapper, Mapping[str, Any]], Any]
+    _fconfig: Callable[[GuiWrapper, Any], Mapping[str, Any]]
 
     def __init__(self,
                  fvalue: Optional[Callable] = None,
@@ -146,7 +148,7 @@ class ConfigProperty:
         self.getvalue(fvalue)
         self.getconfig(fconfig)
 
-    def __set_name__(self, owner: Type[ItemWrapper], name: str):
+    def __set_name__(self, owner: Type[GuiWrapper], name: str):
         self.owner = owner
         self.name = name
 
@@ -164,7 +166,7 @@ class ConfigProperty:
                 # that have a different name than the config key
                 owner.add_keyword_parameter(name, lambda instance, value: {self.key : value})
 
-    def __get__(self, instance: Optional[ItemWrapper], owner: Type[ItemWrapper]) -> Any:
+    def __get__(self, instance: Optional[GuiWrapper], owner: Type[GuiWrapper]) -> Any:
         """Read the item configuration and return a value."""
         if instance is None:
             return self
@@ -175,7 +177,7 @@ class ConfigProperty:
             else config[self.key]
         )
 
-    def __set__(self, instance: ItemWrapper, value: Any) -> None:
+    def __set__(self, instance: GuiWrapper, value: Any) -> None:
         """Modify the item configuration using the assigned value."""
         config = (
             self._fconfig(instance, value) if self._fconfig is not None
@@ -216,7 +218,7 @@ class ConfigProperty:
 config_property = ConfigProperty #: Alias for :class:`ConfigProperty` for use as a decorator.
 
 
-class ItemWrapper:
+class GuiWrapper:
     """This is the base class for all GUI item wrapper objects.
 
     Keyword arguments passed to `__init__` will be given to the :meth:`_setup_add_item` method used to
@@ -304,9 +306,9 @@ class ItemWrapper:
         # actually been added, so if the item doesn't exist we need to add it now.
         if not gui_core.does_item_exist(self._name):
             config = self._create_config(kwargs)
-            self._setup_add_item(config)
+            self._setup_add_widget(config)
         else:
-            self._setup_pre_existing()
+            self._setup_preexisting()
 
         _register_item(self._name, self)
 
@@ -323,7 +325,7 @@ class ItemWrapper:
 
     ## Overrides
 
-    def _setup_add_item(self, config: Dict[str, Any]) -> None:
+    def _setup_add_widget(self, config: Dict[str, Any]) -> None:
         """This method should be overriden by subclasses to add the wrapped GUI item using
         DearPyGui's ``add_*()`` functions.
 
@@ -340,7 +342,7 @@ class ItemWrapper:
         """
         pass
 
-    def _setup_pre_existing(self) -> None:
+    def _setup_preexisting(self) -> None:
         """This can be overriden by subclasses to setup an object wrapper that has been created
         for a pre-existing GUI item.
 
@@ -412,13 +414,13 @@ class ItemWrapper:
     def is_container(self) -> bool:
         return gui_core.is_item_container(self.id)
 
-    def get_parent(self) -> Optional[ItemWrapper]:
+    def get_parent(self) -> Optional[GuiWrapper]:
         parent_id = gui_core.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
 
-    def iter_children(self) -> Iterable[ItemWrapper]:
+    def iter_children(self) -> Iterable[GuiWrapper]:
         children = gui_core.get_item_children(self.id)
         if not children:
             return

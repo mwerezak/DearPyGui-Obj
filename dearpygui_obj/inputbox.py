@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 from dearpygui_obj import (
-    ItemWrapper, config_property, dearpygui_wrapper
+    GuiWrapper, config_property, dearpygui_wrapper
 )
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @dearpygui_wrapper('mvAppItemType::InputText')
-class InputText(ItemWrapper):
+class InputText(GuiWrapper):
     """A text input box."""
 
     hint: str = config_property()
@@ -27,12 +27,12 @@ class InputText(ItemWrapper):
     label: str = config_property()
     on_enter: bool = config_property()
 
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_text(self.id, **config)
 
 
 @dearpygui_wrapper('mvAppItemType::InputFloat')
-class InputFloat(ItemWrapper):
+class InputFloat(GuiWrapper):
     """A float input box."""
 
     format: str = config_property()
@@ -66,30 +66,30 @@ class InputFloat(ItemWrapper):
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}
 
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_float(self.id, **config)
 
 @dearpygui_wrapper('mvAppItemType::InputFloat2')
 class InputFloat2(InputFloat):
     """An input box for 2 floats."""
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_float2(self.id, **config)
 
 @dearpygui_wrapper('mvAppItemType::InputFloat3')
 class InputFloat3(InputFloat):
     """An input box for 3 floats."""
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_float3(self.id, **config)
 
 @dearpygui_wrapper('mvAppItemType::InputFloat4')
 class InputFloat4(InputFloat):
     """An input box for 4 floats."""
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_float4(self.id, **config)
 
 
 @dearpygui_wrapper('mvAppItemType::InputInt')
-class InputInt(ItemWrapper):
+class InputInt(GuiWrapper):
     """An integer input box."""
     format: str = config_property()
     on_enter: bool = config_property()
@@ -122,25 +122,25 @@ class InputInt(ItemWrapper):
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}
 
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_int(self.id, **config)
 
 @dearpygui_wrapper('mvAppItemType::InputInt2')
 class InputInt2(InputInt):
     """An input box for 2 ints."""
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_int2(self.id, **config)
 
 @dearpygui_wrapper('mvAppItemType::InputInt3')
 class InputInt3(InputInt):
     """An input box for 3 ints."""
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_int3(self.id, **config)
 
 @dearpygui_wrapper('mvAppItemType::InputInt4')
 class InputInt4(InputInt):
     """An input box for 4 ints."""
-    def _setup_add_item(self, config) -> None:
+    def _setup_add_widget(self, config) -> None:
         gui_core.add_input_int4(self.id, **config)
 
 
