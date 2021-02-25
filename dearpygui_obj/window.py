@@ -2,12 +2,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from dearpygui_obj import ItemWrapper, config_property, register_item_type
+from dearpygui_obj import ItemWrapper, config_property, dearpygui_wrapper
 
 if TYPE_CHECKING:
     pass
 
-@register_item_type('mvAppItemType::Window')
+@dearpygui_wrapper('mvAppItemType::Window')
 class Window(ItemWrapper):
     """Creates a new window.
 

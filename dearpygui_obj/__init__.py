@@ -68,7 +68,7 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
                 _unregister_item(child_name, True)
 
 
-def register_item_type(item_type: str) -> Callable:
+def dearpygui_wrapper(item_type: str) -> Callable:
     """This decorator can be applied to a :class:`ItemWrapper` to associate it with a DearPyGui
     item type as returned by :func:`dearpygui.core.get_item_type`. This will let the wrapper object
     library know which constructor to use when :func:`get_item_by_id` is used to get an item that

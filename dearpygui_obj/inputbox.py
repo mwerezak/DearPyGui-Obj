@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
 from dearpygui_obj import (
-    ItemWrapper, config_property, register_item_type
+    ItemWrapper, config_property, dearpygui_wrapper
 )
 
 if TYPE_CHECKING:
     from typing import Optional
 
 
-@register_item_type('mvAppItemType::InputText')
+@dearpygui_wrapper('mvAppItemType::InputText')
 class InputText(ItemWrapper):
     """A text input box."""
 
@@ -31,7 +31,7 @@ class InputText(ItemWrapper):
         gui_core.add_input_text(self.id, **config)
 
 
-@register_item_type('mvAppItemType::InputFloat')
+@dearpygui_wrapper('mvAppItemType::InputFloat')
 class InputFloat(ItemWrapper):
     """A float input box."""
 
@@ -69,26 +69,26 @@ class InputFloat(ItemWrapper):
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_float(self.id, **config)
 
-@register_item_type('mvAppItemType::InputFloat2')
+@dearpygui_wrapper('mvAppItemType::InputFloat2')
 class InputFloat2(InputFloat):
     """An input box for 2 floats."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_float2(self.id, **config)
 
-@register_item_type('mvAppItemType::InputFloat3')
+@dearpygui_wrapper('mvAppItemType::InputFloat3')
 class InputFloat3(InputFloat):
     """An input box for 3 floats."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_float3(self.id, **config)
 
-@register_item_type('mvAppItemType::InputFloat4')
+@dearpygui_wrapper('mvAppItemType::InputFloat4')
 class InputFloat4(InputFloat):
     """An input box for 4 floats."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_float4(self.id, **config)
 
 
-@register_item_type('mvAppItemType::InputInt')
+@dearpygui_wrapper('mvAppItemType::InputInt')
 class InputInt(ItemWrapper):
     """An integer input box."""
     format: str = config_property()
@@ -125,19 +125,19 @@ class InputInt(ItemWrapper):
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_int(self.id, **config)
 
-@register_item_type('mvAppItemType::InputInt2')
+@dearpygui_wrapper('mvAppItemType::InputInt2')
 class InputInt2(InputInt):
     """An input box for 2 ints."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_int2(self.id, **config)
 
-@register_item_type('mvAppItemType::InputInt3')
+@dearpygui_wrapper('mvAppItemType::InputInt3')
 class InputInt3(InputInt):
     """An input box for 3 ints."""
     def _setup_add_item(self, config) -> None:
         gui_core.add_input_int3(self.id, **config)
 
-@register_item_type('mvAppItemType::InputInt4')
+@dearpygui_wrapper('mvAppItemType::InputInt4')
 class InputInt4(InputInt):
     """An input box for 4 ints."""
     def _setup_add_item(self, config) -> None:

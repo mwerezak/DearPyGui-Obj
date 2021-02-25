@@ -2,13 +2,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from dearpygui_obj import ItemWrapper, register_item_type
+from dearpygui_obj import ItemWrapper, dearpygui_wrapper
 
 if TYPE_CHECKING:
     pass
 
 
-@register_item_type('mvAppItemType::Child')
+@dearpygui_wrapper('mvAppItemType::Child')
 class ScrollView(ItemWrapper):
     """Adds an embedded child window. Will show scrollbars when items do not fit.
 

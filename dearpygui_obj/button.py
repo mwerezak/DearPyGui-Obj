@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-from dearpygui_obj import ItemWrapper, register_item_type, config_property
+from dearpygui_obj import ItemWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -16,7 +16,7 @@ class ButtonArrow(Enum):
     Up      = 2
     Down    = 3
 
-@register_item_type('mvAppItemType::Button')
+@dearpygui_wrapper('mvAppItemType::Button')
 class Button(ItemWrapper):
     """A simple button."""
 
