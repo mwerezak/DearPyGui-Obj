@@ -7,7 +7,7 @@ from dearpygui_obj import (
 )
 
 if TYPE_CHECKING:
-    from typing import Optional, Any
+    from typing import Optional
 
 
 @register_item_type('mvAppItemType::InputText')
@@ -42,25 +42,25 @@ class InputFloat(ItemWrapper):
     readonly: bool = config_property()
 
     @config_property
-    def min_value(config) -> Optional[float]:
+    def min_value(self, config) -> Optional[float]:
         if not config.get('min_clamped'):
             return None
         return config['min_value']
 
     @min_value.getconfig
-    def min_value(value: Optional[float]):
+    def min_value(self, value: Optional[float]):
         if value is None:
             return {'min_clamped': False}
         return {'min_clamped': True, 'min_value': value}
 
     @config_property
-    def max_value(config) -> Optional[float]:
+    def max_value(self, config) -> Optional[float]:
         if not config.get('max_clamped'):
             return None
         return config['max_value']
 
     @max_value.getconfig
-    def max_value(value: Optional[float]):
+    def max_value(self, value: Optional[float]):
         if value is None:
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}
@@ -97,25 +97,25 @@ class InputInt(ItemWrapper):
     readonly: bool = config_property()
 
     @config_property
-    def min_value(config) -> Optional[int]:
+    def min_value(self, config) -> Optional[int]:
         if not config.get('min_clamped'):
             return None
         return config['min_value']
 
     @min_value.getconfig
-    def min_value(value: Optional[float]):
+    def min_value(self, value: Optional[float]):
         if value is None:
             return {'min_clamped': False}
         return {'min_clamped': True, 'min_value': value}
 
     @config_property
-    def max_value(config) -> Optional[int]:
+    def max_value(self, config) -> Optional[int]:
         if not config.get('max_clamped'):
             return None
         return config['max_value']
 
     @max_value.getconfig
-    def max_value(value: Optional[float]):
+    def max_value(self, value: Optional[float]):
         if value is None:
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}

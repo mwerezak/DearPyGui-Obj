@@ -89,26 +89,31 @@ class ConfigProperty:
     attribute name given to the descriptor.
 
     This default behavior can be overidden by providing **fvalue** and **fconfig** converter
-    functions, analogous to the way normal Python properties work.
+    methods, analogous to the way normal Python properties work.
 
-    **fvalue** should be a function that takes a dictionary of config values produced by
+    Both **fvalue** and **fconfig** must take exactly two arguments. The first argument for both
+    is the :class:`ItemWrapper` instance that holds the descriptor.
+
+    **fvalue** should take as its 2nd argument a dictionary of config values produced by
     :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
     descriptor is accessed.
 
-    **fconfig** should be a function that does the reverse. It should produce a dictionary of
-    values that will be supplied to :func:`dearpygui.core.configure_item`.
+    **fconfig** should do the reverse. Its 2nd argument should take the value that is being
+    assigned to the descriptor, and it should return a dictionary of values that will be supplied to
+    :func:`dearpygui.core.configure_item`.
 
     Ideally,
-    ``fvalue(fconfig(value)) == value`` and ``fconfig(fvalue(config)) == config``
-    in order for configuration values to be stable.
+    ``fvalue(obj, fconfig(obj, value)) == value`` and
+    ``fconfig(obj, fvalue(obj, config)) == config`` should both be satisfied in order for
+    configuration values to be stable.
 
     Also, if an **fconfig** function is given, adding the descriptor to an :class:`ItemWrapper`
     class will automatically create a custom keyword parameter. This can be prevented using the
     **no_keyword** argument.
     """
 
-    _fvalue: Callable[[Mapping[str, Any]], Any]
-    _fconfig: Callable[[Any], Mapping[str, Any]]
+    _fvalue: Callable[[ItemWrapper, Mapping[str, Any]], Any]
+    _fconfig: Callable[[ItemWrapper, Any], Mapping[str, Any]]
 
     def __init__(self,
                  fvalue: Optional[Callable] = None,
@@ -155,14 +160,14 @@ class ConfigProperty:
 
         config = gui_core.get_item_configuration(instance.id)
         return (
-            self._fvalue(config) if self._fvalue is not None
+            self._fvalue(instance, config) if self._fvalue is not None
             else config[self.key]
         )
 
     def __set__(self, instance: ItemWrapper, value: Any) -> None:
         """Modify the item configuration using the assigned value."""
         config = (
-            self._fconfig(value) if self._fconfig is not None
+            self._fconfig(instance, value) if self._fconfig is not None
             else {self.key : value}
         )
         gui_core.configure_item(instance.id, **config)
@@ -237,17 +242,19 @@ class ItemWrapper:
     def add_keyword_parameter(cls, name: str, getconfig: Optional[Callable] = None) -> None:
         """Can be used by subclasses to add custom keyword parameters.
 
-        If a custom keyword parameter is given to ``__init__``, the value will be processed with the
-        function that was added by this method. This function should return a dictionary of config
-        values that will be added to the dictionary passed to :meth:`_setup_add_item` when creating
-        the item.
+        If **name** is given as a keyword parameter to ``__init__``, the value passed with that
+        parameter will be processed with the function that was added by this method.
+
+        This function should take two arguments, the instance being created and the value passed
+        to the custom keyword parameter. It should return a dictionary of config values that will
+        be added to the dictionary passed to :meth:`_setup_add_item` when creating the item.
 
         If the custom keyword parameter has already been added the previous one will be overwritten.
 
         Parameters:
             name: the name of the keyword argument to add.
-            getconfig: a function that takes the value of the argument and produces a dictionary
-                of config items to be passed to :meth:`_setup_add_item`.
+            getconfig: a function that produces a dictionary of config items to be passed to
+                :meth:`_setup_add_item`.
         """
 
         # setup each subclass's config setup mapping
@@ -271,13 +278,13 @@ class ItemWrapper:
     enabled: bool = config_property()
 
     @config_property(key='source')
-    def data_source(config) -> Optional[GuiData]:
+    def data_source(self, config) -> Optional[GuiData]:
         """Get the :class:`GuiData` used as the data source, if any."""
         source = config.get('source')
         return GuiData(name=source) if source else None
 
     @data_source.getconfig
-    def data_source(value: Optional[Union[GuiData, str]]):
+    def data_source(self, value: Optional[Union[GuiData, str]]):
         # accept plain string in addition to GuiData
         return {'source' : str(value) if value else ''}
 
@@ -314,13 +321,12 @@ class ItemWrapper:
 
         _register_item(self._name, self)
 
-    @classmethod
-    def _create_config(cls, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_config(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         config = {}
         for name, value in kwargs.items():
-            get_config = cls._keyword_params.get(name)
+            get_config = self._keyword_params.get(name)
             if get_config is not None:
-                config.update(get_config(value))
+                config.update(get_config(self, value))
             else:
                 config[name] = value
 

@@ -23,7 +23,7 @@ class Button(ItemWrapper):
     small: bool = config_property()
 
     @config_property()
-    def arrow(config) -> Optional[ButtonArrow]:
+    def arrow(self, config) -> Optional[ButtonArrow]:
         """Configure the button as an arrow button.
 
         If the button is an arrow button, the value will be the arrow direction.
@@ -35,7 +35,7 @@ class Button(ItemWrapper):
         return ButtonArrow(config['direction'])
 
     @arrow.getconfig
-    def arrow(adir: Optional[ButtonArrow]):
+    def arrow(self, adir: Optional[ButtonArrow]):
         if adir is None:
             return {'arrow': False}
         return {'arrow': True, 'direction': adir.value}
@@ -52,12 +52,13 @@ if __name__ == '__main__':
     with Window('Test Window') as window:
         b1 = Button('Regular Button')
         @b1.callback()
-        def callback(source, data):
-            print(source, data)
+        def callback(sender, data):
+            print(sender, data)
 
         b2 = Button(arrow=ButtonArrow.Left)
-
-
+        @b2.callback()
+        def callback(sender, data):
+            b1.small = not b1.small
 
     start_dearpygui()
 
