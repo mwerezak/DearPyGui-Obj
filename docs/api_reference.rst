@@ -35,7 +35,7 @@ Item Configuration
     For example:
 
     .. code-block:: python
-    
+
         class ExampleWidget(ItemWrapper):
             simple_config_example: int = config_property()
             @config_property()
@@ -63,13 +63,38 @@ Value Storage System
     :undoc-members:
 
 Windows
-^^^^^^^
+-------
 
 .. automodule:: dearpygui_obj.window
+
+.. autosummary:: 
+    :nosignatures:
+
+    Window
+    DebugWindow
+    MetricsWindow
+    StyleEditorWindow
+    DocumentationWindow
+    AboutWindow
 
 .. autoclass:: Window
     :members:
     :undoc-members:
+
+Developer Tool Windows
+^^^^^^^^^^^^^^^^^^^^^^
+
+DearPyGui-Obj constains several useful developer tools which can help debug GUI applications.
+
+.. autoclass:: DebugWindow
+
+.. autoclass:: MetricsWindow
+
+.. autoclass:: StyleEditorWindow
+
+.. autoclass:: DocumentationWindow
+
+.. autoclass:: AboutWindow
 
 
 Basic Items

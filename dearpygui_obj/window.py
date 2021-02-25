@@ -2,15 +2,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as gui_core
-
 from dearpygui_obj import ItemWrapper, config_property, register_item_type
 
 if TYPE_CHECKING:
-    from typing import Optional
+    pass
 
 @register_item_type('mvAppItemType::Window')
 class Window(ItemWrapper):
-    """Creates a new window for items to be added to.
+    """Creates a new window.
 
     This is a container item that should be used as a context manager. For example:
 
@@ -46,13 +45,47 @@ class Window(ItemWrapper):
     def __exit__(self, exc_type, exc_val, exc_tb):
         gui_core.end()
 
+## Dev tool windows
+
+@register_item_type('mvAppItemType::DebugWindow')
+class DebugWindow(Window):
+    """Developer tool, creates a window containing handy GUI debugging tools and info."""
+    def _setup_add_item(self, config) -> None:
+        gui_core.add_debug_window(self.id, **config)
+
+@register_item_type('mvAppItemType::MetricsWindow')
+class MetricsWindow(Window):
+    """Developer tool, creates a metrics window."""
+    def _setup_add_item(self, config) -> None:
+        gui_core.add_metrics_window(self.id, **config)
+
+@register_item_type('mvAppItemType::StyleWindow')
+class StyleEditorWindow(Window):
+    """Developer tool, creates a window containing a GUI style editor.."""
+    def _setup_add_item(self, config) -> None:
+        gui_core.add_style_window(self.id, **config)
+
+@register_item_type('mvAppItemType::DocWindow')
+class DocumentationWindow(Window):
+    """Developer tool, creates a window showing DearPyGui documentation."""
+    def _setup_add_item(self, config) -> None:
+        gui_core.add_doc_window(self.id, **config)
+
+@register_item_type('mvAppItemType::AboutWindow')
+class AboutWindow(Window):
+    """Developer tool, creates window containing information about DearPyGui."""
+    def _setup_add_item(self, config) -> None:
+        gui_core.add_about_window(self.id, **config)
+
+
 
 if __name__ == '__main__':
     from dearpygui.core import *
 
-    with Window('Test Window') as window:
+    with StyleEditorWindow() as win:
         pass
-    print(window.label)
+
+    print(get_item_type(win.id))
 
     start_dearpygui()
 
