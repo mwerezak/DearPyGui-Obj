@@ -32,6 +32,23 @@ Item Configuration
 
 .. autofunction:: config_property
 
+    For example:
+
+    .. code-block:: python
+    
+        class ExampleWidget(ItemWrapper):
+            simple_config_example: int = config_property()
+            @config_property()
+            def custom_config_example(config) -> str:
+                ...
+            @custom_config_example.getconfig
+            def custom_config_example(value: str) -> Dict[str, Any]:
+                ...
+         with Window('Example Window'):
+             wid = ExampleWidget('Label')
+             wid.simple_config_example = 3
+             print('config value:', wid.custom_config_example)
+
 .. autoclass:: ConfigProperty
     :members:
     :undoc-members:

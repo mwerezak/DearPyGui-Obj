@@ -202,29 +202,7 @@ class ConfigProperty:
             self.owner.add_keyword_parameter(self.name, fconfig)
         return self
 
-#: Alias for :class:`ConfigProperty`, for use as a decorator.
-#:
-#: For example:
-#:
-#: .. code-block:: python
-#:
-#:     class ExampleWidget(ItemWrapper):
-#:         simple_config_example: int = config_property()
-#:
-#:         @config_property()
-#:         def custom_config_example(config) -> str:
-#:             ...
-#:
-#:         @custom_config_example.getconfig
-#:         def custom_config_example(value: str) -> Dict[str, Any]:
-#:             ...
-#:
-#:      with Window('Example Window'):
-#:          wid = ExampleWidget('Label')
-#:          wid.simple_config_example = 3
-#:          print('config value:', wid.custom_config_example)
-#:
-config_property = ConfigProperty
+config_property = ConfigProperty #: Alias for :class:`ConfigProperty` for use as a decorator.
 
 class ItemWrapper:
     """This is the base class for all GUI item wrapper objects.
