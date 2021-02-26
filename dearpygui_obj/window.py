@@ -105,7 +105,7 @@ class Window(PyGuiWrapper):
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpyguicore.end()
 
-    def resized(self, callback: Callable):
+    def resized(self, callback: Callable) -> Callable:
         """Set resized callback, can be used as a decorator."""
         dpyguicore.set_resize_callback(callback, handler=self.id)
         return callback

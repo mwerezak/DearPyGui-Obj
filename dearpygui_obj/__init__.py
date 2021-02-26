@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import dearpygui.core as dpyguicore
 
 if TYPE_CHECKING:
-    from typing import Dict, Iterable, Optional, Callable
+    from typing import Dict, Iterable, Optional, Callable, Any
     from dearpygui_obj.wrapper import PyGuiWrapper
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
@@ -126,3 +126,41 @@ class GuiData:
     @value.setter
     def value(self, new_value: Any) -> None:
         dpyguicore.set_value(self.name, new_value)
+
+## Start/Stop DearPyGui
+
+def start_gui() -> None:
+    """Starts the GUI engine (DearPyGui)."""
+    dpyguicore.start_dearpygui()
+
+def stop_gui() -> None:
+    """Stop the GUI engine and exit the main window."""
+    dpyguicore.stop_dearpygui()
+
+def is_running() -> bool:
+    """Get the status of the GUI engine."""
+    return dpyguicore.is_dearpygui_running()
+
+def set_start_callback(callback: Callable) -> None:
+    """Fires when the main window is started."""
+    dpyguicore.set_start_callback(callback)
+
+def set_exit_callback(callback: Callable) -> None:
+    """Fires when the main window is exited."""
+    dpyguicore.set_exit_callback(callback)
+
+def set_render_callback(callback: Callable) -> None:
+    """Fires after rendering each frame."""
+    dpyguicore.set_render_callback(callback)
+
+def get_delta_time() -> float:
+    """Get the time elapsed since the last frame."""
+    return dpyguicore.get_delta_time()
+
+def get_total_time() -> float:
+    """Get the time elapsed since the application started."""
+    return dpyguicore.get_total_time()
+
+def enable_vsync(enabled: bool) -> None:
+    """Enable or disable vsync"""
+    return dpyguicore.set_vsync(enabled)
