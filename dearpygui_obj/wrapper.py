@@ -2,14 +2,21 @@
 
 from __future__ import annotations
 
-from collections import ChainMap
-from typing import TYPE_CHECKING, Callable, Mapping, Any, Optional, Type, Union, Dict, Iterable
+from collections import ChainMap as chain_map
+from typing import TYPE_CHECKING
 
 from dearpygui import core as dpyguicore
 from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_item_by_id, GuiData
 
 if TYPE_CHECKING:
-    pass
+    from typing import Callable, Mapping, Any, Optional, Type, Union, Iterable, Dict, ChainMap
+
+
+## Type Aliases
+if TYPE_CHECKING:
+    ItemConfigData = Mapping[str, Any]  #: Alias for GUI item configuration data
+    GetValueFunc = Callable[['GuiWrapper', ItemConfigData], Any]
+    GetConfigFunc = Callable[['GuiWrapper', Any], ItemConfigData]
 
 
 def dearpygui_wrapper(item_type: str) -> Callable:
@@ -47,7 +54,7 @@ class ConfigProperty:
     Both **fvalue** and **fconfig** must take exactly two arguments. The first argument for both
     is the :class:`PyGuiWrapper` instance that holds the descriptor.
 
-    **fvalue** should take as its 2nd argument a dictionary of config values produced by
+    **fvalue** should take a dictionary of config values produced by
     :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
     descriptor is accessed.
 
@@ -65,12 +72,12 @@ class ConfigProperty:
     **no_keyword** argument.
     """
 
-    _fvalue: Callable[[PyGuiWrapper, Mapping[str, Any]], Any]
-    _fconfig: Callable[[PyGuiWrapper, Any], Mapping[str, Any]]
+    _fvalue: GetValueFunc
+    _fconfig: GetConfigFunc
 
     def __init__(self,
-                 fvalue: Optional[Callable] = None,
-                 fconfig: Optional[Callable] = None,
+                 fvalue: GetValueFunc = None,
+                 fconfig: GetConfigFunc = None,
                  key: Optional[str] = None,
                  no_keyword: bool = False,
                  doc: str = ''):
@@ -130,10 +137,10 @@ class ConfigProperty:
         )
         dpyguicore.configure_item(instance.id, **config)
 
-    def __call__(self, fvalue: Callable):
+    def __call__(self, fvalue: GetValueFunc):
         """Allows the ConfigProperty class itself to be used as a decorator which sets :attr:`fvalue`.
 
-        This enables convenient syntax such as:
+        Equivalent to :meth:`getvalue`. This enables convenient syntax such as:
 
         .. code-block:: python
 
@@ -146,14 +153,14 @@ class ConfigProperty:
         self.getvalue(fvalue)
         return self
 
-    def getvalue(self, fvalue: Callable):
+    def getvalue(self, fvalue: GetValueFunc):
         """Set :attr:`fvalue` using a decorator."""
         self._fvalue = fvalue
         if fvalue is not None:
             self.__doc__ = fvalue.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
-    def getconfig(self, fconfig: Callable):
+    def getconfig(self, fconfig: GetConfigFunc):
         """Set :attr:`fconfig` using a decorator."""
         self._fconfig = fconfig
         if not self.no_keyword and self.owner is not None and fconfig is not None:
@@ -174,10 +181,10 @@ class PyGuiWrapper:
     ## Custom keyword parameters
 
     # This is normally inherited. To prevent this, subclasses can override this attribute.
-    _keyword_params = ChainMap()
+    _keyword_params: ChainMap[str, GetConfigFunc] = chain_map()
 
     @classmethod
-    def add_keyword_parameter(cls, name: str, getconfig: Optional[Callable] = None) -> None:
+    def add_keyword_parameter(cls, name: str, getconfig: GetConfigFunc) -> None:
         """Can be used by subclasses to add custom keyword parameters.
 
         If **name** is given as a keyword parameter to ``__init__``, the value passed with that
@@ -196,15 +203,15 @@ class PyGuiWrapper:
         """
 
         # setup each subclass's config setup mapping
-        config = cls.__dict__.get('_keyword_params')
-        if config is None:
+        keyword_params = cls.__dict__.get('_keyword_params')
+        if keyword_params is None:
             # inherit keyword params from parent
             if hasattr(cls._keyword_params, 'new_child'):
-                config = cls._keyword_params.new_child({})
+                keyword_params = cls._keyword_params.new_child({})
             else:
-                config = ChainMap({}, cls._keyword_params)
-            setattr(cls, '_keyword_params', config)
-        config[name] = getconfig
+                keyword_params = chain_map({}, cls._keyword_params)
+            setattr(cls, '_keyword_params', keyword_params)
+        keyword_params[name] = getconfig
 
     ## Common GUI item properties
 
@@ -221,7 +228,7 @@ class PyGuiWrapper:
         return GuiData(name=source) if source else None
 
     @data_source.getconfig
-    def data_source(self, value: Optional[Union[GuiData, str]]):
+    def data_source(self, value: Union[GuiData, str, None]):
         # accept plain string in addition to GuiData
         return {'source' : str(value) if value else ''}
 
@@ -258,7 +265,7 @@ class PyGuiWrapper:
 
         _register_item(self._name, self)
 
-    def _create_config(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_config(self, kwargs: ItemConfigData) -> ItemConfigData:
         config = {}
         for name, value in kwargs.items():
             get_config = self._keyword_params.get(name)
@@ -271,7 +278,7 @@ class PyGuiWrapper:
 
     ## Overrides
 
-    def _setup_add_widget(self, config: Dict[str, Any]) -> None:
+    def _setup_add_widget(self, config: ItemConfigData) -> None:
         """This method should be overriden by subclasses to add the wrapped GUI item using
         DearPyGui's ``add_*()`` functions.
 
