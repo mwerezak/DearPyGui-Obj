@@ -15,12 +15,7 @@ Core Functionality
     get_active_window
     iter_all_items
     iter_all_windows
-    dearpygui_wrapper
-    GuiWrapper
-    config_property
-    ConfigProperty
     GuiData
-    ~dearpygui_obj.window.Window
 
 Get/Iterate Items
 -----------------
@@ -34,46 +29,6 @@ Get/Iterate Items
 .. autofunction:: iter_all_windows
 
 
-Item Wrapper
-------------
-
-.. autodecorator:: dearpygui_wrapper
-
-.. autoclass:: GuiWrapper
-    :members:
-    :undoc-members:
-
-    .. automethod:: _setup_add_widget
-    .. automethod:: _setup_preexisting
-
-Item Configuration
-------------------
-
-.. autofunction:: config_property
-
-    For example:
-
-    .. code-block:: python
-
-        class ExampleWidget(GuiWrapper):
-            simple_config_example: int = config_property()
-            @config_property()
-            def custom_config_example(config) -> str:
-                ...
-            @custom_config_example.getconfig
-            def custom_config_example(value: str) -> Dict[str, Any]:
-                ...
-         with Window('Example Window'):
-             wid = ExampleWidget('Label')
-             wid.simple_config_example = 3
-             print('config value:', wid.custom_config_example)
-
-.. autoclass:: ConfigProperty
-    :members:
-    :undoc-members:
-    :special-members: __get__, __set__, __call__
-
-
 Value Storage System
 --------------------
 
@@ -81,11 +36,13 @@ Value Storage System
     :members:
     :undoc-members:
 
-Windows
--------
+    .. note::
 
-.. automodule:: dearpygui_obj.window
+        If the GuiData's name does not reference a value that exists, attempts to
+        manipulate the value will also fail silently, and attempts to retrieve the value will
+        produce ``None``.
 
-.. autoclass:: Window
-    :members:
-    :undoc-members:
+        DearPyGui does not provide a function like :func:`does_item_exist` for values so it is
+        impossible to detect this.
+
+

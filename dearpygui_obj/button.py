@@ -3,8 +3,8 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING
 
-import dearpygui.core as gui_core
-from dearpygui_obj import GuiWrapper, dearpygui_wrapper, config_property
+import dearpygui.core as dpyguicore
+from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -17,7 +17,7 @@ class ButtonArrow(Enum):
     Down    = 3
 
 @dearpygui_wrapper('mvAppItemType::Button')
-class Button(GuiWrapper):
+class Button(PyGuiWrapper):
     """A simple button."""
 
     label: str = config_property()
@@ -44,7 +44,7 @@ class Button(GuiWrapper):
         return {'arrow': True, 'direction': adir.value}
 
     def _setup_add_widget(self, config) -> None:
-        gui_core.add_button(self.id, **config)
+        dpyguicore.add_button(self.id, **config)
 
 
 

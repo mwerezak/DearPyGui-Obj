@@ -6,6 +6,8 @@ API Reference
    :caption: Contents:
 
    core
+   wrapper
+   windows
    basic
    layout
    devtools
