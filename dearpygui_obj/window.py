@@ -12,6 +12,9 @@ if TYPE_CHECKING:
 class MainWindow:
     """Container for static functions used to manipulate the main window."""
 
+    def __new__(cls, *args, **kwargs):
+        raise TypeError('this class may not be instantiated')
+
     @staticmethod
     def set_title(title: str) -> None:
         dpyguicore.set_main_window_title(title)
