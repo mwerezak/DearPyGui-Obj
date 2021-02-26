@@ -340,16 +340,35 @@ class PyGuiWrapper:
             return callback
         return decorator
 
-    ## Containers/Children
-
-    def is_container(self) -> bool:
-        return dpgcore.is_item_container(self.id)
+    ## Parent/Children
 
     def get_parent(self) -> Optional[PyGuiWrapper]:
+        """Get this item's parent."""
         parent_id = dpgcore.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
+
+    def set_parent(self, parent: PyGuiWrapper) -> None:
+        """Re-parent the item, moving it."""
+        dpgcore.move_item(self.id, parent=parent.id)
+
+    def move_up(self) -> None:
+        """Move the item up within its parent, if possible."""
+        dpgcore.move_item_up(self.id)
+
+    def move_down(self) -> None:
+        """Move the item down within its parent, if possible."""
+        dpgcore.move_item_down(self.id)
+
+    def move_item_before(self, other: PyGuiWrapper) -> None:
+        """Attempt to place the item before another item, re-parenting it if necessary."""
+        dpgcore.move_item(self.id, parent=other.get_parent().id, before=other.id)
+
+    ## Containers
+
+    def is_container(self) -> bool:
+        return dpgcore.is_item_container(self.id)
 
     def iter_children(self) -> Iterable[PyGuiWrapper]:
         children = dpgcore.get_item_children(self.id)
@@ -357,6 +376,10 @@ class PyGuiWrapper:
             return
         for child in children:
             yield get_item_by_id(child)
+
+    def add_child(self, child: PyGuiWrapper) -> None:
+        """Alternative to ``child.set_parent(self)``."""
+        dpgcore.move_item(child.id, parent=self.id)
 
     ## Properties and status
 
