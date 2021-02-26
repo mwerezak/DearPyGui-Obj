@@ -6,7 +6,7 @@ from collections import ChainMap
 from typing import TYPE_CHECKING, Callable, Mapping, Any, Optional, Type, Union, Dict, Iterable
 
 from dearpygui import core as dpyguicore
-from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_item_by_id
+from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_item_by_id, GuiData
 
 if TYPE_CHECKING:
     pass
@@ -245,7 +245,7 @@ class PyGuiWrapper:
         else:
             self._name = f'{label or self.__class__.__name__}##{id(self):x}'
 
-        if label is not None and hasattr(self, 'label'):
+        if label is not None and hasattr(self.__class__, 'label'):
             kwargs['label'] = label
 
         # at no point should a PyGuiWrapper object exist for an item that hasn't
