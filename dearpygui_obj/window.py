@@ -6,7 +6,7 @@ import dearpygui.core as dpyguicore
 from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
-    from typing import Optional, Tuple
+    from typing import Optional, Tuple, Callable
 
 
 class MainWindow:
@@ -42,6 +42,11 @@ class MainWindow:
             dpyguicore.set_primary_window(window.id, True)
         else:
             dpyguicore.set_primary_window('', False)
+
+    @staticmethod
+    def set_resize_callback(callback: Callable):
+        """Set a callback for when the main viewport is resized."""
+        dpyguicore.set_resize_callback(callback, handler='')
 
     @staticmethod
     def enable_docking(**kwargs):
@@ -97,6 +102,10 @@ class Window(PyGuiWrapper):
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpyguicore.end()
 
+    def resized(self, callback: Callable):
+        """Set resized callback, can be used as a decorator."""
+        dpyguicore.set_resize_callback(callback, handler=self.id)
+        return callback
 
 if __name__ == '__main__':
     from dearpygui.core import *

@@ -336,7 +336,7 @@ class PyGuiWrapper:
         dpyguicore.set_item_callback_data(self.id, data)
 
     def callback(self, *, data: Optional[Any] = None) -> Callable:
-        """A convenience decorator that sets the item's callback, and optionally, the callback data.
+        """A decorator that sets the item's callback, and optionally, the callback data.
 
         For example:
 
