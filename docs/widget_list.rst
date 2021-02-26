@@ -6,6 +6,7 @@ Widget List
 .. autosummary:: 
     :nosignatures:
 
+    ~dearpygui_obj.window.MainWindow
     ~dearpygui_obj.window.Window
 
 

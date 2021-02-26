@@ -1,11 +1,52 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpyguicore
 from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
-    pass
+    from typing import Tuple
+
+
+class MainWindow:
+    """Container for static functions used to manipulate the main window."""
+
+    @staticmethod
+    def set_title(title: str) -> None:
+        dpyguicore.set_main_window_title(title)
+
+    @staticmethod
+    def set_pos(x: int, y: int) -> None:
+        dpyguicore.set_main_window_pos(x, y)
+
+    @staticmethod
+    def allow_resize(enabled: bool):
+        dpyguicore.set_main_window_resizable(enabled)
+
+    @staticmethod
+    def set_size(width: int, height: int):
+        dpyguicore.set_main_window_size(width, height)
+
+    @staticmethod
+    def get_size() -> Tuple[int, int]:
+        return tuple(dpyguicore.get_main_window_size())
+
+    @staticmethod
+    def enable_docking(**kwargs):
+        """Enable docking and set docking options.
+
+        Note:
+            Once docking is enabled, it cannot be disabled.
+
+        Keyword Arguments:
+            shift_only: if ``True``, hold down shift for docking.
+                If ``False``, dock by dragging window titlebars.
+            dock_space: if ``True``, windows will be able to dock
+                with the main window viewport.
+        """
+        dpyguicore.enable_docking(**kwargs)
+
 
 @dearpygui_wrapper('mvAppItemType::Window')
 class Window(PyGuiWrapper):

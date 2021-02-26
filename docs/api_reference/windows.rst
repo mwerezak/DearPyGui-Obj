@@ -11,12 +11,20 @@ Windows
 .. autosummary:: 
     :nosignatures:
 
+    MainWindow
     Window
+
+
+Main Window
+-----------
+
+.. autoclass:: MainWindow
+	:members:
+	:undoc-members:
+
 
 Window
 ------
-
-.. automodule:: dearpygui_obj.window
 
 .. autoclass:: Window
     :members:
