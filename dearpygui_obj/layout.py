@@ -1,3 +1,5 @@
+"""Widgets for controlling layout."""
+
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
@@ -50,7 +52,7 @@ if __name__ == '__main__':
     from dearpygui.core import *
     from dearpygui_obj import *
     from dearpygui_obj.window import Window
-    from dearpygui_obj.button import Button
+    from dearpygui_obj.basic import Button
     from dearpygui_obj.devtools import *
 
     with DebugWindow():

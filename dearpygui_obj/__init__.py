@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from warnings import warn
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 
 import dearpygui.core as dpgcore
 
 if TYPE_CHECKING:
-    from typing import Dict, Iterable, Optional, Callable, Any
+    from typing import Dict, Iterable, Optional, Callable, Any, List
     from dearpygui_obj.wrapper import PyGuiBase
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
@@ -178,3 +178,21 @@ class GuiData:
     @value.setter
     def value(self, new_value: Any) -> None:
         dpgcore.set_value(self.name, new_value)
+
+
+class ColorRGBA(NamedTuple):
+    """RGBA color data.
+
+    Values should be expressed in the range of [0.0 to 1.0]. The alpha value is optional.
+    """
+    r: float
+    g: float
+    b: float
+    a: float = 1.0
+
+    def dpg_export(self) -> List[float]:
+        return [ 255.0 * value for value in self ]
+
+    @classmethod
+    def dpg_import(cls, colorlist: List[float]) -> ColorRGBA:
+        return ColorRGBA(*(value / 255.0 for value in colorlist))

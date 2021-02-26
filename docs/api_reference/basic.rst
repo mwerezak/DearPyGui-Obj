@@ -4,10 +4,19 @@ Basic Widgets
 .. contents:: Contents
     :local:
 
+Basic Content
+-------------
+
+.. currentmodule:: dearpygui_obj.basic
+
+.. autoclass:: Text
+    :members:
+    :undoc-members:
+
 Buttons
 -------
 
-.. currentmodule:: dearpygui_obj.button
+.. currentmodule:: dearpygui_obj.basic
 
 .. autoclass:: Button
     :members:
