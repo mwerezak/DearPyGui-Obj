@@ -9,7 +9,7 @@ from dearpygui import core as dpyguicore
 from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_item_by_id, GuiData
 
 if TYPE_CHECKING:
-    from typing import Callable, Mapping, Any, Optional, Type, Union, Iterable, Dict, ChainMap
+    from typing import Callable, Mapping, Any, Optional, Union, Type, Iterable, Tuple, ChainMap
 
 
 ## Type Aliases
@@ -213,26 +213,6 @@ class PyGuiWrapper:
             setattr(cls, '_keyword_params', keyword_params)
         keyword_params[name] = getconfig
 
-    ## Common GUI item properties
-
-    tooltip: str = config_property(key='tip')
-    width: int = config_property()
-    height: int = config_property()
-    show: bool = config_property()
-    enabled: bool = config_property()
-
-    @config_property(key='source')
-    def data_source(self, config) -> Optional[GuiData]:
-        """Get the :class:`GuiData` used as the data source, if any."""
-        source = config.get('source')
-        return GuiData(name=source) if source else None
-
-    @data_source.getconfig
-    def data_source(self, value: Union[GuiData, str, None]):
-        # accept plain string in addition to GuiData
-        return {'source' : str(value) if value else ''}
-
-
     def __init__(self,
                  label: Optional[str] = None, *,
                  name: Optional[str] = None,
@@ -322,7 +302,6 @@ class PyGuiWrapper:
         _unregister_item(self.id)
         dpyguicore.delete_item(self.id)
 
-
     ## Callbacks
 
     def set_callback(self, callback: Callable) -> None:
@@ -361,7 +340,6 @@ class PyGuiWrapper:
             return callback
         return decorator
 
-
     ## Containers/Children
 
     def is_container(self) -> bool:
@@ -380,7 +358,58 @@ class PyGuiWrapper:
         for child in children:
             yield get_item_by_id(child)
 
+    ## Properties and status
 
+    show: bool = config_property() #: Enable/disable rendering of the item.
+
+    width: int = config_property()
+    height: int = config_property()
+
+    @property
+    def size(self) -> Tuple[float, float]:
+        """The item's current size as (width, height)."""
+        return tuple(dpyguicore.get_item_rect_size(self.id))
+
+    @size.setter
+    def size(self, value: Tuple[float, float]) -> None:
+        width, height = value
+        dpyguicore.configure_item(self.id, width=width, height=height)
+
+    @property
+    def max_size(self) -> Tuple[float, float]:
+        """An item's maximum allowable size as (width, height)."""
+        return tuple(dpyguicore.get_item_rect_max(self.id))
+
+    @property
+    def min_size(self) -> Tuple[float, float]:
+        """An item's minimum allowable size as (width, height)."""
+        return tuple(dpyguicore.get_item_rect_min(self.id))
+
+    tooltip: str = config_property(key='tip')
+    enabled: bool = config_property()  #: If ``False``, display greyed out text and disable interaction.
+
+    @config_property(key='source')
+    def data_source(self, config) -> Optional[GuiData]:
+        """Get the :class:`GuiData` used as the data source, if any."""
+        source = config.get('source')
+        return GuiData(name=source) if source else None
+
+    @data_source.getconfig
+    def data_source(self, value: Union[GuiData, str, None]):
+        # accept plain string in addition to GuiData
+        return {'source' : str(value) if value else ''}
+
+    # these are intentionally not properties, as they are status queries
+
+    def is_visible(self) -> bool:
+        """Checks if an item is visible on screen."""
+        return dpyguicore.is_item_visible(self.id)
+
+    def is_hovered(self) -> bool:
+        return dpyguicore.is_item_hovered(self.id)
+
+    def is_focused(self) -> bool:
+        return dpyguicore.is_item_focused(self.id)
 
 import dearpygui_obj
 if dearpygui_obj._default_ctor is None:
