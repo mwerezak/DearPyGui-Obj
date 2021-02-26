@@ -1,5 +1,16 @@
-Widget List
-===========
+Table of Widgets
+================
+
+The following tables list the widgets currently implemented in DearPyGui-Obj.
+
+
+.. rubric:: Widget Base Class
+
+.. autosummary:: 
+    :nosignatures:
+
+    ~dearpygui_obj.wrapper.PyGuiWrapper
+
 
 .. rubric:: Windows
 
@@ -44,7 +55,7 @@ Widget List
     ~dearpygui_obj.layout.ScrollView
 
 
-.. rubric:: Developer Tools
+.. rubric:: Developer Tool Windows
 
 .. autosummary:: 
     :nosignatures:
