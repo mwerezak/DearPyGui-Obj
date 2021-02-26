@@ -77,5 +77,5 @@ if __name__ == '__main__':
         print(item.id, get_item_type(item.id))
 
 
-    start_dearpygui()
+    # start_dearpygui()
 

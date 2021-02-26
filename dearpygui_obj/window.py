@@ -37,9 +37,11 @@ class MainWindow:
 
     @staticmethod
     def set_primary_window(window: Optional[Window]) -> None:
-        """Sets a window as the primary window, or removes the primary window.
+        """Set a window as the primary window, or remove the primary window.
 
         When a window is set as the primary window it will fill the entire viewport.
+
+        If any other window was already set as the primary window, it will be unset.
         """
         if window is not None:
             dpyguicore.set_primary_window(window.id, True)

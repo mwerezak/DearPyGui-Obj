@@ -328,7 +328,6 @@ class PyGuiWrapper:
     def set_callback(self, callback: Callable) -> None:
         """Set the callback used by DearPyGui."""
         dpyguicore.set_item_callback(self.id, callback)
-        return self
 
     def get_callback(self) -> Any:
         """Get the callback used by DearPyGui."""
