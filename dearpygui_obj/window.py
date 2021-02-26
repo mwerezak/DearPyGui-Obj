@@ -6,7 +6,7 @@ import dearpygui.core as dpyguicore
 from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
-    from typing import Tuple
+    from typing import Optional, Tuple
 
 
 class MainWindow:
@@ -31,6 +31,17 @@ class MainWindow:
     @staticmethod
     def get_size() -> Tuple[int, int]:
         return tuple(dpyguicore.get_main_window_size())
+
+    @staticmethod
+    def set_primary_window(window: Optional[Window]) -> None:
+        """Sets a window as the primary window, or removes the primary window.
+
+        When a window is set as the primary window it will fill the entire viewport.
+        """
+        if window is not None:
+            dpyguicore.set_primary_window(window.id, True)
+        else:
+            dpyguicore.set_primary_window('', False)
 
     @staticmethod
     def enable_docking(**kwargs):
