@@ -20,18 +20,18 @@ if TYPE_CHECKING:
 
 
 def dearpygui_wrapper(item_type: str) -> Callable:
-    """Associate a :class:`PyGuiWrapper` class or constructor with a DearPyGui item type.
+    """Associate a :class:`PyGuiBase` class or constructor with a DearPyGui item type.
 
-    This decorator can be applied to a :class:`PyGuiWrapper` to associate it with a DearPyGui
+    This decorator can be applied to a :class:`PyGuiBase` to associate it with a DearPyGui
     item type as returned by :func:`dearpygui.core.get_item_type`. This will let the wrapper object
     library know which constructor to use when :func:`get_item_by_id` is used to get an item that
     does not yet have a wrapper object.
 
-    This constructor may be applied directly to :class:`PyGuiWrapper` subclasses, or it may be
+    This constructor may be applied directly to :class:`PyGuiBase` subclasses, or it may be
     applied to any callable that can serve as a constructor. The only requirement is that the
     callable must have a 'name' keyword parameter that takes the unique name used by DearPyGui.
     """
-    def decorator(ctor: Callable[..., PyGuiWrapper]):
+    def decorator(ctor: Callable[..., PyGuiBase]):
         if item_type in _ITEM_TYPES:
             raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
         _ITEM_TYPES[item_type] = ctor
@@ -52,7 +52,7 @@ class ConfigProperty:
     methods, analogous to the way normal Python properties work.
 
     Both **fvalue** and **fconfig** must take exactly two arguments. The first argument for both
-    is the :class:`PyGuiWrapper` instance that holds the descriptor.
+    is the :class:`PyGuiBase` instance that holds the descriptor.
 
     **fvalue** should take a dictionary of config values produced by
     :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
@@ -67,7 +67,7 @@ class ConfigProperty:
     ``fconfig(obj, fvalue(obj, config)) == config``
     should both be satisfied in order for configuration values to be stable.
 
-    Also, if an **fconfig** function is given, adding the descriptor to an :class:`PyGuiWrapper`
+    Also, if an **fconfig** function is given, adding the descriptor to an :class:`PyGuiBase`
     class will automatically create a custom keyword parameter. This can be prevented using the
     **no_keyword** argument.
     """
@@ -100,7 +100,7 @@ class ConfigProperty:
         self.getvalue(fvalue)
         self.getconfig(fconfig)
 
-    def __set_name__(self, owner: Type[PyGuiWrapper], name: str):
+    def __set_name__(self, owner: Type[PyGuiBase], name: str):
         self.owner = owner
         self.name = name
 
@@ -118,7 +118,7 @@ class ConfigProperty:
                 # that have a different name than the config key
                 owner.add_keyword_parameter(name, lambda instance, value: {self.key : value})
 
-    def __get__(self, instance: Optional[PyGuiWrapper], owner: Type[PyGuiWrapper]) -> Any:
+    def __get__(self, instance: Optional[PyGuiBase], owner: Type[PyGuiBase]) -> Any:
         """Read the item configuration and return a value."""
         if instance is None:
             return self
@@ -129,7 +129,7 @@ class ConfigProperty:
             else config[self.key]
         )
 
-    def __set__(self, instance: PyGuiWrapper, value: Any) -> None:
+    def __set__(self, instance: PyGuiBase, value: Any) -> None:
         """Modify the item configuration using the assigned value."""
         config = (
             self._fconfig(instance, value) if self._fconfig is not None
@@ -144,7 +144,7 @@ class ConfigProperty:
 
         .. code-block:: python
 
-            class Widget(PyGuiWrapper):
+            class Widget(PyGuiBase):
                 @config_property
                 def property_name(config):
                     ...
@@ -171,7 +171,7 @@ class ConfigProperty:
 config_property = ConfigProperty #: Alias for :class:`ConfigProperty` for use as a decorator.
 
 
-class PyGuiWrapper:
+class PyGuiBase:
     """This is the base class for all GUI item wrapper objects.
 
     Keyword arguments passed to `__init__` will be given to the :meth:`_setup_add_item` method used to
@@ -235,7 +235,7 @@ class PyGuiWrapper:
         if label is not None and hasattr(self.__class__, 'label'):
             kwargs['label'] = label
 
-        # at no point should a PyGuiWrapper object exist for an item that hasn't
+        # at no point should a PyGuiBase object exist for an item that hasn't
         # actually been added, so if the item doesn't exist we need to add it now.
         if not dpgcore.does_item_exist(self._name):
             config = self._create_config(kwargs)
@@ -266,7 +266,7 @@ class PyGuiWrapper:
 
         .. code-block:: python
 
-            class Button(PyGuiWrapper):
+            class Button(PyGuiBase):
                 def _setup_add_item(self, config):
                     dearpygui.core.add_button(self.id, **config)
 
@@ -342,14 +342,14 @@ class PyGuiWrapper:
 
     ## Parent/Children
 
-    def get_parent(self) -> Optional[PyGuiWrapper]:
+    def get_parent(self) -> Optional[PyGuiBase]:
         """Get this item's parent."""
         parent_id = dpgcore.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
 
-    def set_parent(self, parent: PyGuiWrapper) -> None:
+    def set_parent(self, parent: PyGuiBase) -> None:
         """Re-parent the item, moving it."""
         dpgcore.move_item(self.id, parent=parent.id)
 
@@ -361,7 +361,7 @@ class PyGuiWrapper:
         """Move the item down within its parent, if possible."""
         dpgcore.move_item_down(self.id)
 
-    def move_item_before(self, other: PyGuiWrapper) -> None:
+    def move_item_before(self, other: PyGuiBase) -> None:
         """Attempt to place the item before another item, re-parenting it if necessary."""
         dpgcore.move_item(self.id, parent=other.get_parent().id, before=other.id)
 
@@ -370,14 +370,14 @@ class PyGuiWrapper:
     def is_container(self) -> bool:
         return dpgcore.is_item_container(self.id)
 
-    def iter_children(self) -> Iterable[PyGuiWrapper]:
+    def iter_children(self) -> Iterable[PyGuiBase]:
         children = dpgcore.get_item_children(self.id)
         if not children:
             return
         for child in children:
             yield get_item_by_id(child)
 
-    def add_child(self, child: PyGuiWrapper) -> None:
+    def add_child(self, child: PyGuiBase) -> None:
         """Alternative to ``child.set_parent(self)``."""
         dpgcore.move_item(child.id, parent=self.id)
 
@@ -434,6 +434,7 @@ class PyGuiWrapper:
     def is_focused(self) -> bool:
         return dpgcore.is_item_focused(self.id)
 
+
 import dearpygui_obj
 if dearpygui_obj._default_ctor is None:
-    dearpygui_obj._default_ctor = PyGuiWrapper
+    dearpygui_obj._default_ctor = PyGuiBase

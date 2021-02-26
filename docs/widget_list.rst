@@ -9,7 +9,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 .. autosummary:: 
     :nosignatures:
 
-    ~dearpygui_obj.wrapper.PyGuiWrapper
+    ~dearpygui_obj.wrapper.PyGuiBase
 
 
 .. rubric:: Windows
@@ -34,15 +34,15 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 .. autosummary:: 
     :nosignatures:
 
-    ~dearpygui_obj.inputbox.InputText
-    ~dearpygui_obj.inputbox.InputFloat
-    ~dearpygui_obj.inputbox.InputFloat2
-    ~dearpygui_obj.inputbox.InputFloat3
-    ~dearpygui_obj.inputbox.InputFloat4
-    ~dearpygui_obj.inputbox.InputInt
-    ~dearpygui_obj.inputbox.InputInt2
-    ~dearpygui_obj.inputbox.InputInt3
-    ~dearpygui_obj.inputbox.InputInt4
+    ~dearpygui_obj.input.InputText
+    ~dearpygui_obj.input.InputFloat
+    ~dearpygui_obj.input.InputFloat2
+    ~dearpygui_obj.input.InputFloat3
+    ~dearpygui_obj.input.InputFloat4
+    ~dearpygui_obj.input.InputInt
+    ~dearpygui_obj.input.InputInt2
+    ~dearpygui_obj.input.InputInt3
+    ~dearpygui_obj.input.InputInt4
 
 
 .. rubric:: Layout

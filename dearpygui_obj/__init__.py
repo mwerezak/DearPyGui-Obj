@@ -9,23 +9,23 @@ import dearpygui.core as dpgcore
 
 if TYPE_CHECKING:
     from typing import Dict, Iterable, Optional, Callable, Any
-    from dearpygui_obj.wrapper import PyGuiWrapper
+    from dearpygui_obj.wrapper import PyGuiBase
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
-_ITEM_LOOKUP: Dict[str, PyGuiWrapper] = {}
+_ITEM_LOOKUP: Dict[str, PyGuiBase] = {}
 
 # Used to construct the correct type when getting an item
 # that was created outside the object wrapper library
-_ITEM_TYPES: Dict[str, Callable[..., PyGuiWrapper]] = {}
+_ITEM_TYPES: Dict[str, Callable[..., PyGuiBase]] = {}
 
 # Fallback constructor used when getting a type that isn't registered in _ITEM_TYPES
-_default_ctor: Optional[Callable[..., PyGuiWrapper]] = None
+_default_ctor: Optional[Callable[..., PyGuiBase]] = None
 
 
-def get_item_by_id(name: str) -> PyGuiWrapper:
+def get_item_by_id(name: str) -> PyGuiBase:
     """Retrieve an item using its unique name.
 
-    If the item was created by instantiating a :class:`PyGuiWrapper` object, this will return that
+    If the item was created by instantiating a :class:`PyGuiBase` object, this will return that
     object. Otherwise, a new wrapper object will be created for that item and returned. Future calls
     for the same ID will return the same object.
 
@@ -46,22 +46,22 @@ def get_item_by_id(name: str) -> PyGuiWrapper:
 
     return ctor(name = name)
 
-def iter_all_items() -> Iterable[PyGuiWrapper]:
+def iter_all_items() -> Iterable[PyGuiBase]:
     """Iterate all items (*NOT* windows) and yield their wrapper objects."""
     for name in dpgcore.get_all_items():
         yield get_item_by_id(name)
 
-def iter_all_windows() -> Iterable[PyGuiWrapper]:
+def iter_all_windows() -> Iterable[PyGuiBase]:
     """Iterate all windows and yield their wrapper objects."""
     for name in dpgcore.get_windows():
         yield get_item_by_id(name)
 
-def get_active_window() -> PyGuiWrapper:
+def get_active_window() -> PyGuiBase:
     """Get the active window."""
     active = dpgcore.get_active_window()
     return get_item_by_id(active)
 
-def _register_item(name: str, instance: PyGuiWrapper) -> None:
+def _register_item(name: str, instance: PyGuiBase) -> None:
     if name in _ITEM_LOOKUP:
         warn(f"item with name '{name}' already exists in global item registry, overwriting")
     _ITEM_LOOKUP[name] = instance

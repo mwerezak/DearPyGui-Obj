@@ -7,7 +7,7 @@ Basic Widgets
 Buttons
 -------
 
-.. automodule:: dearpygui_obj.button
+.. currentmodule:: dearpygui_obj.button
 
 .. autoclass:: Button
     :members:
@@ -21,7 +21,7 @@ Buttons
 Input Boxes
 -----------
 
-.. automodule:: dearpygui_obj.inputbox
+.. currentmodule:: dearpygui_obj.input
 
 .. rubric:: Summary
 

@@ -3,14 +3,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
+from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
 
 
 class MainWindow:
-    """Container for static functions used to manipulate the main window."""
+    """Container for static functions used to manipulate the main window.
+
+    Attempting to instantiate this class will raise a :class:`TypeError`.
+    """
 
     def __new__(cls, *args, **kwargs):
         raise TypeError('this class may not be instantiated')
@@ -70,7 +73,7 @@ class MainWindow:
 
 
 @dearpygui_wrapper('mvAppItemType::Window')
-class Window(PyGuiWrapper):
+class Window(PyGuiBase):
     """Creates a new window.
 
     This is a container item that should be used as a context manager. For example:

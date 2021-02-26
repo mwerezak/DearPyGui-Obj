@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import GuiData
-from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
+from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
     from typing import Optional
 
 
 @dearpygui_wrapper('mvAppItemType::InputText')
-class InputText(PyGuiWrapper):
+class InputText(PyGuiBase):
     """A text input box."""
 
     hint: str = config_property()
@@ -31,7 +31,7 @@ class InputText(PyGuiWrapper):
 
 
 @dearpygui_wrapper('mvAppItemType::InputFloat')
-class InputFloat(PyGuiWrapper):
+class InputFloat(PyGuiBase):
     """A float input box."""
 
     format: str = config_property()
@@ -88,7 +88,7 @@ class InputFloat4(InputFloat):
 
 
 @dearpygui_wrapper('mvAppItemType::InputInt')
-class InputInt(PyGuiWrapper):
+class InputInt(PyGuiBase):
     """An integer input box."""
     format: str = config_property()
     on_enter: bool = config_property()

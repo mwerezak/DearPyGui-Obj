@@ -9,16 +9,16 @@ Wrapper Object System
     :nosignatures:
 
     dearpygui_wrapper
-    PyGuiWrapper
+    PyGuiBase
     config_property
     ConfigProperty
 
-PyGuiWrapper
-------------
+PyGuiBase
+---------
 
 .. autodecorator:: dearpygui_wrapper
 
-.. autoclass:: PyGuiWrapper
+.. autoclass:: PyGuiBase
     :members:
     :undoc-members:
 
