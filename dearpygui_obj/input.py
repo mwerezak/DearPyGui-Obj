@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import GuiData
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, config_property
+from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -13,18 +13,18 @@ if TYPE_CHECKING:
 class InputText(PyGuiBase):
     """A text input box."""
 
-    hint: str = config_property()
-    multiline: bool = config_property()
-    no_spaces: bool = config_property()
-    uppercase: bool = config_property()
-    tab_input: bool = config_property()
-    decimal: bool = config_property()
-    hexadecimal: bool = config_property()
-    readonly: bool = config_property()
-    password: bool = config_property()
-    scientific: bool = config_property()
-    label: str = config_property()
-    on_enter: bool = config_property()
+    hint: str = ConfigProperty()
+    multiline: bool = ConfigProperty()
+    no_spaces: bool = ConfigProperty()
+    uppercase: bool = ConfigProperty()
+    tab_input: bool = ConfigProperty()
+    decimal: bool = ConfigProperty()
+    hexadecimal: bool = ConfigProperty()
+    readonly: bool = ConfigProperty()
+    password: bool = ConfigProperty()
+    scientific: bool = ConfigProperty()
+    label: str = ConfigProperty()
+    on_enter: bool = ConfigProperty()
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_input_text(self.id, **config)
@@ -34,14 +34,14 @@ class InputText(PyGuiBase):
 class InputFloat(PyGuiBase):
     """A float input box."""
 
-    format: str = config_property()
-    on_enter: bool = config_property()
-    step: float = config_property()
-    step_fast: float = config_property()
-    readonly: bool = config_property()
-    label: str = config_property()
+    format: str = ConfigProperty()
+    on_enter: bool = ConfigProperty()
+    step: float = ConfigProperty()
+    step_fast: float = ConfigProperty()
+    readonly: bool = ConfigProperty()
+    label: str = ConfigProperty()
 
-    @config_property
+    @ConfigProperty
     def min_value(self, config) -> Optional[float]:
         if not config.get('min_clamped'):
             return None
@@ -53,7 +53,7 @@ class InputFloat(PyGuiBase):
             return {'min_clamped': False}
         return {'min_clamped': True, 'min_value': value}
 
-    @config_property
+    @ConfigProperty
     def max_value(self, config) -> Optional[float]:
         if not config.get('max_clamped'):
             return None
@@ -90,14 +90,14 @@ class InputFloat4(InputFloat):
 @dearpygui_wrapper('mvAppItemType::InputInt')
 class InputInt(PyGuiBase):
     """An integer input box."""
-    format: str = config_property()
-    on_enter: bool = config_property()
-    step: int = config_property()
-    step_fast: int = config_property()
-    readonly: bool = config_property()
-    label: str = config_property()
+    format: str = ConfigProperty()
+    on_enter: bool = ConfigProperty()
+    step: int = ConfigProperty()
+    step_fast: int = ConfigProperty()
+    readonly: bool = ConfigProperty()
+    label: str = ConfigProperty()
 
-    @config_property
+    @ConfigProperty
     def min_value(self, config) -> Optional[int]:
         if not config.get('min_clamped'):
             return None
@@ -109,7 +109,7 @@ class InputInt(PyGuiBase):
             return {'min_clamped': False}
         return {'min_clamped': True, 'min_value': value}
 
-    @config_property
+    @ConfigProperty
     def max_value(self, config) -> Optional[int]:
         if not config.get('max_clamped'):
             return None

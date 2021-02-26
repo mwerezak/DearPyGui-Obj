@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, config_property
+from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -20,12 +20,12 @@ class ButtonArrow(Enum):
 class Button(PyGuiBase):
     """A simple button."""
 
-    label: str = config_property()
+    label: str = ConfigProperty()
     
     #: If ``True``, makes the button a small button. Useful for embedding in text.
-    small: bool = config_property()
+    small: bool = ConfigProperty()
 
-    @config_property()
+    @ConfigProperty()
     def arrow(self, config) -> Optional[ButtonArrow]:
         """Configure the button as an arrow button.
 

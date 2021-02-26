@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, config_property
+from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
@@ -86,20 +86,20 @@ class Window(PyGuiBase):
 
     """
 
-    x_pos: int = config_property()
-    y_pos: int = config_property()
-    autosize: bool = config_property()
-    no_resize: bool = config_property()
-    no_title_bar: bool = config_property()
-    no_move: bool = config_property()
-    no_scrollbar: bool = config_property()
-    no_collapse: bool = config_property()
-    horizontal_scrollbar: bool = config_property()
-    no_focus_on_appearing: bool = config_property()
-    no_bring_to_front_on_focus: bool = config_property()
-    menubar: bool = config_property()
-    no_close: bool = config_property()
-    no_background: bool = config_property()
+    x_pos: int = ConfigProperty()
+    y_pos: int = ConfigProperty()
+    autosize: bool = ConfigProperty()
+    no_resize: bool = ConfigProperty()
+    no_title_bar: bool = ConfigProperty()
+    no_move: bool = ConfigProperty()
+    no_scrollbar: bool = ConfigProperty()
+    no_collapse: bool = ConfigProperty()
+    horizontal_scrollbar: bool = ConfigProperty()
+    no_focus_on_appearing: bool = ConfigProperty()
+    no_bring_to_front_on_focus: bool = ConfigProperty()
+    menubar: bool = ConfigProperty()
+    no_close: bool = ConfigProperty()
+    no_background: bool = ConfigProperty()
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_window(self.id, **config)

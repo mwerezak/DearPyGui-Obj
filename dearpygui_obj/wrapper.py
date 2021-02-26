@@ -43,34 +43,7 @@ class ConfigProperty:
     """Data descriptor used to get or set an item's configuration.
 
     This class provides a data descriptor API over top of the :func:`configure_item` and
-    :func:`get_item_configuration` functions provided by DearPyGui.
-
-    By default, it is used to get or set a single configuration key, which itself defaults to the
-    attribute name given to the descriptor.
-
-    This default behavior can be overidden by providing **fvalue** and **fconfig** converter
-    methods, analogous to the way normal Python properties work.
-
-    Both **fvalue** and **fconfig** must take exactly two arguments. The first argument for both
-    is the :class:`PyGuiBase` instance that holds the descriptor.
-
-    **fvalue** should take a dictionary of config values produced by
-    :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
-    descriptor is accessed.
-
-    **fconfig** should do the reverse. Its 2nd argument should take the value that is being
-    assigned to the descriptor, and it should return a dictionary of values that will be supplied to
-    :func:`dearpygui.core.configure_item`.
-
-    Ideally,
-    ``fvalue(obj, fconfig(obj, value)) == value`` and
-    ``fconfig(obj, fvalue(obj, config)) == config``
-    should both be satisfied in order for configuration values to be stable.
-
-    Also, if an **fconfig** function is given, adding the descriptor to an :class:`PyGuiBase`
-    class will automatically create a custom keyword parameter. This can be prevented using the
-    **no_keyword** argument.
-    """
+    :func:`get_item_configuration` functions provided by DearPyGui."""
 
     _fvalue: GetValueFunc
     _fconfig: GetConfigFunc
@@ -145,7 +118,7 @@ class ConfigProperty:
         .. code-block:: python
 
             class Widget(PyGuiBase):
-                @config_property
+                @ConfigProperty
                 def property_name(config):
                     ...
 
@@ -166,9 +139,6 @@ class ConfigProperty:
         if not self.no_keyword and self.owner is not None and fconfig is not None:
             self.owner.add_keyword_parameter(self.name, fconfig)
         return self
-
-
-config_property = ConfigProperty #: Alias for :class:`ConfigProperty` for use as a decorator.
 
 
 class PyGuiBase:
@@ -383,10 +353,10 @@ class PyGuiBase:
 
     ## Properties and status
 
-    show: bool = config_property() #: Enable/disable rendering of the item.
+    show: bool = ConfigProperty() #: Enable/disable rendering of the item.
 
-    width: int = config_property()
-    height: int = config_property()
+    width: int = ConfigProperty()
+    height: int = ConfigProperty()
 
     @property
     def size(self) -> Tuple[float, float]:
@@ -408,10 +378,10 @@ class PyGuiBase:
         """An item's minimum allowable size as (width, height)."""
         return tuple(dpgcore.get_item_rect_min(self.id))
 
-    tooltip: str = config_property(key='tip')
-    enabled: bool = config_property()  #: If ``False``, display greyed out text and disable interaction.
+    tooltip: str = ConfigProperty(key='tip')
+    enabled: bool = ConfigProperty()  #: If ``False``, display greyed out text and disable interaction.
 
-    @config_property(key='source')
+    @ConfigProperty(key='source')
     def data_source(self, config) -> Optional[GuiData]:
         """Get the :class:`GuiData` used as the data source, if any."""
         source = config.get('source')
@@ -436,5 +406,7 @@ class PyGuiBase:
 
 
 import dearpygui_obj
+
+# noinspection PyProtectedMember
 if dearpygui_obj._default_ctor is None:
     dearpygui_obj._default_ctor = PyGuiBase

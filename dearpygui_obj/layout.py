@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, config_property
+from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     pass
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class VSpacing(PyGuiBase):
     """Adds vertical spacing."""
 
-    space: int = config_property(key='count') #: The amount of vertical space.
+    space: int = ConfigProperty(key='count') #: The amount of vertical space.
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_spacing(name=self.id, **config)
@@ -22,8 +22,8 @@ class HAlignNext(PyGuiBase):
     """Places a widget on the same line as the previous widget.
     Can also be used for horizontal spacing."""
 
-    xoffset: float = config_property() #: offset from containing window
-    spacing: float = config_property() #: offset from previous widget
+    xoffset: float = ConfigProperty() #: offset from containing window
+    spacing: float = ConfigProperty() #: offset from previous widget
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_same_line(name=self.id, **config)
