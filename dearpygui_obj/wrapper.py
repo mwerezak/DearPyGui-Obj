@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import ChainMap as chain_map
 from typing import TYPE_CHECKING
 
-from dearpygui import core as dpyguicore
+from dearpygui import core as dpgcore
 from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_item_by_id, GuiData
 
 if TYPE_CHECKING:
@@ -123,7 +123,7 @@ class ConfigProperty:
         if instance is None:
             return self
 
-        config = dpyguicore.get_item_configuration(instance.id)
+        config = dpgcore.get_item_configuration(instance.id)
         return (
             self._fvalue(instance, config) if self._fvalue is not None
             else config[self.key]
@@ -135,7 +135,7 @@ class ConfigProperty:
             self._fconfig(instance, value) if self._fconfig is not None
             else {self.key : value}
         )
-        dpyguicore.configure_item(instance.id, **config)
+        dpgcore.configure_item(instance.id, **config)
 
     def __call__(self, fvalue: GetValueFunc):
         """Allows the ConfigProperty class itself to be used as a decorator which sets :attr:`fvalue`.
@@ -237,7 +237,7 @@ class PyGuiWrapper:
 
         # at no point should a PyGuiWrapper object exist for an item that hasn't
         # actually been added, so if the item doesn't exist we need to add it now.
-        if not dpyguicore.does_item_exist(self._name):
+        if not dpgcore.does_item_exist(self._name):
             config = self._create_config(kwargs)
             self._setup_add_widget(config)
         else:
@@ -295,31 +295,31 @@ class PyGuiWrapper:
     @property
     def is_valid(self) -> bool:
         """This property is ``False`` if the GUI item has been deleted."""
-        return dpyguicore.does_item_exist(self.id)
+        return dpgcore.does_item_exist(self.id)
 
     def delete(self) -> None:
         """Delete the item, this will invalidate the item and all its children."""
         _unregister_item(self.id)
-        dpyguicore.delete_item(self.id)
+        dpgcore.delete_item(self.id)
 
     ## Callbacks
 
     def set_callback(self, callback: Callable) -> None:
         """Set the callback used by DearPyGui."""
-        dpyguicore.set_item_callback(self.id, callback)
+        dpgcore.set_item_callback(self.id, callback)
 
     def get_callback(self) -> Any:
         """Get the callback used by DearPyGui."""
-        return dpyguicore.get_item_callback(self.id)
+        return dpgcore.get_item_callback(self.id)
 
     @property
     def callback_data(self) -> Any:
         """Get or set the callback data."""
-        return dpyguicore.get_item_callback_data(self.id)
+        return dpgcore.get_item_callback_data(self.id)
 
     @callback_data.setter
     def callback_data(self, data: Any) -> None:
-        dpyguicore.set_item_callback_data(self.id, data)
+        dpgcore.set_item_callback_data(self.id, data)
 
     def callback(self, *, data: Optional[Any] = None) -> Callable:
         """A decorator that sets the item's callback, and optionally, the callback data.
@@ -336,23 +336,23 @@ class PyGuiWrapper:
                     ...
         """
         def decorator(callback: Callable) -> Callable:
-            dpyguicore.set_item_callback(self.id, callback, callback_data=data)
+            dpgcore.set_item_callback(self.id, callback, callback_data=data)
             return callback
         return decorator
 
     ## Containers/Children
 
     def is_container(self) -> bool:
-        return dpyguicore.is_item_container(self.id)
+        return dpgcore.is_item_container(self.id)
 
     def get_parent(self) -> Optional[PyGuiWrapper]:
-        parent_id = dpyguicore.get_item_parent(self.id)
+        parent_id = dpgcore.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
 
     def iter_children(self) -> Iterable[PyGuiWrapper]:
-        children = dpyguicore.get_item_children(self.id)
+        children = dpgcore.get_item_children(self.id)
         if not children:
             return
         for child in children:
@@ -368,22 +368,22 @@ class PyGuiWrapper:
     @property
     def size(self) -> Tuple[float, float]:
         """The item's current size as (width, height)."""
-        return tuple(dpyguicore.get_item_rect_size(self.id))
+        return tuple(dpgcore.get_item_rect_size(self.id))
 
     @size.setter
     def size(self, value: Tuple[float, float]) -> None:
         width, height = value
-        dpyguicore.configure_item(self.id, width=width, height=height)
+        dpgcore.configure_item(self.id, width=width, height=height)
 
     @property
     def max_size(self) -> Tuple[float, float]:
         """An item's maximum allowable size as (width, height)."""
-        return tuple(dpyguicore.get_item_rect_max(self.id))
+        return tuple(dpgcore.get_item_rect_max(self.id))
 
     @property
     def min_size(self) -> Tuple[float, float]:
         """An item's minimum allowable size as (width, height)."""
-        return tuple(dpyguicore.get_item_rect_min(self.id))
+        return tuple(dpgcore.get_item_rect_min(self.id))
 
     tooltip: str = config_property(key='tip')
     enabled: bool = config_property()  #: If ``False``, display greyed out text and disable interaction.
@@ -403,13 +403,13 @@ class PyGuiWrapper:
 
     def is_visible(self) -> bool:
         """Checks if an item is visible on screen."""
-        return dpyguicore.is_item_visible(self.id)
+        return dpgcore.is_item_visible(self.id)
 
     def is_hovered(self) -> bool:
-        return dpyguicore.is_item_hovered(self.id)
+        return dpgcore.is_item_hovered(self.id)
 
     def is_focused(self) -> bool:
-        return dpyguicore.is_item_focused(self.id)
+        return dpgcore.is_item_focused(self.id)
 
 import dearpygui_obj
 if dearpygui_obj._default_ctor is None:

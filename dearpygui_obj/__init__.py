@@ -5,7 +5,7 @@ from __future__ import annotations
 from warnings import warn
 from typing import TYPE_CHECKING
 
-import dearpygui.core as dpyguicore
+import dearpygui.core as dpgcore
 
 if TYPE_CHECKING:
     from typing import Dict, Iterable, Optional, Callable, Any
@@ -32,14 +32,14 @@ def get_item_by_id(name: str) -> PyGuiWrapper:
     Raises:
         KeyError: if name refers to an item that is invalid (deleted) or does not exist.
     """
-    if not dpyguicore.does_item_exist(name):
+    if not dpgcore.does_item_exist(name):
         raise KeyError(f"'{name}' item does not exist")
 
     item = _ITEM_LOOKUP.get(name)
     if item is not None:
         return item
 
-    item_type = dpyguicore.get_item_type(name)
+    item_type = dpgcore.get_item_type(name)
     ctor = _ITEM_TYPES.get(item_type, _default_ctor)
     if ctor is None:
         raise ValueError(f"could not create wrapper for '{name}': no constructor for item type '{item_type}'")
@@ -48,17 +48,17 @@ def get_item_by_id(name: str) -> PyGuiWrapper:
 
 def iter_all_items() -> Iterable[PyGuiWrapper]:
     """Iterate all items (*NOT* windows) and yield their wrapper objects."""
-    for name in dpyguicore.get_all_items():
+    for name in dpgcore.get_all_items():
         yield get_item_by_id(name)
 
 def iter_all_windows() -> Iterable[PyGuiWrapper]:
     """Iterate all windows and yield their wrapper objects."""
-    for name in dpyguicore.get_windows():
+    for name in dpgcore.get_windows():
         yield get_item_by_id(name)
 
 def get_active_window() -> PyGuiWrapper:
     """Get the active window."""
-    active = dpyguicore.get_active_window()
+    active = dpgcore.get_active_window()
     return get_item_by_id(active)
 
 def _register_item(name: str, instance: PyGuiWrapper) -> None:
@@ -69,7 +69,7 @@ def _register_item(name: str, instance: PyGuiWrapper) -> None:
 def _unregister_item(name: str, unregister_children: bool = True) -> None:
     _ITEM_LOOKUP.pop(name, None)
     if unregister_children:
-        children = dpyguicore.get_item_children(name)
+        children = dpgcore.get_item_children(name)
         if children is not None:
             for child_name in children:
                 _unregister_item(child_name, True)
@@ -78,39 +78,39 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
 
 def start_gui() -> None:
     """Starts the GUI engine (DearPyGui)."""
-    dpyguicore.start_dearpygui()
+    dpgcore.start_dearpygui()
 
 def stop_gui() -> None:
     """Stop the GUI engine and exit the main window."""
-    dpyguicore.stop_dearpygui()
+    dpgcore.stop_dearpygui()
 
 def is_running() -> bool:
     """Get the status of the GUI engine."""
-    return dpyguicore.is_dearpygui_running()
+    return dpgcore.is_dearpygui_running()
 
 def set_start_callback(callback: Callable) -> None:
     """Fires when the main window is started."""
-    dpyguicore.set_start_callback(callback)
+    dpgcore.set_start_callback(callback)
 
 def set_exit_callback(callback: Callable) -> None:
     """Fires when the main window is exited."""
-    dpyguicore.set_exit_callback(callback)
+    dpgcore.set_exit_callback(callback)
 
 def set_render_callback(callback: Callable) -> None:
     """Fires after rendering each frame."""
-    dpyguicore.set_render_callback(callback)
+    dpgcore.set_render_callback(callback)
 
 def get_delta_time() -> float:
     """Get the time elapsed since the last frame."""
-    return dpyguicore.get_delta_time()
+    return dpgcore.get_delta_time()
 
 def get_total_time() -> float:
     """Get the time elapsed since the application started."""
-    return dpyguicore.get_total_time()
+    return dpgcore.get_total_time()
 
 def enable_vsync(enabled: bool) -> None:
     """Enable or disable vsync"""
-    return dpyguicore.set_vsync(enabled)
+    return dpgcore.set_vsync(enabled)
 
 ## Value Storage System
 
@@ -159,9 +159,9 @@ class GuiData:
         else:
             # create a new value
             self.name = name or f'{id(self):x}'
-            if dpyguicore.get_value(self.name) is not None:
+            if dpgcore.get_value(self.name) is not None:
                 raise ValueError(f"a value with name '{self.name}' already exists")
-            dpyguicore.add_value(self.name, value)
+            dpgcore.add_value(self.name, value)
 
 
     def __repr__(self) -> str:
@@ -173,8 +173,8 @@ class GuiData:
     @property
     def value(self) -> Any:
         """Get or set the value's... value."""
-        return dpyguicore.get_value(self.name)
+        return dpgcore.get_value(self.name)
 
     @value.setter
     def value(self, new_value: Any) -> None:
-        dpyguicore.set_value(self.name, new_value)
+        dpgcore.set_value(self.name, new_value)

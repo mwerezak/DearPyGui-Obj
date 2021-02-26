@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING
 
-import dearpygui.core as dpyguicore
+import dearpygui.core as dpgcore
 from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
@@ -44,7 +44,7 @@ class Button(PyGuiWrapper):
         return {'arrow': True, 'direction': adir.value}
 
     def _setup_add_widget(self, config) -> None:
-        dpyguicore.add_button(self.id, **config)
+        dpgcore.add_button(self.id, **config)
 
 
 

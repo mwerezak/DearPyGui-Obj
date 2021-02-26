@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import dearpygui.core as dpyguicore
+import dearpygui.core as dpgcore
 from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
@@ -17,23 +17,23 @@ class MainWindow:
 
     @staticmethod
     def set_title(title: str) -> None:
-        dpyguicore.set_main_window_title(title)
+        dpgcore.set_main_window_title(title)
 
     @staticmethod
     def set_pos(x: int, y: int) -> None:
-        dpyguicore.set_main_window_pos(x, y)
+        dpgcore.set_main_window_pos(x, y)
 
     @staticmethod
     def allow_resize(enabled: bool):
-        dpyguicore.set_main_window_resizable(enabled)
+        dpgcore.set_main_window_resizable(enabled)
 
     @staticmethod
     def set_size(width: int, height: int):
-        dpyguicore.set_main_window_size(width, height)
+        dpgcore.set_main_window_size(width, height)
 
     @staticmethod
     def get_size() -> Tuple[int, int]:
-        return tuple(dpyguicore.get_main_window_size())
+        return tuple(dpgcore.get_main_window_size())
 
     @staticmethod
     def set_primary_window(window: Optional[Window]) -> None:
@@ -44,14 +44,14 @@ class MainWindow:
         If any other window was already set as the primary window, it will be unset.
         """
         if window is not None:
-            dpyguicore.set_primary_window(window.id, True)
+            dpgcore.set_primary_window(window.id, True)
         else:
-            dpyguicore.set_primary_window('', False)
+            dpgcore.set_primary_window('', False)
 
     @staticmethod
     def set_resize_callback(callback: Callable):
         """Set a callback for when the main viewport is resized."""
-        dpyguicore.set_resize_callback(callback, handler='')
+        dpgcore.set_resize_callback(callback, handler='')
 
     @staticmethod
     def enable_docking(**kwargs):
@@ -66,7 +66,7 @@ class MainWindow:
             dock_space: if ``True``, windows will be able to dock
                 with the main window viewport.
         """
-        dpyguicore.enable_docking(**kwargs)
+        dpgcore.enable_docking(**kwargs)
 
 
 @dearpygui_wrapper('mvAppItemType::Window')
@@ -99,17 +99,17 @@ class Window(PyGuiWrapper):
     no_background: bool = config_property()
 
     def _setup_add_widget(self, config) -> None:
-        dpyguicore.add_window(self.id, **config)
+        dpgcore.add_window(self.id, **config)
 
     def __enter__(self) -> Window:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpyguicore.end()
+        dpgcore.end()
 
     def resized(self, callback: Callable) -> Callable:
         """Set resized callback, can be used as a decorator."""
-        dpyguicore.set_resize_callback(callback, handler=self.id)
+        dpgcore.set_resize_callback(callback, handler=self.id)
         return callback
 
 if __name__ == '__main__':

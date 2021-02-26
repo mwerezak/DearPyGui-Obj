@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-import dearpygui.core as dpyguicore
+import dearpygui.core as dpgcore
 from dearpygui_obj.wrapper import PyGuiWrapper, dearpygui_wrapper, config_property
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ class VSpacing(PyGuiWrapper):
     space: int = config_property(key='count') #: The amount of vertical space.
 
     def _setup_add_widget(self, config) -> None:
-        dpyguicore.add_spacing(name=self.id, **config)
+        dpgcore.add_spacing(name=self.id, **config)
 
 
 @dearpygui_wrapper('mvAppItemType::SameLine')
@@ -26,7 +26,7 @@ class HAlignNext(PyGuiWrapper):
     spacing: float = config_property() #: offset from previous widget
 
     def _setup_add_widget(self, config) -> None:
-        dpyguicore.add_same_line(name=self.id, **config)
+        dpgcore.add_same_line(name=self.id, **config)
 
 
 @dearpygui_wrapper('mvAppItemType::Child')
@@ -36,14 +36,14 @@ class ScrollView(PyGuiWrapper):
     This is a container widget."""
 
     def _setup_add_widget(self, config) -> None:
-        dpyguicore.add_child(self.id, **config)
+        dpgcore.add_child(self.id, **config)
 
     def __enter__(self) -> ScrollView:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         if self.is_container():
-            dpyguicore.end()
+            dpgcore.end()
 
 
 if __name__ == '__main__':
