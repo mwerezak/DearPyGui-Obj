@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 ## Type Aliases
 if TYPE_CHECKING:
     ItemConfigData = Mapping[str, Any]  #: Alias for GUI item configuration data
-    GetValueFunc = Callable[['GuiWrapper', ItemConfigData], Any]
+    GetValueFunc = Callable[['GuiWrapper'], Any]
     GetConfigFunc = Callable[['GuiWrapper', Any], ItemConfigData]
 
 
@@ -38,40 +38,23 @@ def dearpygui_wrapper(item_type: str) -> Callable:
         return ctor
     return decorator
 
-
 class ConfigProperty:
-    """Data descriptor used to get or set an item's configuration.
-
-    This class provides a data descriptor API over top of the :func:`configure_item` and
-    :func:`get_item_configuration` functions provided by DearPyGui."""
-
-    _fvalue: GetValueFunc
-    _fconfig: GetConfigFunc
+    """Descriptor used to get or set an item's configuration."""
 
     def __init__(self,
-                 fvalue: GetValueFunc = None,
-                 fconfig: GetConfigFunc = None,
-                 key: Optional[str] = None,
-                 no_keyword: bool = False,
+                 key: Optional[str] = None, *,
+                 add_init: bool = True,
                  doc: str = ''):
         """
-        Parameters:
-            fvalue: optional function to get a value from configuration.
-            fconfig: optional function to get configuration data from an assigned value.
-            key: the config key to get/set if **fvalue** and **fconfig** are not provided.
-            no_keyword: if ``True``, don't add a custom keyword parameter to the owner of the descriptor.
-            doc: custom docstring.
+        key: the config key to get/set with the default implementation.
+        add_init: Add a custom keyword parameter if either _set_value() has a custom
+            implementation the config key is different from the attribute name.
+        doc: custom docstring.
         """
 
         self.key = key
-        self.no_keyword = no_keyword
+        self.add_init = add_init
         self.__doc__ = doc
-
-        self.attr_name = None
-        self.owner = None
-
-        self.getvalue(fvalue)
-        self.getconfig(fconfig)
 
     def __set_name__(self, owner: Type[PyGuiBase], name: str):
         self.owner = owner
@@ -81,64 +64,49 @@ class ConfigProperty:
             self.key = name
 
         if not self.__doc__:
-            self.__doc__ = f'Access the \'{self.key}\' config property.'
+            self.__doc__ = f"Read or modify the '{self.key}' config field."
 
-        if not self.no_keyword:
-            if self._fconfig is not None:
-                owner.add_init_parameter(name, self._fconfig)
-            elif self.key != name:
-                # ensure that keyword parameters still work for config properties
-                # that have a different name than the config key
-                owner.add_init_parameter(name, lambda instance, value: {self.key : value})
+        # add an init parameter if add_init is True and either _set_value() has a custom
+        # implementation or the config key is different from the attribute name
+        if self.add_init:
+            if self.key != name:
+                owner.add_init_parameter(name, self._get_config)
 
     def __get__(self, instance: Optional[PyGuiBase], owner: Type[PyGuiBase]) -> Any:
         """Read the item configuration and return a value."""
         if instance is None:
             return self
-
-        config = dpgcore.get_item_configuration(instance.id)
-        return (
-            self._fvalue(instance, config) if self._fvalue is not None
-            else config[self.key]
-        )
+        return self._get_value(instance)
 
     def __set__(self, instance: PyGuiBase, value: Any) -> None:
-        """Modify the item configuration using the assigned value."""
-        config = (
-            self._fconfig(instance, value) if self._fconfig is not None
-            else {self.key : value}
-        )
+        config = self._get_config(instance, value)
         dpgcore.configure_item(instance.id, **config)
 
-    def __call__(self, fvalue: GetValueFunc):
-        """Allows the ConfigProperty class itself to be used as a decorator which sets :attr:`fvalue`.
+    def __call__(self, get_value: GetValueFunc):
+        """Allows the ConfigProperty itself to be used as a decorator equivalent to :attr:`getvalue`."""
+        return self.getvalue(get_value)
 
-        Equivalent to :meth:`getvalue`. This enables convenient syntax such as:
+    _get_value: GetValueFunc
+    _get_config: GetConfigFunc
 
-        .. code-block:: python
-
-            class Widget(PyGuiBase):
-                @ConfigProperty
-                def property_name(config):
-                    ...
-
-        """
-        self.getvalue(fvalue)
+    def getvalue(self, get_value: GetValueFunc):
+        self._get_value = get_value
+        self.__doc__ = get_value.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
-    def getvalue(self, fvalue: GetValueFunc):
-        """Set :attr:`fvalue` using a decorator."""
-        self._fvalue = fvalue
-        if fvalue is not None:
-            self.__doc__ = fvalue.__doc__ # use the docstring of the getter, the same way property() works
+    def getconfig(self, get_config: GetConfigFunc):
+        self._get_config = get_config
+        if self.add_init and self.owner is not None:
+            self.owner.add_init_parameter(self.name, self._get_config)
         return self
 
-    def getconfig(self, fconfig: GetConfigFunc):
-        """Set :attr:`fconfig` using a decorator."""
-        self._fconfig = fconfig
-        if not self.no_keyword and self.owner is not None and fconfig is not None:
-            self.owner.add_init_parameter(self.name, fconfig)
-        return self
+    ## default implementations
+
+    def _get_value(self, instance: PyGuiBase) -> Any:
+        return dpgcore.get_item_configuration(instance.id)[self.key]
+
+    def _get_config(self, instance: PyGuiBase, value: Any) -> ItemConfigData:
+        return {self.key : value}
 
 
 class PyGuiBase:
