@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import inspect
 from collections import ChainMap as chain_map
 from typing import TYPE_CHECKING
 
@@ -50,7 +49,6 @@ class ConfigProperty:
         """
         self.owner = None
         self.key = key
-        self.add_init = add_init
         self.__doc__ = doc
 
     def __set_name__(self, owner: Type[PyGuiObject], name: str):
@@ -64,12 +62,6 @@ class ConfigProperty:
 
         if not self.__doc__:
             self.__doc__ = f"Read or modify the '{self.key}' config field."
-
-        # add an init parameter if add_init is True and either _set_value() has a custom
-        # implementation or the config key is different from the attribute name
-        if self.add_init:
-            if self.key != name or self._get_config != ConfigProperty._get_config:
-                owner.add_init_handler(name, self._get_config)
 
     def __get__(self, instance: Optional[PyGuiObject], owner: Type[PyGuiObject]) -> Any:
         if instance is None:
@@ -94,8 +86,6 @@ class ConfigProperty:
 
     def getconfig(self, get_config: GetConfigFunc):
         self._get_config = get_config
-        if self.add_init and self.owner is not None:
-            self.owner.add_init_handler(self.name, self._get_config)
         return self
 
     ## default implementations
@@ -106,13 +96,6 @@ class ConfigProperty:
     def _get_config(self, instance: PyGuiObject, value: Any) -> ItemConfigData:
         return {self.key : value}
 
-def dpg_setup_func(setup_func: Callable) -> Callable:
-    """Decorator used to supply a setup function to :meth:`PyGuiObject.set_dpg_setup_func`"""
-    def decorator(cls: Type[PyGuiObject]):
-        cls.set_dpg_setup_func(setup_func)
-        return cls
-    return decorator
-
 
 class PyGuiObject:
     """This is the base class for all GUI item wrapper objects.
@@ -121,40 +104,8 @@ class PyGuiObject:
     add the item to DearPyGui. Subclasses may also specify custom keyword parameters using the
     :meth:`add_init_handler` class method."""
 
-    @classmethod
-    def set_dpg_setup_func(cls, setup_func: Callable) -> None:
-        cls._dpg_setup_func = setup_func
-
-        setup_sig = inspect.signature(setup_func)
-        cls._dpg_setup_keywords = [
-            name for name, param in setup_sig.parameters.items()
-            if param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
-        ]
-
-    # These are normally inherited. To prevent this, subclasses can override the attributes.
-    _init_handlers: ChainMap[str, GetConfigFunc] = chain_map()
+    # subclasses can prevent inheritance of this by overriding it's value with a new mapping.
     _config_properties: ChainMap[str, ConfigProperty] = chain_map()
-
-    @classmethod
-    def add_init_handler(cls, name: str, getconfig: GetConfigFunc) -> None:
-        """Add init parameter handlers.
-
-        Parameters:
-            name: the name of the init parameter to add.
-            getconfig: a function that produces a dictionary of config key-value pairs to be passed
-                to :meth:`_setup_add_item`.
-        """
-
-        # setup each subclass's config setup mapping
-        init_handlers = cls.__dict__.get('_init_handlers')
-        if init_handlers is None:
-            # inherit keyword params from parent
-            if hasattr(cls._init_handlers, 'new_child'):
-                init_handlers = cls._init_handlers.new_child({})
-            else:
-                init_handlers = chain_map({}, cls._init_handlers)
-            setattr(cls, '_init_handlers', init_handlers)
-        init_handlers[name] = getconfig
 
     @classmethod
     def add_config_property(cls, prop: ConfigProperty) -> None:
@@ -207,13 +158,6 @@ class PyGuiObject:
 
         _register_item(self.id, self)
 
-    # def _process_init_handlers(self, init_args):
-    #     for name, value in init_args:
-    #         handler = self._init_handlers.get(name)
-    #         if handler is not None:
-    #             yield from handler(self, value).items()
-    #         else:
-    #             yield name, value
 
     ## Overrides
 
