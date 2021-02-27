@@ -7,11 +7,13 @@ This is a work in progress.
 Constructing GUI Objects
 ------------------------
 
+.. .. currentmodule:: dearpygui_obj.wrapper
+
 All wrapper objects should have an ``__init__`` signature that roughly conforms to the following convention:
 
 .. code-block:: python
 
-	class WidgetSubclass(PyGuiObject):
+	class WidgetSubclass(PyGuiBase):
 
 		## the two '...' in the signature can be any 
 		## other parameters the subclass needs.
@@ -20,7 +22,7 @@ All wrapper objects should have an ``__init__`` signature that roughly conforms 
 			super().__init__(name_id=name_id, **config)
 			... # do any other setup needed after super().__init__()
 
-Every subclass of :class:`PyGuiObject` should provide **name_id** and **\**config.**
+Every subclass of :class:`PyGuiBase` should provide **name_id** and **\**config.**
 
 **name_id** allows the user to specify the Widget's ID instead of autogenerating it.
 
@@ -31,7 +33,7 @@ of any :class:`ConfigProperty` descriptors that the subclass has.
 What to pass to ``super().__init__()``?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The base class PyGuiObject's ``__init__`` will accept three types of keyword 
+The base class PyGuiBase's ``__init__`` will accept three types of keyword 
 arguments, which will be handled in the following order of priority:
 
 1. If the name of an init handler is passed with a value, the value will be 
@@ -56,7 +58,7 @@ in this library. Instead, make such arguments explicit:
 
 .. code-block:: python
 
-	class WidgetSubclass(PyGuiObject):
+	class ExampleWidget(PyGuiBase):
 
 		example_prop: int = ConfigProperty()
 
@@ -68,3 +70,8 @@ in this library. Instead, make such arguments explicit:
 		def _setup_add_widget(self, **kwargs):
 			# takes a default_value keyword that is NOT a config property
 			dearpygui.core.add_input_float(self.id, **kwargs)
+
+The bottom line of all of this is that when a user sees a class like ExampleWidget
+in the above example, they know that they can use **\**config** to set any properties
+listed by :meth:`PyGuiBase.get_config_properties`, and non-property arguments like
+**default_value** are not hidden from them.
