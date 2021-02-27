@@ -174,7 +174,7 @@ class PyGuiBase:
 
         Parameters:
             name_id: optionally specify the object's ID instead of autogenerating it.
-            **kwargs: initial values for config properties and keyword arguments for DPG.
+            \**kwargs: initial values for config properties and keyword arguments for DPG.
         """
         if name_id is not None:
             self._name_id = name_id
