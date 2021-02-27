@@ -9,15 +9,15 @@ Wrapper Object System
     :nosignatures:
 
     dearpygui_wrapper
-    PyGuiBase
+    PyGuiObject
     ConfigProperty
 
-PyGuiBase
+PyGuiObject
 ---------
 
 .. autodecorator:: dearpygui_wrapper
 
-.. autoclass:: PyGuiBase
+.. autoclass:: PyGuiObject
     :members:
     :undoc-members:
 
@@ -41,7 +41,7 @@ Item Configuration
     .. methods, analogous to the way normal Python properties work.
 
     .. Both **fvalue** and **fconfig** must take exactly two arguments. The first argument for both
-    .. is the :class:`PyGuiBase` instance that holds the descriptor.
+    .. is the :class:`PyGuiObject` instance that holds the descriptor.
 
     .. **fvalue** should take a dictionary of config values produced by
     .. :func:`dearpygui.core.get_item_configuration` and returns the value that is obtained when the
@@ -56,7 +56,7 @@ Item Configuration
     .. ``fconfig(obj, fvalue(obj, config)) == config``
     .. should both be satisfied in order for configuration values to be stable.
 
-    .. Also, if an **fconfig** function is given, adding the descriptor to an :class:`PyGuiBase`
+    .. Also, if an **fconfig** function is given, adding the descriptor to an :class:`PyGuiObject`
     .. class will automatically create a custom keyword parameter. This can be prevented using the
     .. **no_keyword** argument.
 
@@ -64,7 +64,7 @@ Item Configuration
 
     .. code-block:: python
 
-        class ExampleWidget(PyGuiBase):
+        class ExampleWidget(PyGuiObject):
             simple_config_example: int = ConfigProperty()
 
             @ConfigProperty()

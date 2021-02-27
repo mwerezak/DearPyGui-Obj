@@ -8,7 +8,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 .. autosummary:: 
     :nosignatures:
 
-    dearpygui_obj.wrapper.PyGuiBase
+    dearpygui_obj.wrapper.PyGuiObject
 
 
 .. rubric:: Windows

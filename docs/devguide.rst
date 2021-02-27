@@ -13,7 +13,7 @@ All wrapper objects should have an ``__init__`` signature that roughly conforms 
 
 .. code-block:: python
 
-	class WidgetSubclass(PyGuiBase):
+	class WidgetSubclass(PyGuiObject):
 
 		## the two '...' in the signature can be any 
 		## other parameters the subclass needs.
@@ -22,7 +22,7 @@ All wrapper objects should have an ``__init__`` signature that roughly conforms 
 			super().__init__(name_id=name_id, **config)
 			... # do any other setup needed after super().__init__()
 
-Every subclass of :class:`PyGuiBase` should provide **name_id** and **\**config.**
+Every subclass of :class:`PyGuiObject` should provide **name_id** and **\**config.**
 
 **name_id** allows the user to specify the Widget's ID instead of autogenerating it.
 
@@ -33,7 +33,7 @@ of any :class:`ConfigProperty` descriptors that the subclass has.
 What to pass to ``super().__init__()``?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The base class PyGuiBase's ``__init__`` will accept three types of keyword 
+The base class PyGuiObject's ``__init__`` will accept three types of keyword
 arguments, which will be handled in the following order of priority:
 
 1. If the name of an init handler is passed with a value, the value will be 
@@ -58,7 +58,7 @@ in this library. Instead, make such arguments explicit:
 
 .. code-block:: python
 
-	class ExampleWidget(PyGuiBase):
+	class ExampleWidget(PyGuiObject):
 
 		example_prop: int = ConfigProperty()
 
@@ -73,5 +73,5 @@ in this library. Instead, make such arguments explicit:
 
 The bottom line of all of this is that when a user sees a class like ExampleWidget
 in the above example, they know that they can use **\**config** to set any properties
-listed by :meth:`PyGuiBase.get_config_properties`, and non-property arguments like
+listed by :meth:`PyGuiObject.get_config_properties`, and non-property arguments like
 **default_value** are not hidden from them.
