@@ -22,6 +22,8 @@ with Window("Example Window"):
 
 dearpygui_obj.start_gui()
 ```
+Result:
+<BR>![BasicUsageExample](https://raw.githubusercontent.com/mwerezak/DearPyGui-Obj/master/docs/example.png)
 
 ## Installation
 This project is currently in the very early planning and implementation stages, and a lot of features still need to be implemented. Even the current name for the project is provisional and may change.
