@@ -4,13 +4,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Tuple
 
 @dearpygui_wrapper('mvAppItemType::Spacing')
-class VSpacing(PyGuiBase):
+class VSpacing(PyGuiObject):
     """Adds vertical spacing."""
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
@@ -20,7 +20,7 @@ class VSpacing(PyGuiBase):
 
 
 @dearpygui_wrapper('mvAppItemType::SameLine')
-class HAlignNext(PyGuiBase):
+class HAlignNext(PyGuiObject):
     """Places a widget on the same line as the previous widget.
     Can also be used for horizontal spacing."""
 
@@ -32,7 +32,7 @@ class HAlignNext(PyGuiBase):
 
 
 @dearpygui_wrapper('mvAppItemType::Child')
-class ScrollView(PyGuiBase):
+class ScrollView(PyGuiObject):
     """Adds an embedded child window with optional scollbars."""
 
     border: bool = ConfigProperty()

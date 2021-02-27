@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
@@ -74,7 +74,7 @@ class MainWindow:
 
 
 @dearpygui_wrapper('mvAppItemType::Window')
-class Window(PyGuiBase):
+class Window(PyGuiObject):
     """Creates a new window.
 
     This is a container item that should be used as a context manager. For example:

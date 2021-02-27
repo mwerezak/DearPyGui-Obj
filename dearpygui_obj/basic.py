@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import ColorRGBA
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -14,14 +14,14 @@ if TYPE_CHECKING:
 ## Basic Content
 
 @dearpygui_wrapper('mvAppItemType::Text')
-class Text(PyGuiBase):
+class Text(PyGuiObject):
     """A basic element that displays some text."""
 
     #: Wrap after this many characters. Set to -1 to disable.
-    wrap: int
+    wrap: int = ConfigProperty()
 
     #: Display a bullet point with the text.
-    bullet: bool
+    bullet: bool = ConfigProperty()
 
     @ConfigProperty()
     def color(self) -> ColorRGBA:
@@ -38,6 +38,29 @@ class Text(PyGuiBase):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_text(self.id, **dpg_args)
 
+
+@dearpygui_wrapper('mvAppItemType::LabelText')
+class LabelText(PyGuiObject):
+    """Adds text with a label. Useful for output values when used with a data_source."""
+
+    label: str = ConfigProperty()
+
+    @ConfigProperty()
+    def color(self) -> ColorRGBA:
+        """Color of the text."""
+        return ColorRGBA.dpg_import(self.get_config()['color'])
+
+    @color.getconfig
+    def color(self, value: ColorRGBA) -> ItemConfigData:
+        return {'color' : value.dpg_export()}
+
+    def __init__(self, label: str, text: str = '', *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=text, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_label_text(self.id, **dpg_args)
+
+
 ## Buttons
 
 class ButtonArrow(Enum):
@@ -48,7 +71,7 @@ class ButtonArrow(Enum):
     Down    = 3
 
 @dearpygui_wrapper('mvAppItemType::Button')
-class Button(PyGuiBase):
+class Button(PyGuiObject):
     """A simple button."""
 
     label: str = ConfigProperty()
@@ -86,11 +109,18 @@ class Button(PyGuiBase):
 if __name__ == '__main__':
     from dearpygui.core import *
     from dearpygui_obj.window import Window
+    from dearpygui_obj.input import SliderFloat
 
     with Window('Test Window') as window:
         txt = Text('This is some text!', color=ColorRGBA(1.0, 0.2, 0.2))
         print(get_item_configuration(txt.id))
         print(txt.color)
+
+        label = LabelText('Value:')
+        slider = SliderFloat('')
+        @slider.callback()
+        def callback(sender, data):
+            print(slider.value)
 
         b1 = Button('Regular Button')
         @b1.callback()

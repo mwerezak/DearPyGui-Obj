@@ -11,7 +11,7 @@ from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_ite
 
 if TYPE_CHECKING:
     from typing import (
-        Callable, Mapping, Any, Optional, Union, Type, Iterable, Tuple, ChainMap, Collection
+        Callable, Mapping, Any, Optional, Union, Type, Iterable, Tuple, ChainMap, List
     )
 
 
@@ -24,11 +24,11 @@ if TYPE_CHECKING:
 
 
 def dearpygui_wrapper(item_type: str) -> Callable:
-    """Associate a :class:`PyGuiBase` class or constructor with a DearPyGui item type.
+    """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
 
     This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting
     an item that was not created by the object library."""
-    def decorator(ctor: Callable[..., PyGuiBase]):
+    def decorator(ctor: Callable[..., PyGuiObject]):
         if item_type in _ITEM_TYPES:
             raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
         _ITEM_TYPES[item_type] = ctor
@@ -53,7 +53,7 @@ class ConfigProperty:
         self.add_init = add_init
         self.__doc__ = doc
 
-    def __set_name__(self, owner: Type[PyGuiBase], name: str):
+    def __set_name__(self, owner: Type[PyGuiObject], name: str):
         self.owner = owner
         self.name = name
 
@@ -71,12 +71,12 @@ class ConfigProperty:
             if self.key != name or self._get_config != ConfigProperty._get_config:
                 owner.add_init_handler(name, self._get_config)
 
-    def __get__(self, instance: Optional[PyGuiBase], owner: Type[PyGuiBase]) -> Any:
+    def __get__(self, instance: Optional[PyGuiObject], owner: Type[PyGuiObject]) -> Any:
         if instance is None:
             return self
         return self._get_value(instance)
 
-    def __set__(self, instance: PyGuiBase, value: Any) -> None:
+    def __set__(self, instance: PyGuiObject, value: Any) -> None:
         config = self._get_config(instance, value)
         dpgcore.configure_item(instance.id, **config)
 
@@ -100,21 +100,21 @@ class ConfigProperty:
 
     ## default implementations
 
-    def _get_value(self, instance: PyGuiBase) -> Any:
+    def _get_value(self, instance: PyGuiObject) -> Any:
         return dpgcore.get_item_configuration(instance.id)[self.key]
 
-    def _get_config(self, instance: PyGuiBase, value: Any) -> ItemConfigData:
+    def _get_config(self, instance: PyGuiObject, value: Any) -> ItemConfigData:
         return {self.key : value}
 
 def dpg_setup_func(setup_func: Callable) -> Callable:
-    """Decorator used to supply a setup function to :meth:`PyGuiBase.set_dpg_setup_func`"""
-    def decorator(cls: Type[PyGuiBase]):
+    """Decorator used to supply a setup function to :meth:`PyGuiObject.set_dpg_setup_func`"""
+    def decorator(cls: Type[PyGuiObject]):
         cls.set_dpg_setup_func(setup_func)
         return cls
     return decorator
 
 
-class PyGuiBase:
+class PyGuiObject:
     """This is the base class for all GUI item wrapper objects.
 
     Keyword arguments passed to ``__init__`` will be given to the :meth:`_setup_add_item` method used to
@@ -168,6 +168,13 @@ class PyGuiBase:
             setattr(cls, '_config_properties', config_properties)
         config_properties[prop.name] = prop
 
+    @classmethod
+    def get_config_properties(cls) -> List[str]:
+        """Get the names of configuration properties as a list.
+
+        This can be useful to check which attributes are configuration properties
+        and therefore can be given as keywords to ``__init__``."""
+        return list(cls._config_properties.keys())
 
     def __init__(self, *, name_id: Optional[str] = None, **kwargs: Any):
         """
@@ -184,10 +191,8 @@ class PyGuiBase:
         if dpgcore.does_item_exist(self.id):
             self._setup_preexisting()
         else:
-            # at no point should a PyGuiBase object exist for an item that hasn't
+            # at no point should a PyGuiObject object exist for an item that hasn't
             # actually been added, so if the item doesn't exist we need to add it now.
-
-            kwargs = dict(self._process_init_handlers(kwargs))
 
             # set config properties after adding the widget
             config = {}
@@ -202,13 +207,13 @@ class PyGuiBase:
 
         _register_item(self.id, self)
 
-    def _process_init_handlers(self, init_args: Mapping[str, Any]):
-        for name, value in init_args.items():
-            handler = self._init_handlers.get(name)
-            if handler is not None:
-                yield from handler(self, value).items()
-            else:
-                yield name, value
+    # def _process_init_handlers(self, init_args):
+    #     for name, value in init_args:
+    #         handler = self._init_handlers.get(name)
+    #         if handler is not None:
+    #             yield from handler(self, value).items()
+    #         else:
+    #             yield name, value
 
     ## Overrides
 
@@ -289,14 +294,14 @@ class PyGuiBase:
 
     ## Parent/Children
 
-    def get_parent(self) -> Optional[PyGuiBase]:
+    def get_parent(self) -> Optional[PyGuiObject]:
         """Get this item's parent."""
         parent_id = dpgcore.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
 
-    def set_parent(self, parent: PyGuiBase) -> None:
+    def set_parent(self, parent: PyGuiObject) -> None:
         """Re-parent the item, moving it."""
         dpgcore.move_item(self.id, parent=parent.id)
 
@@ -308,7 +313,7 @@ class PyGuiBase:
         """Move the item down within its parent, if possible."""
         dpgcore.move_item_down(self.id)
 
-    def move_item_before(self, other: PyGuiBase) -> None:
+    def move_item_before(self, other: PyGuiObject) -> None:
         """Attempt to place the item before another item, re-parenting it if necessary."""
         dpgcore.move_item(self.id, parent=other.get_parent().id, before=other.id)
 
@@ -317,18 +322,39 @@ class PyGuiBase:
     def is_container(self) -> bool:
         return dpgcore.is_item_container(self.id)
 
-    def iter_children(self) -> Iterable[PyGuiBase]:
+    def iter_children(self) -> Iterable[PyGuiObject]:
         children = dpgcore.get_item_children(self.id)
         if not children:
             return
         for child in children:
             yield get_item_by_id(child)
 
-    def add_child(self, child: PyGuiBase) -> None:
+    def add_child(self, child: PyGuiObject) -> None:
         """Alternative to ``child.set_parent(self)``."""
         dpgcore.move_item(child.id, parent=self.id)
 
-    ## Properties and status
+    ## Data and Values
+
+    @ConfigProperty(key='source')
+    def data_source(self) -> Optional[GuiData]:
+        """Get the :class:`GuiData` used as the data source, if any."""
+        source = self.get_config().get('source')
+        return GuiData(name=source) if source else None
+
+    @data_source.getconfig
+    def data_source(self, value: Optional[DataSource]):
+        # accept plain string in addition to GuiData
+        return {'source' : str(value) if value else ''}
+
+    @property
+    def value(self) -> Any:
+        return dpgcore.get_value(self.id)
+
+    @value.setter
+    def value(self, new_value: Any) -> None:
+        dpgcore.set_value(self.id, new_value)
+
+    ## Other properties and status
 
     show: bool = ConfigProperty() #: Enable/disable rendering of the item.
 
@@ -358,17 +384,6 @@ class PyGuiBase:
     tooltip: str = ConfigProperty(key='tip')
     enabled: bool = ConfigProperty()  #: If ``False``, display greyed out text and disable interaction.
 
-    @ConfigProperty(key='source')
-    def data_source(self) -> Optional[GuiData]:
-        """Get the :class:`GuiData` used as the data source, if any."""
-        source = self.get_config().get('source')
-        return GuiData(name=source) if source else None
-
-    @data_source.getconfig
-    def data_source(self, value: Optional[DataSource]):
-        # accept plain string in addition to GuiData
-        return {'source' : str(value) if value else ''}
-
     # these are intentionally not properties, as they are status queries
 
     def is_visible(self) -> bool:
@@ -382,8 +397,9 @@ class PyGuiBase:
         return dpgcore.is_item_focused(self.id)
 
 
+
 import dearpygui_obj
 
 # noinspection PyProtectedMember
 if dearpygui_obj._default_ctor is None:
-    dearpygui_obj._default_ctor = PyGuiBase
+    dearpygui_obj._default_ctor = PyGuiObject

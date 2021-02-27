@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, TypeVar, Generic, Sequence, Tuple
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import GuiData
-from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 ## Input Boxes
 
 @dearpygui_wrapper('mvAppItemType::InputText')
-class InputText(PyGuiBase):
+class InputText(PyGuiObject):
     """A text input box."""
 
     hint: str = ConfigProperty()
@@ -37,7 +37,7 @@ class InputText(PyGuiBase):
 
 _TInput = TypeVar('_TInput')
 
-class NumberInput(PyGuiBase, Generic[_TInput]):
+class NumberInput(PyGuiObject, Generic[_TInput]):
     """Base class for number input boxes."""
     _default_value: _TInput
 
@@ -155,7 +155,7 @@ class InputInt4(NumberInput[Tuple[int, int, int, int]]):
 
 ## Sliders
 
-class SliderInput(PyGuiBase, Generic[_TInput]):
+class SliderInput(PyGuiObject, Generic[_TInput]):
     """Base class for slider types."""
     _default_value: _TInput
 
