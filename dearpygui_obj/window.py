@@ -91,17 +91,23 @@ class Window(PyGuiBase):
     x_pos: int = ConfigProperty()
     y_pos: int = ConfigProperty()
     autosize: bool = ConfigProperty()
+
     no_resize: bool = ConfigProperty()
     no_title_bar: bool = ConfigProperty()
     no_move: bool = ConfigProperty()
-    no_scrollbar: bool = ConfigProperty()
     no_collapse: bool = ConfigProperty()
-    horizontal_scrollbar: bool = ConfigProperty()
     no_focus_on_appearing: bool = ConfigProperty()
     no_bring_to_front_on_focus: bool = ConfigProperty()
-    menubar: bool = ConfigProperty()
     no_close: bool = ConfigProperty()
     no_background: bool = ConfigProperty()
+
+    menubar: bool = ConfigProperty()
+
+    #: Disable scrollbars (can still scroll with mouse or programmatically).
+    no_scrollbar: bool = ConfigProperty()
+
+    #: Allow horizontal scrollbar to appear.
+    horizontal_scrollbar: bool = ConfigProperty()
 
     @ConfigProperty()
     def pos(self) -> Tuple[int, int]:
@@ -116,21 +122,8 @@ class Window(PyGuiBase):
 
     _on_close: Optional[Callable] = None
 
-    def __init__(self, label: str, *, name_id: str = None, size: Tuple[int, int] = (-1, -1),
-                 pos: Tuple[int, int] = (200, 200), autosize: bool = False, no_resize: bool = False,
-                 no_title_bar: bool = False, no_move: bool = False, no_scrollbar: bool = False,
-                 no_collapse: bool = False, horizontal_scrollbar: bool = False,
-                 no_focus_on_appearing: bool = False, no_bring_to_front_on_focus: bool = False,
-                 menubar: bool = False, no_close: bool = False, no_background: bool = False,
-                 show: bool = True):
-
-        super().__init__(
-            name_id, label=label, size=size, pos=pos, autosize=autosize, no_resize=no_resize,
-            no_title_bar=no_title_bar, no_move=no_move, no_scrollbar=no_scrollbar, no_collapse=no_collapse,
-            horizontal_scrollbar=horizontal_scrollbar, no_focus_on_appearing=no_focus_on_appearing,
-            no_bring_to_front_on_focus=no_bring_to_front_on_focus, menubar=menubar, no_close=no_close,
-            no_background=no_background, show=show, on_close=self._handle_on_close,
-        )
+    def __init__(self, label: str = '', *, name_id: str = None, **config):
+        super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_window(self.id, **config)

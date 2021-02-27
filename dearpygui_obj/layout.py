@@ -15,9 +15,6 @@ class VSpacing(PyGuiBase):
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
 
-    def __init__(self, *, name_id: str = None, space: int = 1, show: bool = True):
-        super().__init__(name_id, space=space, show=show)
-
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_spacing(name=self.id, **config)
 
@@ -29,9 +26,6 @@ class HAlignNext(PyGuiBase):
 
     xoffset: float = ConfigProperty() #: offset from containing window
     spacing: float = ConfigProperty() #: offset from previous widget
-
-    def __init__(self, *, name_id: str = None, xoffset: float = 0.0, spacing: float = -1.0, show: bool = True):
-        super().__init__(name_id, xoffset=xoffset, spacing=spacing, show=show)
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_same_line(name=self.id, **config)
@@ -52,17 +46,6 @@ class ScrollView(PyGuiBase):
     #: Allow horizontal scrollbar to appear.
     horizontal_scrollbar: bool = ConfigProperty()
 
-    def __init__(self, *, name_id: str = None, show: bool = True, tooltip: str = '',
-                 size: Tuple[int, int] = (0, 0), border: bool = True, autosize_x: bool = False,
-                 autosize_y: bool = False, no_scrollbar: bool = False,
-                 horizontal_scrollbar: bool = False, menubar: bool = False):
-
-        super().__init__(
-            name_id, show=show, tooltip=tooltip, size=size, border=border, autosize_x=autosize_x,
-            autosize_y=autosize_y, no_scrollbar=no_scrollbar, horizontal_scrollbar=horizontal_scrollbar,
-            menubar=menubar,
-        )
-
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_child(self.id, width=10000)
 
@@ -82,8 +65,8 @@ if __name__ == '__main__':
     from dearpygui_obj.basic import Button
     from dearpygui_obj.devtools import *
 
-    with Window('window', size=(1000, 300)):
-        with child('scroll'):
+    with Window():
+        with ScrollView():
             Button()
 
 

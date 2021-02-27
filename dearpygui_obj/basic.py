@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 ## Basic Content
 
+@dearpygui_wrapper('mvAppItemType::Text')
 class Text(PyGuiBase):
     """A basic element that displays some text."""
 
@@ -31,8 +32,8 @@ class Text(PyGuiBase):
     def color(self, value: ColorRGBA) -> ItemConfigData:
         return {'color' : value.dpg_export()}
 
-    def __init__(self, text: str, **kwargs):
-        super().__init__(default_value=text, **kwargs)
+    def __init__(self, text: str, *, name_id: str = None, **config):
+        super().__init__(default_value=text, name_id=name_id, **config)
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_text(self.id, **config)
@@ -73,6 +74,9 @@ class Button(PyGuiBase):
         if adir is None:
             return {'arrow': False}
         return {'arrow': True, 'direction': adir.value}
+
+    def __init__(self, label: str = '', *, name_id: str = None, **config):
+        super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_button(self.id, **config)
