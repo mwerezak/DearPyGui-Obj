@@ -7,6 +7,7 @@ from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
+    from dearpygui_obj.wrapper import ItemConfigData
 
 
 class MainWindow:
@@ -86,6 +87,7 @@ class Window(PyGuiBase):
 
     """
 
+    label: str = ConfigProperty()
     x_pos: int = ConfigProperty()
     y_pos: int = ConfigProperty()
     autosize: bool = ConfigProperty()
@@ -101,6 +103,35 @@ class Window(PyGuiBase):
     no_close: bool = ConfigProperty()
     no_background: bool = ConfigProperty()
 
+    @ConfigProperty()
+    def pos(self) -> Tuple[int, int]:
+        """Get or set (x_pos, y_pos) as a tuple."""
+        config = self.get_config()
+        return config['x_pos'], config['y_pos']
+
+    @pos.getconfig
+    def pos(self, value: Tuple[int, int]) -> ItemConfigData:
+        width, height = value
+        return {'x_pos': width, 'y_pos' : height}
+
+    _on_close: Optional[Callable] = None
+
+    def __init__(self, label: str, *, name_id: str = None, size: Tuple[int, int] = (-1, -1),
+                 pos: Tuple[int, int] = (200, 200), autosize: bool = False, no_resize: bool = False,
+                 no_title_bar: bool = False, no_move: bool = False, no_scrollbar: bool = False,
+                 no_collapse: bool = False, horizontal_scrollbar: bool = False,
+                 no_focus_on_appearing: bool = False, no_bring_to_front_on_focus: bool = False,
+                 menubar: bool = False, no_close: bool = False, no_background: bool = False,
+                 show: bool = True):
+
+        super().__init__(
+            name_id, label=label, size=size, pos=pos, autosize=autosize, no_resize=no_resize,
+            no_title_bar=no_title_bar, no_move=no_move, no_scrollbar=no_scrollbar, no_collapse=no_collapse,
+            horizontal_scrollbar=horizontal_scrollbar, no_focus_on_appearing=no_focus_on_appearing,
+            no_bring_to_front_on_focus=no_bring_to_front_on_focus, menubar=menubar, no_close=no_close,
+            no_background=no_background, show=show, on_close=self._handle_on_close,
+        )
+
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_window(self.id, **config)
 
@@ -109,6 +140,15 @@ class Window(PyGuiBase):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
+
+    def _handle_on_close(self, sender, data) -> None:
+        if self._on_close is not None:
+            self._on_close(sender, data)
+
+    def on_close(self, callback: Callable) -> Callable:
+        """Set on_close callback, can be used as a decorator."""
+        self._on_close = callback
+        return callback
 
     def resized(self, callback: Callable) -> Callable:
         """Set resized callback, can be used as a decorator."""

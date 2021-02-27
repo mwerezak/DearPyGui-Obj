@@ -7,13 +7,16 @@ import dearpygui.core as dpgcore
 from dearpygui_obj.wrapper import PyGuiBase, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
-    pass
+    from typing import Tuple
 
 @dearpygui_wrapper('mvAppItemType::Spacing')
 class VSpacing(PyGuiBase):
     """Adds vertical spacing."""
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
+
+    def __init__(self, *, name_id: str = None, space: int = 1, show: bool = True):
+        super().__init__(name_id, space=space, show=show)
 
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_spacing(name=self.id, **config)
@@ -27,18 +30,41 @@ class HAlignNext(PyGuiBase):
     xoffset: float = ConfigProperty() #: offset from containing window
     spacing: float = ConfigProperty() #: offset from previous widget
 
+    def __init__(self, *, name_id: str = None, xoffset: float = 0.0, spacing: float = -1.0, show: bool = True):
+        super().__init__(name_id, xoffset=xoffset, spacing=spacing, show=show)
+
     def _setup_add_widget(self, config) -> None:
         dpgcore.add_same_line(name=self.id, **config)
 
 
 @dearpygui_wrapper('mvAppItemType::Child')
 class ScrollView(PyGuiBase):
-    """Adds an embedded child window. Will show scrollbars when items do not fit.
+    """Adds an embedded child window with optional scollbars."""
 
-    This is a container widget."""
+    border: bool = ConfigProperty()
+    autosize_x: bool = ConfigProperty()
+    autosize_y: bool = ConfigProperty()
+    menubar: bool = ConfigProperty()
+
+    #: Disable scrollbars (can still scroll with mouse or programmatically).
+    no_scrollbar: bool = ConfigProperty()
+
+    #: Allow horizontal scrollbar to appear.
+    horizontal_scrollbar: bool = ConfigProperty()
+
+    def __init__(self, *, name_id: str = None, show: bool = True, tooltip: str = '',
+                 size: Tuple[int, int] = (0, 0), border: bool = True, autosize_x: bool = False,
+                 autosize_y: bool = False, no_scrollbar: bool = False,
+                 horizontal_scrollbar: bool = False, menubar: bool = False):
+
+        super().__init__(
+            name_id, show=show, tooltip=tooltip, size=size, border=border, autosize_x=autosize_x,
+            autosize_y=autosize_y, no_scrollbar=no_scrollbar, horizontal_scrollbar=horizontal_scrollbar,
+            menubar=menubar,
+        )
 
     def _setup_add_widget(self, config) -> None:
-        dpgcore.add_child(self.id, **config)
+        dpgcore.add_child(self.id, width=10000)
 
     def __enter__(self) -> ScrollView:
         return self
@@ -50,34 +76,17 @@ class ScrollView(PyGuiBase):
 
 if __name__ == '__main__':
     from dearpygui.core import *
+    from dearpygui.simple import *
     from dearpygui_obj import *
     from dearpygui_obj.window import Window
     from dearpygui_obj.basic import Button
     from dearpygui_obj.devtools import *
 
-    with DebugWindow():
-        pass
-
-    with DocumentationWindow():
-        pass
-
-    with Window('Window'):
-        with ScrollView():
-            Button()
-            HAlignNext(spacing=15)
-            Button()
-            HAlignNext(spacing=15)
-            Button()
-            VSpacing(space=5)
-            Button()
-            Button()
-            VSpacing(space=10)
+    with Window('window', size=(1000, 300)):
+        with child('scroll'):
             Button()
 
 
-    for item in iter_all_items():
-        print(item.id, get_item_type(item.id))
 
-
-    # start_dearpygui()
+    start_dearpygui()
 

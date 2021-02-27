@@ -44,8 +44,9 @@ class InputFloat(PyGuiBase):
     readonly: bool = ConfigProperty()
     label: str = ConfigProperty()
 
-    @ConfigProperty
-    def min_value(self, config) -> Optional[float]:
+    @ConfigProperty()
+    def min_value(self) -> Optional[float]:
+        config = self.get_config()
         if not config.get('min_clamped'):
             return None
         return config['min_value']
@@ -56,8 +57,9 @@ class InputFloat(PyGuiBase):
             return {'min_clamped': False}
         return {'min_clamped': True, 'min_value': value}
 
-    @ConfigProperty
-    def max_value(self, config) -> Optional[float]:
+    @ConfigProperty()
+    def max_value(self) -> Optional[float]:
+        config = self.get_config()
         if not config.get('max_clamped'):
             return None
         return config['max_value']
@@ -100,8 +102,9 @@ class InputInt(PyGuiBase):
     readonly: bool = ConfigProperty()
     label: str = ConfigProperty()
 
-    @ConfigProperty
-    def min_value(self, config) -> Optional[int]:
+    @ConfigProperty()
+    def min_value(self) -> Optional[int]:
+        config = self.get_config()
         if not config.get('min_clamped'):
             return None
         return config['min_value']
@@ -112,8 +115,9 @@ class InputInt(PyGuiBase):
             return {'min_clamped': False}
         return {'min_clamped': True, 'min_value': value}
 
-    @ConfigProperty
-    def max_value(self, config) -> Optional[int]:
+    @ConfigProperty()
+    def max_value(self) -> Optional[int]:
+        config = self.get_config()
         if not config.get('max_clamped'):
             return None
         return config['max_value']

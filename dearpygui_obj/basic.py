@@ -23,9 +23,9 @@ class Text(PyGuiBase):
     bullet: bool
 
     @ConfigProperty()
-    def color(self, config: ItemConfigData) -> ColorRGBA:
+    def color(self) -> ColorRGBA:
         """Color of the text."""
-        return ColorRGBA.dpg_import(config['color'])
+        return ColorRGBA.dpg_import(self.get_config()['color'])
 
     @color.getconfig
     def color(self, value: ColorRGBA) -> ItemConfigData:
@@ -56,13 +56,14 @@ class Button(PyGuiBase):
     small: bool = ConfigProperty()
 
     @ConfigProperty()
-    def arrow(self, config) -> Optional[ButtonArrow]:
+    def arrow(self) -> Optional[ButtonArrow]:
         """Configure the button as an arrow button.
 
         If the button is an arrow button, the value will be the arrow direction.
         Otherwise the value will be ``None``.
 
         Assigning to this property will enable/disable the arrow and/or set the direction."""
+        config = self.get_config()
         if not config['arrow']:
             return None
         return ButtonArrow(config['direction'])

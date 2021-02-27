@@ -29,7 +29,7 @@ def dearpygui_wrapper(item_type: str) -> Callable:
 
     This constructor may be applied directly to :class:`PyGuiBase` subclasses, or it may be
     applied to any callable that can serve as a constructor. The only requirement is that the
-    callable must have a 'name' keyword parameter that takes the unique name used by DearPyGui.
+    callable must have a 'name_id' keyword parameter that takes the unique name used by DearPyGui.
     """
     def decorator(ctor: Callable[..., PyGuiBase]):
         if item_type in _ITEM_TYPES:
@@ -51,7 +51,7 @@ class ConfigProperty:
             implementation the config key is different from the attribute name.
         doc: custom docstring.
         """
-
+        self.owner = None
         self.key = key
         self.add_init = add_init
         self.__doc__ = doc
@@ -69,7 +69,7 @@ class ConfigProperty:
         # add an init parameter if add_init is True and either _set_value() has a custom
         # implementation or the config key is different from the attribute name
         if self.add_init:
-            if self.key != name:
+            if self.key != name or self._get_config != ConfigProperty._get_config:
                 owner.add_init_parameter(name, self._get_config)
 
     def __get__(self, instance: Optional[PyGuiBase], owner: Type[PyGuiBase]) -> Any:
@@ -151,7 +151,8 @@ class PyGuiBase:
             setattr(cls, '_keyword_params', keyword_params)
         keyword_params[name] = getconfig
 
-    def __init__(self, name: Optional[str] = None, **kwargs: Any):
+
+    def __init__(self, name_id: Optional[str] = None, **kwargs: Any):
         """
         Parameters:
             name: optional unique name used by DearPyGui to identify the GUI item.
@@ -160,20 +161,20 @@ class PyGuiBase:
                 passed to :meth:`_setup_add_widget` when setting up the item.
         """
 
-        if name is not None:
-            self._name = name
+        if name_id is not None:
+            self._name_id = name_id
         else:
-            self._name = f'{self.__class__.__name__}##{id(self):x}'
+            self._name_id = f'{self.__class__.__name__}##{id(self):x}'
 
         # at no point should a PyGuiBase object exist for an item that hasn't
         # actually been added, so if the item doesn't exist we need to add it now.
-        if not dpgcore.does_item_exist(self._name):
+        if not dpgcore.does_item_exist(self._name_id):
             config = self._create_config(kwargs)
             self._setup_add_widget(config)
         else:
             self._setup_preexisting()
 
-        _register_item(self._name, self)
+        _register_item(self._name_id, self)
 
     # create the item configuration data from __init__ keyword arguments
     def _create_config(self, kwargs: ItemConfigData) -> ItemConfigData:
@@ -221,7 +222,7 @@ class PyGuiBase:
     @property
     def id(self) -> str:
         """The unique name used by DearPyGui to reference this GUI item."""
-        return self._name
+        return self._name_id
 
     @property
     def is_valid(self) -> bool:
@@ -232,6 +233,14 @@ class PyGuiBase:
         """Delete the item, this will invalidate the item and all its children."""
         _unregister_item(self.id)
         dpgcore.delete_item(self.id)
+
+    ## Low level config
+
+    def get_config(self) -> ItemConfigData:
+        return dpgcore.get_item_configuration(self.id)
+
+    def set_config(self, config: ItemConfigData) -> None:
+        dpgcore.configure_item(self.id, **config)
 
     ## Callbacks
 
@@ -319,15 +328,15 @@ class PyGuiBase:
     width: int = ConfigProperty()
     height: int = ConfigProperty()
 
-    @property
+    @ConfigProperty()
     def size(self) -> Tuple[float, float]:
         """The item's current size as (width, height)."""
         return tuple(dpgcore.get_item_rect_size(self.id))
 
-    @size.setter
-    def size(self, value: Tuple[float, float]) -> None:
+    @size.getconfig
+    def size(self, value: Tuple[float, float]) -> ItemConfigData:
         width, height = value
-        dpgcore.configure_item(self.id, width=width, height=height)
+        return { 'width' : width, 'height' : height }
 
     @property
     def max_size(self) -> Tuple[float, float]:
@@ -343,9 +352,9 @@ class PyGuiBase:
     enabled: bool = ConfigProperty()  #: If ``False``, display greyed out text and disable interaction.
 
     @ConfigProperty(key='source')
-    def data_source(self, config) -> Optional[GuiData]:
+    def data_source(self) -> Optional[GuiData]:
         """Get the :class:`GuiData` used as the data source, if any."""
-        source = config.get('source')
+        source = self.get_config().get('source')
         return GuiData(name=source) if source else None
 
     @data_source.getconfig

@@ -44,7 +44,7 @@ def get_item_by_id(name: str) -> PyGuiBase:
     if ctor is None:
         raise ValueError(f"could not create wrapper for '{name}': no constructor for item type '{item_type}'")
 
-    return ctor(name = name)
+    return ctor(name_id = name)
 
 def iter_all_items() -> Iterable[PyGuiBase]:
     """Iterate all items (*NOT* windows) and yield their wrapper objects."""
