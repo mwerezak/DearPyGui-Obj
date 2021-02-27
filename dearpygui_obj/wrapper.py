@@ -158,6 +158,11 @@ class PyGuiObject:
 
         _register_item(self.id, self)
 
+    def __repr__(self) -> str:
+        return f'<{self.__class__.__qualname__}({self.id!r})>'
+
+    def __str__(self) -> str:
+        return self.id
 
     ## Overrides
 
