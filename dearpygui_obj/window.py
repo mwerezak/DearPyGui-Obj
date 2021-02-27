@@ -125,8 +125,8 @@ class Window(PyGuiBase):
     def __init__(self, label: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, config) -> None:
-        dpgcore.add_window(self.id, **config)
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_window(self.id, **dpg_args)
 
     def __enter__(self) -> Window:
         return self

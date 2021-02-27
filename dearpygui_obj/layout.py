@@ -15,8 +15,8 @@ class VSpacing(PyGuiBase):
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
 
-    def _setup_add_widget(self, config) -> None:
-        dpgcore.add_spacing(name=self.id, **config)
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_spacing(name=self.id, **dpg_args)
 
 
 @dearpygui_wrapper('mvAppItemType::SameLine')
@@ -27,8 +27,8 @@ class HAlignNext(PyGuiBase):
     xoffset: float = ConfigProperty() #: offset from containing window
     spacing: float = ConfigProperty() #: offset from previous widget
 
-    def _setup_add_widget(self, config) -> None:
-        dpgcore.add_same_line(name=self.id, **config)
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_same_line(name=self.id, **dpg_args)
 
 
 @dearpygui_wrapper('mvAppItemType::Child')
@@ -46,8 +46,8 @@ class ScrollView(PyGuiBase):
     #: Allow horizontal scrollbar to appear.
     horizontal_scrollbar: bool = ConfigProperty()
 
-    def _setup_add_widget(self, config) -> None:
-        dpgcore.add_child(self.id, width=10000)
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_child(self.id, **dpg_args)
 
     def __enter__(self) -> ScrollView:
         return self

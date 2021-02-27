@@ -35,8 +35,8 @@ class Text(PyGuiBase):
     def __init__(self, text: str, *, name_id: str = None, **config):
         super().__init__(default_value=text, name_id=name_id, **config)
 
-    def _setup_add_widget(self, config) -> None:
-        dpgcore.add_text(self.id, **config)
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_text(self.id, **dpg_args)
 
 ## Buttons
 
@@ -78,8 +78,8 @@ class Button(PyGuiBase):
     def __init__(self, label: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, config) -> None:
-        dpgcore.add_button(self.id, **config)
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_button(self.id, **dpg_args)
 
 
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from collections import ChainMap as chain_map
 from typing import TYPE_CHECKING
 
@@ -9,7 +10,9 @@ from dearpygui import core as dpgcore
 from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_item_by_id, GuiData
 
 if TYPE_CHECKING:
-    from typing import Callable, Mapping, Any, Optional, Union, Type, Iterable, Tuple, ChainMap
+    from typing import (
+        Callable, Mapping, Any, Optional, Union, Type, Iterable, Tuple, ChainMap, Collection
+    )
 
 
 ## Type Aliases
@@ -23,15 +26,8 @@ if TYPE_CHECKING:
 def dearpygui_wrapper(item_type: str) -> Callable:
     """Associate a :class:`PyGuiBase` class or constructor with a DearPyGui item type.
 
-    This decorator can be applied to a :class:`PyGuiBase` to associate it with a DearPyGui
-    item type as returned by :func:`dearpygui.core.get_item_type`. This will let the wrapper object
-    library know which constructor to use when :func:`get_item_by_id` is used to get an item that
-    does not yet have a wrapper object.
-
-    This constructor may be applied directly to :class:`PyGuiBase` subclasses, or it may be
-    applied to any callable that can serve as a constructor. The only requirement is that the
-    callable must have a 'name_id' keyword parameter that takes the unique name used by DearPyGui.
-    """
+    This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting
+    an item that was not created by the object library."""
     def decorator(ctor: Callable[..., PyGuiBase]):
         if item_type in _ITEM_TYPES:
             raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
@@ -47,10 +43,10 @@ class ConfigProperty:
                  add_init: bool = True,
                  doc: str = ''):
         """
-        key: the config key to get/set with the default implementation.
-        add_init: Add a custom keyword parameter if either _set_value() has a custom
-            implementation the config key is different from the attribute name.
-        doc: custom docstring.
+        Parameters:
+            key: the config key to get/set with the default implementation.
+            add_init: If ``True``, add an init argument handler to the owner type.
+            doc: custom docstring.
         """
         self.owner = None
         self.key = key
@@ -60,6 +56,8 @@ class ConfigProperty:
     def __set_name__(self, owner: Type[PyGuiBase], name: str):
         self.owner = owner
         self.name = name
+
+        owner.add_config_property(self)
 
         if self.key is None:
             self.key = name
@@ -71,10 +69,9 @@ class ConfigProperty:
         # implementation or the config key is different from the attribute name
         if self.add_init:
             if self.key != name or self._get_config != ConfigProperty._get_config:
-                owner.add_init_parameter(name, self._get_config)
+                owner.add_init_handler(name, self._get_config)
 
     def __get__(self, instance: Optional[PyGuiBase], owner: Type[PyGuiBase]) -> Any:
-        """Read the item configuration and return a value."""
         if instance is None:
             return self
         return self._get_value(instance)
@@ -98,7 +95,7 @@ class ConfigProperty:
     def getconfig(self, get_config: GetConfigFunc):
         self._get_config = get_config
         if self.add_init and self.owner is not None:
-            self.owner.add_init_parameter(self.name, self._get_config)
+            self.owner.add_init_handler(self.name, self._get_config)
         return self
 
     ## default implementations
@@ -109,118 +106,122 @@ class ConfigProperty:
     def _get_config(self, instance: PyGuiBase, value: Any) -> ItemConfigData:
         return {self.key : value}
 
+def dpg_setup_func(setup_func: Callable) -> Callable:
+    """Decorator used to supply a setup function to :meth:`PyGuiBase.set_dpg_setup_func`"""
+    def decorator(cls: Type[PyGuiBase]):
+        cls.set_dpg_setup_func(setup_func)
+        return cls
+    return decorator
 
-class InitParameter:
-    """Used as a decorator to mark methods as init parameter handlers."""
-    def __init__(self, name: str):
-        self.name = name
 
 class PyGuiBase:
     """This is the base class for all GUI item wrapper objects.
 
-    Keyword arguments passed to `__init__` will be given to the :meth:`_setup_add_item` method used to
+    Keyword arguments passed to ``__init__`` will be given to the :meth:`_setup_add_item` method used to
     add the item to DearPyGui. Subclasses may also specify custom keyword parameters using the
-    :meth:`add_init_parameter` class method."""
-
-    ## Custom keyword parameters
-
-    # This is normally inherited. To prevent this, subclasses can override this attribute.
-    _init_params: ChainMap[str, GetConfigFunc] = chain_map()
+    :meth:`add_init_handler` class method."""
 
     @classmethod
-    def add_init_parameter(cls, name: str, getconfig: GetConfigFunc) -> None:
-        """Can be used by subclasses to add custom keyword parameters.
+    def set_dpg_setup_func(cls, setup_func: Callable) -> None:
+        cls._dpg_setup_func = setup_func
 
-        If **name** is given as a keyword parameter to ``__init__``, the value passed with that
-        parameter will be processed with the function that was added by this method.
+        setup_sig = inspect.signature(setup_func)
+        cls._dpg_setup_keywords = [
+            name for name, param in setup_sig.parameters.items()
+            if param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
+        ]
 
-        This function should take two arguments, the instance being created and the value passed
-        to the custom keyword parameter. It should return a dictionary of config values that will
-        be added to the dictionary passed to :meth:`_setup_add_item` when creating the item.
+    # These are normally inherited. To prevent this, subclasses can override the attributes.
+    _init_handlers: ChainMap[str, GetConfigFunc] = chain_map()
+    _config_properties: ChainMap[str, ConfigProperty] = chain_map()
 
-        If the custom keyword parameter has already been added the previous one will be overwritten.
+    @classmethod
+    def add_init_handler(cls, name: str, getconfig: GetConfigFunc) -> None:
+        """Add init parameter handlers.
 
         Parameters:
-            name: the name of the keyword argument to add.
-            getconfig: a function that produces a dictionary of config items to be passed to
-                :meth:`_setup_add_item`.
+            name: the name of the init parameter to add.
+            getconfig: a function that produces a dictionary of config key-value pairs to be passed
+                to :meth:`_setup_add_item`.
         """
 
         # setup each subclass's config setup mapping
-        keyword_params = cls.__dict__.get('_init_params')
-        if keyword_params is None:
+        init_handlers = cls.__dict__.get('_init_handlers')
+        if init_handlers is None:
             # inherit keyword params from parent
-            if hasattr(cls._init_params, 'new_child'):
-                keyword_params = cls._init_params.new_child({})
+            if hasattr(cls._init_handlers, 'new_child'):
+                init_handlers = cls._init_handlers.new_child({})
             else:
-                keyword_params = chain_map({}, cls._init_params)
-            setattr(cls, '_init_params', keyword_params)
-        keyword_params[name] = getconfig
+                init_handlers = chain_map({}, cls._init_handlers)
+            setattr(cls, '_init_handlers', init_handlers)
+        init_handlers[name] = getconfig
+
+    @classmethod
+    def add_config_property(cls, prop: ConfigProperty) -> None:
+        config_properties = cls.__dict__.get('_config_properties')
+        if config_properties is None:
+            # inherit keyword params from parent
+            if hasattr(cls._config_properties, 'new_child'):
+                config_properties = cls._config_properties.new_child({})
+            else:
+                config_properties = chain_map({}, cls._config_properties)
+            setattr(cls, '_config_properties', config_properties)
+        config_properties[prop.name] = prop
 
 
-    def __init__(self, *, name_id: Optional[str] = None, **config: Any):
+    def __init__(self, *, name_id: Optional[str] = None, **kwargs: Any):
         """
+
         Parameters:
-            name: optional unique name used by DearPyGui to identify the GUI item.
-                If omitted, a name will be autogenerated.
-            **config: all other keyword arguments will be used to construct the item config data
-                passed to :meth:`_setup_add_widget` when setting up the item.
+            name_id: optionally specify the object's ID instead of autogenerating it.
+            **kwargs: initial values for config properties and keyword arguments for DPG.
         """
-
         if name_id is not None:
             self._name_id = name_id
         else:
             self._name_id = f'{self.__class__.__name__}##{id(self):x}'
 
-        # at no point should a PyGuiBase object exist for an item that hasn't
-        # actually been added, so if the item doesn't exist we need to add it now.
-        if not dpgcore.does_item_exist(self._name_id):
-            config = self._create_config(config)
-            self._setup_add_widget(config)
-        else:
+        if dpgcore.does_item_exist(self.id):
             self._setup_preexisting()
+        else:
+            # at no point should a PyGuiBase object exist for an item that hasn't
+            # actually been added, so if the item doesn't exist we need to add it now.
 
-        _register_item(self._name_id, self)
+            kwargs = dict(self._process_init_handlers(kwargs))
 
-    # create the item configuration data from __init__ keyword arguments
-    def _create_config(self, kwargs: ItemConfigData) -> ItemConfigData:
-        config = {}
-        for name, value in kwargs.items():
-            get_config = self._init_params.get(name)
-            if get_config is not None:
-                config.update(get_config(self, value))
+            # set config properties after adding the widget
+            config = {}
+            for name, value in list(kwargs.items()):
+                if name in self._config_properties:
+                    config[name] = kwargs.pop(name)
+
+            self._setup_add_widget(kwargs)
+
+            for name, value in config.items():
+                setattr(self, name, value)
+
+        _register_item(self.id, self)
+
+    def _process_init_handlers(self, init_args: Mapping[str, Any]):
+        for name, value in init_args.items():
+            handler = self._init_handlers.get(name)
+            if handler is not None:
+                yield from handler(self, value).items()
             else:
-                config[name] = value
-
-        return config
+                yield name, value
 
     ## Overrides
 
-    def _setup_add_widget(self, config: ItemConfigData) -> None:
-        """This method should be overriden by subclasses to add the wrapped GUI item using
-        DearPyGui's ``add_*()`` functions.
-
-        For example:
-
-        .. code-block:: python
-
-            class Button(PyGuiBase):
-                def _setup_add_item(self, config):
-                    dearpygui.core.add_button(self.id, **config)
-
-        Parameters:
-            config: a dictionary of config data that should be given to DearPyGui.
-        """
+    def _setup_add_widget(self, dpg_args: Mapping[str, Any]) -> None:
+        """This should create the widget using DearPyGui's ``add_*()`` functions."""
         pass
 
     def _setup_preexisting(self) -> None:
         """This can be overriden by subclasses to setup an object wrapper that has been created
         for a pre-existing GUI item.
 
-        There shouldn't usually be any extra setup required, as subclasses should try to draw all
-        their data from DearPyGui's functions instead of duplicating state that already exists in
-        DearPyGui. But it's available just in case.
-        """
+        Since we want to avoid duplicating state that already exists in DearPyGui, this method
+        should rarely be needed."""
         pass
 
     ## item/name reference

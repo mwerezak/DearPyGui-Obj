@@ -8,11 +8,16 @@ DearPyGui-Obj
 
 **DearPyGui-Obj** is an object-oriented wrapper around `DearPyGui <https://github.com/hoffstadt/DearPyGui>`_.
 
+.. caution::
+
+    This documentation is under construction!
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    widget_list
+   devguide
    api_reference/index
 
 

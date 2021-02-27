@@ -9,5 +9,6 @@ API Reference
    wrapper
    windows
    basic
+   input
    layout
    devtools

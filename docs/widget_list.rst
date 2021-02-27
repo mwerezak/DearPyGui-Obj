@@ -27,6 +27,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 
     dearpygui_obj.basic.Text
 
+
 .. rubric:: Buttons
 
 .. autosummary:: 
@@ -49,6 +50,20 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
     dearpygui_obj.input.InputInt2
     dearpygui_obj.input.InputInt3
     dearpygui_obj.input.InputInt4
+
+.. rubric:: Sliders
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.input.SliderFloat
+    dearpygui_obj.input.SliderFloat2
+    dearpygui_obj.input.SliderFloat3
+    dearpygui_obj.input.SliderFloat4
+    dearpygui_obj.input.SliderInt
+    dearpygui_obj.input.SliderInt2
+    dearpygui_obj.input.SliderInt3
+    dearpygui_obj.input.SliderInt4
 
 
 .. rubric:: Layout
