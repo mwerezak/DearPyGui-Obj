@@ -288,23 +288,26 @@ class PyGuiObject:
     ## Data and Values
 
     @ConfigProperty(key='source')
-    def data_source(self) -> Optional[DataValue]:
+    def data_source(self) -> DataValue:
         """Get the :class:`GuiData` used as the data source, if any."""
-        source_id = self.get_config().get('source')
-        return DataValue(source_id) if source_id else None
+        source_id = self.get_config().get('source') or self.id
+        return DataValue(source_id)
 
     @data_source.getconfig
     def data_source(self, source: Optional[Any]):
         # accept plain string in addition to GuiData
         return {'source' : str(source) if source is not None else ''}
 
+    # get_value(self.id) doesn't work if a data source has been set,
+    # so we have to go through data_source to get the widget's value
+
     @property
     def value(self) -> Any:
-        return dpgcore.get_value(self.id)
+        return self.data_source.value
 
     @value.setter
-    def value(self, new_value: Any) -> None:
-        dpgcore.set_value(self.id, new_value)
+    def value(self, value: Any) -> None:
+        self.data_source.value = value
 
     ## Other properties and status
 
