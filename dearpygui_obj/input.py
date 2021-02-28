@@ -1,13 +1,13 @@
 """Widgets for inputting values."""
 
 from __future__ import annotations
-from typing import TYPE_CHECKING, TypeVar, Generic, Sequence, Tuple
+from typing import TYPE_CHECKING, TypeVar, Generic
 
 import dearpygui.core as dpgcore
 from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Optional
+    from typing import Optional, Tuple
 
 ## Input Boxes
 
@@ -38,6 +38,7 @@ _TInput = TypeVar('_TInput')
 
 class NumberInput(PyGuiObject, Generic[_TInput]):
     """Base class for number input boxes."""
+    value: _TInput
     _default_value: _TInput
 
     format: str = ConfigProperty()
@@ -77,37 +78,39 @@ class NumberInput(PyGuiObject, Generic[_TInput]):
         value = value or self._default_value
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
+
+_TElem = TypeVar('_TElem')
+
 @dearpygui_wrapper('mvAppItemType::InputFloat')
 class InputFloat(NumberInput[float]):
     """A float input box."""
-
     _default_value = 0.0
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_float(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::InputFloat2')
-class InputFloat2(NumberInput[Tuple[float, float]]):
+class InputFloat2(NumberInput[float]):
     """An input box for 2 floats."""
-
+    value: Tuple[float, float]
     _default_value = (0.0, 0.0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_float2(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::InputFloat3')
-class InputFloat3(NumberInput[Tuple[float, float, float]]):
+class InputFloat3(NumberInput[float]):
     """An input box for 3 floats."""
-
+    value: Tuple[float, float, float]
     _default_value = (0.0, 0.0, 0.0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_float3(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::InputFloat4')
-class InputFloat4(NumberInput[Tuple[float, float, float, float]]):
+class InputFloat4(NumberInput[float]):
     """An input box for 4 floats."""
-
+    value: Tuple[float, float, float, float]
     _default_value = (0.0, 0.0, 0.0, 0.0)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -116,34 +119,33 @@ class InputFloat4(NumberInput[Tuple[float, float, float, float]]):
 @dearpygui_wrapper('mvAppItemType::InputInt')
 class InputInt(NumberInput[int]):
     """An integer input box."""
-
     _default_value = 0
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_int(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::InputInt2')
-class InputInt2(NumberInput[Tuple[int, int]]):
+class InputInt2(NumberInput[int]):
     """An input box for 2 ints."""
-
+    value: Tuple[int, int]
     _default_value = (0, 0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_int2(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::InputInt3')
-class InputInt3(NumberInput[Tuple[int, int, int]]):
+class InputInt3(NumberInput[int]):
     """An input box for 3 ints."""
-
+    value: Tuple[int, int, int]
     _default_value = (0, 0, 0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_int3(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::InputInt4')
-class InputInt4(NumberInput[Tuple[int, int, int, int]]):
+class InputInt4(NumberInput[int]):
     """An input box for 4 ints."""
-
+    value: Tuple[int, int, int, int]
     _default_value = (0, 0, 0, 0)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -154,6 +156,7 @@ class InputInt4(NumberInput[Tuple[int, int, int, int]]):
 
 class SliderInput(PyGuiObject, Generic[_TInput]):
     """Base class for slider types."""
+    value: _TInput
     _default_value: _TInput
 
     label: str = ConfigProperty()
@@ -185,36 +188,36 @@ class SliderFloat(SliderInput[float]):
         dpgcore.add_slider_float(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::SliderFloat2')
-class SliderFloat2(SliderInput[Tuple[float, float]]):
+class SliderFloat2(SliderInput[float]):
     """A slider for 2 float values.
 
     If not disabled using the :attr:`no_input` property, the slider can be CTRL+Clicked to turn it
     into an input box for manual input of a value."""
-
+    value: Tuple[float, float]
     _default_value = (0.0, 0.0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_float2(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::SliderFloat3')
-class SliderFloat3(SliderInput[Tuple[float, float, float]]):
+class SliderFloat3(SliderInput[float]):
     """A slider for 3 float values.
 
     If not disabled using the :attr:`no_input` property, the slider can be CTRL+Clicked to turn it
     into an input box for manual input of a value."""
-
+    value: Tuple[float, float, float]
     _default_value = (0.0, 0.0, 0.0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_float3(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::SliderFloat4')
-class SliderFloat4(SliderInput[Tuple[float, float, float, float]]):
+class SliderFloat4(SliderInput[float]):
     """A slider for 4 float values.
 
     If not disabled using the :attr:`no_input` property, the slider can be CTRL+Clicked to turn it
     into an input box for manual input of a value."""
-
+    value: Tuple[float, float, float, float]
     _default_value = (0.0, 0.0, 0.0, 0.0)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -226,43 +229,43 @@ class SliderInt(SliderInput[int]):
 
     If not disabled using the :attr:`no_input` property, the slider can be CTRL+Clicked to turn it
     into an input box for manual input of a value."""
-
+    value: int
     _default_value = 0
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::SliderInt2')
-class SliderInt2(SliderInput[Tuple[int, int]]):
+class SliderInt2(SliderInput[int]):
     """A slider for 2 integer values.
 
     If not disabled using the :attr:`no_input` property, the slider can be CTRL+Clicked to turn it
     into an input box for manual input of a value."""
-
+    value: Tuple[int, int]
     _default_value = (0, 0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int2(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::SliderInt3')
-class SliderInt3(SliderInput[Tuple[int, int, int]]):
+class SliderInt3(SliderInput[int]):
     """A slider for 3 integer values.
 
     If not disabled using the :attr:`no_input` property, the slider can be CTRL+Clicked to turn it
     into an input box for manual input of a value."""
-
+    value: Tuple[int, int, int]
     _default_value = (0, 0, 0)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int3(self.id, **dpg_args)
 
 @dearpygui_wrapper('mvAppItemType::SliderInt4')
-class SliderInt4(SliderInput[Tuple[int, int, int, int]]):
+class SliderInt4(SliderInput[int]):
     """A slider for 4 integer values.
 
     If not disabled using the :attr:`no_input` property, the slider can be CTRL+Clicked to turn it
     into an input box for manual input of a value."""
-
+    value: Tuple[int, int, int, int]
     _default_value = (0, 0, 0, 0)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -287,6 +290,11 @@ if __name__ == '__main__':
         i4 = InputInt4('InputInt4', data_source = linked_ints)
         sf = SliderFloat('SliderFloat')
         sf3 = SliderFloat3('SliderFloat3')
+
+        @i4.callback()
+        def callback(sender, data):
+            print(i4.value)
+
         print(get_item_type(sf.id))
         print(get_item_configuration(sf.id))
 

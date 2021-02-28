@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from warnings import warn
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence
 
 import dearpygui.core as dpgcore
 
@@ -165,9 +165,15 @@ class DataValue:
 
     @property
     def value(self) -> Any:
-        return dpgcore.get_value(self.id)
+        value = dpgcore.get_value(self.id)
+        # need to return an immutable value since modifying the list wont actually change the value in DPG
+        if isinstance(value, list):
+            value = tuple(value)
+        return value
 
     @value.setter
-    def value(self, new_value: Any) -> None:
-        dpgcore.set_value(self.id, new_value)
+    def value(self, value: Any) -> None:
+        if isinstance(value, Sequence):
+            value = list(value)  # DPG only accepts lists for sequence values
+        dpgcore.set_value(self.id, value)
 
