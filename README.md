@@ -3,7 +3,9 @@ An object-oriented interface for [Dear PyGui](https://github.com/hoffstadt/DearP
 
 *Dear PyGui* is an excellent Python GUI framework built on top of the [Dear ImGui](https://github.com/ocornut/imgui) immediate-mode lightweight graphical interface library for C++. Dear PyGui itself is mostly a C++/CPython library with a thin scripting layer as it's primary interface.
 
-This project aims to implement a pure-Python interface to *Dear PyGui* that takes full advantage of the Python language to provide a concise and ergonomic API.
+This project aims to implement a pure-Python interface to Dear PyGui that takes full advantage of the Python language to provide a concise and ergonomic API.
+
+Another goal of DearPyGui-Obj is that the object library should be fully compatible with Dear PyGui. This means that any Dear PyGui code that executes outside of DearPyGui-Obj should not invalidate or break any part of the object library.
 
 ## Example Usage
 Using *DearPyGui-Obj* is as simple as creating a script like the one below:
