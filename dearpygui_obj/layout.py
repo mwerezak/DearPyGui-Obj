@@ -57,6 +57,29 @@ class ScrollView(PyGuiObject):
             dpgcore.end()
 
 
+@dearpygui_wrapper('mvAppItemType::Group')
+class LayoutGroup(PyGuiObject):
+    """Grouped widgets behave as a single unit when acted on by e.g. :class:`HAlignNext`.
+
+    They can optionally have their contents flow horizontally instead of vertically.
+    """
+
+    horizontal: bool = ConfigProperty()
+    horizontal_spacing: float = ConfigProperty()
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_group(self.id, **dpg_args)
+
+    def __enter__(self) -> LayoutGroup:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        if self.is_container():
+            dpgcore.end()
+
+
+
+
 if __name__ == '__main__':
     from dearpygui.core import *
     from dearpygui.simple import *
@@ -65,11 +88,20 @@ if __name__ == '__main__':
     from dearpygui_obj.basic import Button
     from dearpygui_obj.devtools import *
 
-    with Window():
-        with ScrollView():
-            Button()
+    with window('window'):
+        with group('group1', horizontal=True, horizontal_spacing=12):
+            add_button('button1')
+            add_button('button2')
+            add_button('button3')
+        add_same_line()
+        with group('group2'):
+            add_button('button4')
+            add_button('button5')
+            add_button('button6')
 
 
+
+    print(get_item_type('group1'))
 
     start_dearpygui()
 
