@@ -88,11 +88,16 @@ def _register_item_type(item_type: str) -> Callable:
     an item that was not created by the object library."""
     def decorator(ctor: Callable[..., PyGuiObject]):
         if item_type in _ITEM_TYPES:
-            raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
+            raise ValueError(f"'{item_type}' is already registered to {_ITEM_TYPES[item_type]!r}")
         _ITEM_TYPES[item_type] = ctor
         return ctor
     return decorator
 
+def _set_default_ctor(default_ctor: Callable[..., PyGuiObject]) -> None:
+    global _default_ctor
+    if _default_ctor is not None:
+        raise ValueError(f"default ctor is already registered to {_default_ctor!r}")
+    _default_ctor = default_ctor
 
 _IDGEN_SEQ = 0
 def _generate_id(o: Any) -> str:

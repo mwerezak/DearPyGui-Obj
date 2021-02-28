@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import (
-    _generate_id, _register_item, _unregister_item,
+    _generate_id, _set_default_ctor,
+    _register_item, _unregister_item,
     _wrap_callback, _unwrap_callback,
     get_item_by_id, DataValue,
 )
@@ -376,8 +377,4 @@ class PyGuiObject:
         return dpgcore.is_item_deactivated_after_edit(self.id)
 
 
-import dearpygui_obj
-
-# noinspection PyProtectedMember
-if dearpygui_obj._default_ctor is None:
-    dearpygui_obj._default_ctor = PyGuiObject
+_set_default_ctor(PyGuiObject)
