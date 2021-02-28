@@ -100,35 +100,3 @@ class Dummy(PyGuiObject):
     """Adds a spacer or 'dummy' widget."""
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_dummy(name=self.id, **dpg_args)
-
-
-if __name__ == '__main__':
-    from dearpygui.core import *
-    from dearpygui.simple import *
-    from dearpygui.demo import *
-    from dearpygui_obj import *
-    from dearpygui_obj.window import Window
-    from dearpygui_obj.basic import Button
-    from dearpygui_obj.devtools import *
-
-    with window('window'):
-        with group('group1', horizontal=True, horizontal_spacing=12):
-            add_button('button1')
-            add_button('button2')
-            add_button('button3')
-
-
-        add_button('button4')
-        with LayoutIndent():
-            add_button('button5')
-            add_button('button6')
-            with LayoutIndent():
-                add_button('button7')
-            add_button('button8')
-            add_button('button9')
-
-    show_demo()
-
-
-    start_dearpygui()
-

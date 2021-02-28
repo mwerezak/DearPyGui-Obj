@@ -43,15 +43,3 @@ class AboutWindow(Window):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_about_window(self.id, **dpg_args)
         dpgcore.end()
-
-
-if __name__ == '__main__':
-    from dearpygui_obj import start_gui
-
-    DebugWindow()
-    MetricsWindow()
-    StyleEditorWindow()
-    DocumentationWindow()
-    AboutWindow()
-
-    start_gui()

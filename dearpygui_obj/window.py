@@ -144,20 +144,3 @@ class Window(PyGuiObject):
         """Set resized callback, can be used as a decorator."""
         dpgcore.set_resize_callback(callback, handler=self.id)
         return callback
-
-if __name__ == '__main__':
-    from dearpygui.core import *
-
-    from dearpygui_obj import iter_all_windows
-    from dearpygui_obj.basic import Button
-
-    with Window() as win:
-        print(Button().get_config())
-
-    def callback(sender, data):
-        print(f"{sender!r}: {type(sender)!r}, {data!r}: {type(data)!r}")
-
-    configure_item(win.id, on_close=callback)
-
-    start_dearpygui()
-

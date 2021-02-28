@@ -271,34 +271,3 @@ class SliderInt4(SliderInput[int]):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int4(self.id, **dpg_args)
-
-
-
-if __name__ == '__main__':
-    from dearpygui.core import *
-    from dearpygui_obj.window import Window
-    from dearpygui_obj import create_value
-
-    linked_ints = create_value([0, 3, -1, 2])
-
-    with Window('Test Window') as window:
-        t = InputText('InputText')
-        t2 = InputText('Deleted')
-        f = InputFloat('InputFloat', value=4.3)
-        f2 = InputFloat2('InputFloat2', tooltip='tooltip')
-        i = InputInt('InputInt', data_source = linked_ints)
-        i2 = InputInt2('InputInt2', data_source = linked_ints)
-        i4 = InputInt4('InputInt4', data_source = linked_ints)
-        sf = SliderFloat('SliderFloat')
-        sf3 = SliderFloat3('SliderFloat3')
-
-        @i4.callback()
-        def callback(sender, data):
-            print(i4.value)
-
-        print(get_item_type(sf.id))
-        print(get_item_configuration(sf.id))
-
-    print(get_all_items())
-
-    start_dearpygui()
