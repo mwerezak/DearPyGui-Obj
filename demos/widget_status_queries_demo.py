@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from dearpygui_obj import start_gui, set_render_callback
+from dearpygui_obj import start_gui, stop_gui, set_render_callback
 from dearpygui_obj.data import ColorRGBA
 from dearpygui_obj.window import Window
 from dearpygui_obj.basic import Text, Button, Separator
@@ -71,6 +71,10 @@ with Window("Example Window") as win:
 
     slider = SliderFloat()
     slider_status = StatusFlags(slider)
+
+@win.on_close
+def on_close(sender, data):
+    stop_gui()
 
 @set_render_callback
 def render(sender, data):

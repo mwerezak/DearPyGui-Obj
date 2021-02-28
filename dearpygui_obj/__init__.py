@@ -10,6 +10,7 @@ import dearpygui.core as dpgcore
 if TYPE_CHECKING:
     from typing import Dict, Iterable, Optional, Callable, Any, Union
     from dearpygui_obj.wrapper import PyGuiObject
+    from dearpygui_obj.window import Window
 
     ## Type Aliases
     PyGuiCallback = Callable[[Union[PyGuiObject, str], Any], None]
@@ -111,9 +112,12 @@ def _generate_id(o: Any) -> str:
 
 ## Start/Stop DearPyGui
 
-def start_gui() -> None:
+def start_gui(*, primary_window: Window = None) -> None:
     """Starts the GUI engine (DearPyGui)."""
-    dpgcore.start_dearpygui()
+    if primary_window is not None:
+        dpgcore.start_dearpygui(primary_window=primary_window.id)
+    else:
+        dpgcore.start_dearpygui()
 
 def stop_gui() -> None:
     """Stop the GUI engine and exit the main window."""
