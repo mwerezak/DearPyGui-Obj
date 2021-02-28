@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import _dearpygui_wrapper
+from dearpygui_obj import _dearpygui_wrapper
 from dearpygui_obj.window import Window
 
 if TYPE_CHECKING:

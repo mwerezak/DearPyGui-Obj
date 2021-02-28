@@ -3,10 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiObject, _dearpygui_wrapper, ConfigProperty
+from dearpygui_obj import _dearpygui_wrapper, _wrap_callback
+from dearpygui_obj.wrapper import PyGuiObject, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
+    from dearpygui_obj import PyGuiCallback
     from dearpygui_obj.wrapper import ItemConfigData
 
 
@@ -110,18 +112,16 @@ class Window(PyGuiObject):
         width, height = value
         return {'x_pos': width, 'y_pos' : height}
 
-    _on_close: Optional[Callable] = None
-
     def __init__(self, label: str = '', *, name_id: str = None, **config):
         """
         Parameters:
              label: window label.
         """
-
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
-        dpgcore.add_window(self.id, **dpg_args)
+        on_close = _wrap_callback(self._on_close)
+        dpgcore.add_window(self.id, on_close=on_close, **dpg_args)
 
     def __enter__(self) -> Window:
         return self
@@ -129,13 +129,15 @@ class Window(PyGuiObject):
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
 
-    def _handle_on_close(self, sender, data) -> None:
-        if self._on_close is not None:
-            self._on_close(sender, data)
+    ## workaround for the fact that you can't set the on_close callback in DPG
+    _on_close_callback: Optional[PyGuiCallback] = None
+    def _on_close(self, sender, data) -> None:
+        if self._on_close_callback is not None:
+            self._on_close_callback(sender, data)
 
-    def on_close(self, callback: Callable) -> Callable:
+    def on_close(self, callback: PyGuiCallback) -> Callable:
         """Set on_close callback, can be used as a decorator."""
-        self._on_close = callback
+        self._on_close_callback = callback
         return callback
 
     def resized(self, callback: Callable) -> Callable:
@@ -147,9 +149,15 @@ if __name__ == '__main__':
     from dearpygui.core import *
 
     from dearpygui_obj import iter_all_windows
+    from dearpygui_obj.basic import Button
 
-    for win in iter_all_windows():
-        print(win.id, win.is_container())
+    with Window() as win:
+        print(Button().get_config())
+
+    def callback(sender, data):
+        print(f"{sender!r}: {type(sender)!r}, {data!r}: {type(data)!r}")
+
+    configure_item(win.id, on_close=callback)
 
     start_dearpygui()
 

@@ -7,45 +7,20 @@ from typing import TYPE_CHECKING
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import (
-    _ITEM_TYPES, _generate_id, _register_item, _unregister_item, get_item_by_id, DataValue,
+    _generate_id, _register_item, _unregister_item,
+    _wrap_callback, _unwrap_callback,
+    get_item_by_id, DataValue,
 )
 
 if TYPE_CHECKING:
     from typing import Callable, Mapping, Any, Optional, Type, Iterable, Tuple, ChainMap, List
+    from dearpygui_obj import PyGuiCallback
 
-
-## Type Aliases
-if TYPE_CHECKING:
+    ## Type Aliases
     ItemConfigData = Mapping[str, Any]  #: Alias for GUI item configuration data
 
     GetValueFunc = Callable[['PyGuiObject'], Any]
     GetConfigFunc = Callable[['PyGuiObject', Any], ItemConfigData]
-
-    #: Alias for GUI callback signature: callback(sender, data)
-    PyGuiCallback = Callable[['PyGuiObject', Any], None]
-
-    # Alias for callbacks used by DPG which take a string ID as sender.
-    _DPGCallback = Callable[[str, Any], None]
-
-
-def _dearpygui_wrapper(item_type: str) -> Callable:
-    """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
-
-    This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting
-    an item that was not created by the object library."""
-    def decorator(ctor: Callable[..., PyGuiObject]):
-        if item_type in _ITEM_TYPES:
-            raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
-        _ITEM_TYPES[item_type] = ctor
-        return ctor
-    return decorator
-
-def _wrap_callback(callback: PyGuiCallback) -> _DPGCallback:
-    """Wrap a :data:`PyGuiCallback` making it compatible with DPG."""
-    def dpg_callback(sender: str, data: Any) -> None:
-        return callback(get_item_by_id(sender), data)
-    dpg_callback._internal_callback = callback
-    return dpg_callback
 
 
 class ConfigProperty:
@@ -224,14 +199,12 @@ class PyGuiObject:
 
     def set_callback(self, callback: PyGuiCallback) -> None:
         """Set the callback used by DearPyGui."""
-        dpgcore.set_item_callback(self.id, wrap_callback(callback))
+        dpgcore.set_item_callback(self.id, _wrap_callback(callback))
 
     def get_callback(self) -> PyGuiCallback:
         """Get the callback used by DearPyGui."""
         dpg_callback = dpgcore.get_item_callback(self.id)
-        # this ensures we get the correct callback whether it is a wrapped callback
-        # or something that was set from outside the object library
-        return getattr(dpg_callback, '_internal_callback', dpg_callback)
+        return _unwrap_callback(dpg_callback)
 
     @property
     def callback_data(self) -> Any:

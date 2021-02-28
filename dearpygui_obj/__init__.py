@@ -8,8 +8,12 @@ from typing import TYPE_CHECKING, Sequence
 import dearpygui.core as dpgcore
 
 if TYPE_CHECKING:
-    from typing import Dict, Iterable, Optional, Callable, Any
+    from typing import Dict, Iterable, Optional, Callable, Any, Union
     from dearpygui_obj.wrapper import PyGuiObject
+
+    ## Type Aliases
+    PyGuiCallback = Callable[[Union[PyGuiObject, str], Any], None]
+    _DPGCallback = Callable[[str, Any], None]
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
 _ITEM_LOOKUP: Dict[str, PyGuiObject] = {}
@@ -39,7 +43,10 @@ def get_item_by_id(name: str) -> PyGuiObject:
     if item is not None:
         return item
 
-    item_type = dpgcore.get_item_type(name)
+    item_type = dpgcore.get_item_type(name) ## WARNING: this will segfault if name does not exist
+    return _create_item_wrapper(name, item_type)
+
+def _create_item_wrapper(name: str, item_type: str) -> PyGuiObject:
     ctor = _ITEM_TYPES.get(item_type, _default_ctor)
     if ctor is None:
         raise ValueError(f"could not create wrapper for '{name}': no constructor for item type '{item_type}'")
@@ -73,6 +80,19 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
         if children is not None:
             for child_name in children:
                 _unregister_item(child_name, True)
+
+def _dearpygui_wrapper(item_type: str) -> Callable:
+    """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
+
+    This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting
+    an item that was not created by the object library."""
+    def decorator(ctor: Callable[..., PyGuiObject]):
+        if item_type in _ITEM_TYPES:
+            raise ValueError(f'"{item_type}" is already registered to {_ITEM_TYPES[item_type]!r}')
+        _ITEM_TYPES[item_type] = ctor
+        return ctor
+    return decorator
+
 
 _IDGEN_SEQ = 0
 def _generate_id(o: Any) -> str:
@@ -177,3 +197,27 @@ class DataValue:
             value = list(value)  # DPG only accepts lists for sequence values
         dpgcore.set_value(self.id, value)
 
+## Callbacks
+
+def _wrap_callback(callback: PyGuiCallback) -> _DPGCallback:
+    """Wrap a :data:`PyGuiCallback` making it compatible with DPG."""
+    def dpg_callback(sender: str, data: Any) -> None:
+        if dpgcore.does_item_exist(sender):
+            if sender in _ITEM_LOOKUP:
+                sender = _ITEM_LOOKUP[sender]
+            else:
+                # warning, this will segfault if sender does not exist!
+                sender_type = dpgcore.get_item_type(sender)
+                sender = _create_item_wrapper(sender, sender_type)
+
+        return callback(sender, data)
+
+    dpg_callback._internal_callback = callback
+    return dpg_callback
+
+def _unwrap_callback(callback: Callable) -> Callable:
+    """If the callback was wrapped with :func:`_wrap_callback`, this will unwrap it.
+
+    Otherwise, the callback will just be returned unchanged.
+    """
+    return getattr(callback, '_internal_callback', callback)
