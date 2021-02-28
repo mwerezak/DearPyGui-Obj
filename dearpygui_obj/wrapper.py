@@ -17,8 +17,15 @@ if TYPE_CHECKING:
 ## Type Aliases
 if TYPE_CHECKING:
     ItemConfigData = Mapping[str, Any]  #: Alias for GUI item configuration data
+
     GetValueFunc = Callable[['PyGuiObject'], Any]
     GetConfigFunc = Callable[['PyGuiObject', Any], ItemConfigData]
+
+    #: Alias for GUI callback signature: callback(sender, data)
+    PyGuiCallback = Callable[['PyGuiObject', Any], None]
+
+    # Alias for callbacks used by DPG which take a string ID as sender.
+    _DPGCallback = Callable[[str, Any], None]
 
 def dearpygui_wrapper(item_type: str) -> Callable:
     """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
@@ -31,6 +38,14 @@ def dearpygui_wrapper(item_type: str) -> Callable:
         _ITEM_TYPES[item_type] = ctor
         return ctor
     return decorator
+
+def _wrap_callback(callback: PyGuiCallback) -> _DPGCallback:
+    """Wrap a :data:`PyGuiCallback` making it compatible with DPG."""
+    def dpg_callback(sender: str, data: Any) -> None:
+        return callback(get_item_by_id(sender), data)
+    dpg_callback._internal_callback = callback
+    return dpg_callback
+
 
 class ConfigProperty:
     """Descriptor used to get or set an item's configuration."""
@@ -206,13 +221,16 @@ class PyGuiObject:
 
     ## Callbacks
 
-    def set_callback(self, callback: Callable) -> None:
+    def set_callback(self, callback: PyGuiCallback) -> None:
         """Set the callback used by DearPyGui."""
-        dpgcore.set_item_callback(self.id, callback)
+        dpgcore.set_item_callback(self.id, wrap_callback(callback))
 
-    def get_callback(self) -> Any:
+    def get_callback(self) -> PyGuiCallback:
         """Get the callback used by DearPyGui."""
-        return dpgcore.get_item_callback(self.id)
+        dpg_callback = dpgcore.get_item_callback(self.id)
+        # this ensures we get the correct callback whether it is a wrapped callback
+        # or something that was set from outside the object library
+        return getattr(dpg_callback, '_internal_callback', dpg_callback)
 
     @property
     def callback_data(self) -> Any:
@@ -237,7 +255,7 @@ class PyGuiObject:
                 def callback(sender, data):
                     ...
         """
-        def decorator(callback: Callable) -> Callable:
+        def decorator(callback: PyGuiCallback) -> PyGuiCallback:
             dpgcore.set_item_callback(self.id, callback, callback_data=data)
             return callback
         return decorator
@@ -304,11 +322,10 @@ class PyGuiObject:
         # accept plain string in addition to GuiData
         return {'source' : str(source) if source is not None else ''}
 
-    # get_value(self.id) doesn't work if a data source has been set,
-    # so we have to go through data_source to get the widget's value
-
     @property
     def value(self) -> Any:
+        # get_value(self.id) doesn't work if a data source has been set,
+        # so we have to go through data_source to get the widget's value
         return self.data_source.value
 
     @value.setter
