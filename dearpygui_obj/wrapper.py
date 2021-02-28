@@ -27,7 +27,8 @@ if TYPE_CHECKING:
     # Alias for callbacks used by DPG which take a string ID as sender.
     _DPGCallback = Callable[[str, Any], None]
 
-def dearpygui_wrapper(item_type: str) -> Callable:
+
+def _dearpygui_wrapper(item_type: str) -> Callable:
     """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
 
     This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting

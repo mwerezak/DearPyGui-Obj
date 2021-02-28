@@ -8,14 +8,11 @@ Wrapper Object System
 .. autosummary:: 
     :nosignatures:
 
-    dearpygui_wrapper
     PyGuiObject
     ConfigProperty
 
 PyGuiObject
 -----------
-
-.. autodecorator:: dearpygui_wrapper
 
 .. autoclass:: PyGuiObject
     :members:

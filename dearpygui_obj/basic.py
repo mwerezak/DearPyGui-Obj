@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA
-from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiObject, _dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 ## Basic Content
 
-@dearpygui_wrapper('mvAppItemType::Text')
+@_dearpygui_wrapper('mvAppItemType::Text')
 class Text(PyGuiObject):
     """A basic element that displays some text."""
 
@@ -34,7 +34,7 @@ class Text(PyGuiObject):
         dpgcore.add_text(self.id, **dpg_args)
 
 
-@dearpygui_wrapper('mvAppItemType::LabelText')
+@_dearpygui_wrapper('mvAppItemType::LabelText')
 class LabelText(PyGuiObject):
     """Adds text with a label. Useful for output values when used with a data_source."""
 
@@ -49,7 +49,7 @@ class LabelText(PyGuiObject):
         dpgcore.add_label_text(self.id, **dpg_args)
 
 
-@dearpygui_wrapper('mvAppItemType::Separator')
+@_dearpygui_wrapper('mvAppItemType::Separator')
 class Separator(PyGuiObject):
     """Adds a horizontal line."""
     def _setup_add_widget(self, dpg_args) -> None:
@@ -64,7 +64,7 @@ class ButtonArrow(Enum):
     Up      = 2
     Down    = 3
 
-@dearpygui_wrapper('mvAppItemType::Button')
+@_dearpygui_wrapper('mvAppItemType::Button')
 class Button(PyGuiObject):
     """A simple button."""
 
@@ -99,7 +99,7 @@ class Button(PyGuiObject):
         dpgcore.add_button(self.id, **dpg_args)
 
 
-@dearpygui_wrapper('mvAppItemType::Checkbox')
+@_dearpygui_wrapper('mvAppItemType::Checkbox')
 class Checkbox(PyGuiObject):
     """Simple checkbox widget."""
 
@@ -114,7 +114,7 @@ class Checkbox(PyGuiObject):
         dpgcore.add_checkbox(self.id, **dpg_args)
 
 
-@dearpygui_wrapper('mvAppItemType::ProgressBar')
+@_dearpygui_wrapper('mvAppItemType::ProgressBar')
 class ProgressBar(PyGuiObject):
     """A progress bar.
     Displays a value given between 0.0 and 1.0."""

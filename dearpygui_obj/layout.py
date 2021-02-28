@@ -4,12 +4,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiObject, _dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Tuple
 
-@dearpygui_wrapper('mvAppItemType::Spacing')
+@_dearpygui_wrapper('mvAppItemType::Spacing')
 class VSpacing(PyGuiObject):
     """Adds vertical spacing."""
 
@@ -19,7 +19,7 @@ class VSpacing(PyGuiObject):
         dpgcore.add_spacing(name=self.id, **dpg_args)
 
 
-@dearpygui_wrapper('mvAppItemType::SameLine')
+@_dearpygui_wrapper('mvAppItemType::SameLine')
 class HAlignNext(PyGuiObject):
     """Places a widget on the same line as the previous widget.
     Can also be used for horizontal spacing."""
@@ -34,7 +34,7 @@ def align_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup
     """Shortcut for ``LayoutGroup(horizontal=True)``"""
     return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id)
 
-@dearpygui_wrapper('mvAppItemType::Group')
+@_dearpygui_wrapper('mvAppItemType::Group')
 class LayoutGroup(PyGuiObject):
     """Grouped widgets behave as a single unit when acted on by e.g. :class:`HAlignNext`.
 
@@ -53,7 +53,7 @@ class LayoutGroup(PyGuiObject):
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
 
-@dearpygui_wrapper('mvAppItemType::Indent')
+@_dearpygui_wrapper('mvAppItemType::Indent')
 class LayoutIndent(PyGuiObject):
     """Adds an indent to contained items."""
 
@@ -69,7 +69,7 @@ class LayoutIndent(PyGuiObject):
         dpgcore.unindent()
 
 
-@dearpygui_wrapper('mvAppItemType::Child')
+@_dearpygui_wrapper('mvAppItemType::Child')
 class ScrollView(PyGuiObject):
     """Adds an embedded child window with optional scollbars."""
 
@@ -94,7 +94,7 @@ class ScrollView(PyGuiObject):
         dpgcore.end()
 
 
-@dearpygui_wrapper('mvAppItemType::Dummy')
+@_dearpygui_wrapper('mvAppItemType::Dummy')
 class Dummy(PyGuiObject):
     """Adds a spacer or 'dummy' widget."""
     def _setup_add_widget(self, dpg_args) -> None:

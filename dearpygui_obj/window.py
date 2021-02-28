@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiObject, _dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
@@ -73,7 +73,7 @@ class MainWindow:
         dpgcore.enable_docking(**kwargs)
 
 
-@dearpygui_wrapper('mvAppItemType::Window')
+@_dearpygui_wrapper('mvAppItemType::Window')
 class Window(PyGuiObject):
     """Creates a new window."""
 
