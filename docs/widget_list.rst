@@ -80,6 +80,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
     dearpygui_obj.layout.LayoutGroup
     dearpygui_obj.layout.LayoutIndent
     dearpygui_obj.layout.ScrollView
+    dearpygui_obj.layout.Dummy
 
 
 .. rubric:: Developer Tool Windows

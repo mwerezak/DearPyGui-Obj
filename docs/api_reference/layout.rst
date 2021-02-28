@@ -13,6 +13,7 @@ Layout
     LayoutGroup
     LayoutIndent
     ScrollView
+    Dummy
 
 .. autoclass:: VSpacing
     :members:
@@ -31,5 +32,9 @@ Layout
     :undoc-members:
 
 .. autoclass:: ScrollView
+    :members:
+    :undoc-members:
+
+.. autoclass:: Dummy
     :members:
     :undoc-members:

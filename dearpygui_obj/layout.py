@@ -31,31 +31,6 @@ class HAlignNext(PyGuiObject):
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
 
-@dearpygui_wrapper('mvAppItemType::Child')
-class ScrollView(PyGuiObject):
-    """Adds an embedded child window with optional scollbars."""
-
-    border: bool = ConfigProperty()
-    autosize_x: bool = ConfigProperty()
-    autosize_y: bool = ConfigProperty()
-    menubar: bool = ConfigProperty()
-
-    #: Disable scrollbars (can still scroll with mouse or programmatically).
-    no_scrollbar: bool = ConfigProperty()
-
-    #: Allow horizontal scrollbar to appear.
-    horizontal_scrollbar: bool = ConfigProperty()
-
-    def _setup_add_widget(self, dpg_args) -> None:
-        dpgcore.add_child(self.id, **dpg_args)
-
-    def __enter__(self) -> ScrollView:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
-
-
 @dearpygui_wrapper('mvAppItemType::Group')
 class LayoutGroup(PyGuiObject):
     """Grouped widgets behave as a single unit when acted on by e.g. :class:`HAlignNext`.
@@ -90,6 +65,38 @@ class LayoutIndent(PyGuiObject):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.unindent()
+
+
+@dearpygui_wrapper('mvAppItemType::Child')
+class ScrollView(PyGuiObject):
+    """Adds an embedded child window with optional scollbars."""
+
+    border: bool = ConfigProperty()
+    autosize_x: bool = ConfigProperty()
+    autosize_y: bool = ConfigProperty()
+    menubar: bool = ConfigProperty()
+
+    #: Disable scrollbars (can still scroll with mouse or programmatically).
+    no_scrollbar: bool = ConfigProperty()
+
+    #: Allow horizontal scrollbar to appear.
+    horizontal_scrollbar: bool = ConfigProperty()
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_child(self.id, **dpg_args)
+
+    def __enter__(self) -> ScrollView:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        dpgcore.end()
+
+
+@dearpygui_wrapper('mvAppItemType::Dummy')
+class Dummy(PyGuiObject):
+    """Adds a spacer or 'dummy' widget."""
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_dummy(name=self.id, **dpg_args)
 
 
 if __name__ == '__main__':
