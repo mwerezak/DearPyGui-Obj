@@ -10,6 +10,7 @@ Layout
 
     VSpacing
     HAlignNext
+    align_horizontal
     LayoutGroup
     LayoutIndent
     ScrollView
@@ -22,6 +23,8 @@ Layout
 .. autoclass:: HAlignNext
     :members:
     :undoc-members:
+
+.. autofunction:: align_horizontal
 
 .. autoclass:: LayoutGroup
     :members:

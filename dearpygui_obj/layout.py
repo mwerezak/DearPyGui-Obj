@@ -30,6 +30,9 @@ class HAlignNext(PyGuiObject):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
+def align_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup:
+    """Shortcut for ``LayoutGroup(horizontal=True)``"""
+    return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id)
 
 @dearpygui_wrapper('mvAppItemType::Group')
 class LayoutGroup(PyGuiObject):
@@ -49,7 +52,6 @@ class LayoutGroup(PyGuiObject):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
-
 
 @dearpygui_wrapper('mvAppItemType::Indent')
 class LayoutIndent(PyGuiObject):
