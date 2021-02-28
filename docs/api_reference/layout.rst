@@ -10,6 +10,8 @@ Layout
 
     VSpacing
     HAlignNext
+    LayoutGroup
+    LayoutIndent
     ScrollView
 
 .. autoclass:: VSpacing
@@ -17,6 +19,14 @@ Layout
     :undoc-members:
 
 .. autoclass:: HAlignNext
+    :members:
+    :undoc-members:
+
+.. autoclass:: LayoutGroup
+    :members:
+    :undoc-members:
+
+.. autoclass:: LayoutIndent
     :members:
     :undoc-members:
 
