@@ -14,7 +14,7 @@ from dearpygui_obj.window import Window
 from dearpygui_obj.basic import Text, Button
 from dearpygui_obj.input import InputText, SliderFloat
 
-with Window("Example Window"):
+with Window("Example Window") as win:
     Text("Hello world!")
     textbox = InputText("string")
     slider = SliderFloat("float")
@@ -28,13 +28,14 @@ with Window("Example Window"):
     ## You can also still use dearpygui functions, if you really want
     from dearpygui.core import add_spacing, add_label_text
     add_spacing(count=10)
-    add_label_text("label##example")
+    add_label_text("label##example", default_value="Value: --")
 
-    btn2 = Button("Save")
-    @btn2.callback()
-    def callback(sender, data):
-        label = get_item_by_id("label##example")
-        label.value = str(slider.value)
+## Add items to window after it has already been set up
+btn2 = win.create_child(Button, "Save")
+@btn2.callback()
+def callback(sender, data):
+    label = get_item_by_id("label##example")
+    label.value = "Value: " + str(slider.value)
 
 start_gui()
 ```

@@ -279,6 +279,12 @@ class PyGuiObject:
         """Alternative to ``child.set_parent(self)``."""
         dpgcore.move_item(child.id, parent=self.id)
 
+    def create_child(self, child_type: Type[PyGuiObject], *args, **kwargs) -> PyGuiObject:
+        """Add a child item after the container has already been setup.
+
+        Not all child types are supported. Which ones are is entirely up to DearPyGui."""
+        return child_type(*args, parent=self.id, **kwargs)
+
     ## Data and Values
 
     @ConfigProperty(key='source')
