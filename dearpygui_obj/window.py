@@ -16,7 +16,7 @@ class MainWindow:
     Attempting to instantiate this class will raise a :class:`TypeError`.
     """
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls):
         raise TypeError('this class may not be instantiated')
 
     @staticmethod
@@ -75,17 +75,7 @@ class MainWindow:
 
 @dearpygui_wrapper('mvAppItemType::Window')
 class Window(PyGuiObject):
-    """Creates a new window.
-
-    This is a container item that should be used as a context manager. For example:
-
-    .. code-block:: python
-
-        with Window('Example Window'):
-            TextInput('Child Input')
-            Button('Child Button')
-
-    """
+    """Creates a new window."""
 
     label: str = ConfigProperty()
     x_pos: int = ConfigProperty()
@@ -123,6 +113,11 @@ class Window(PyGuiObject):
     _on_close: Optional[Callable] = None
 
     def __init__(self, label: str = '', *, name_id: str = None, **config):
+        """
+        Parameters:
+             label: window label.
+        """
+
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:

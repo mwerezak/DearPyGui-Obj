@@ -50,7 +50,7 @@ class LabelText(PyGuiObject):
 
 
 @dearpygui_wrapper('mvAppItemType::Separator')
-class HSeparator(PyGuiObject):
+class Separator(PyGuiObject):
     """Adds a horizontal line."""
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_separator(name=self.id, **dpg_args)
@@ -116,7 +116,8 @@ class Checkbox(PyGuiObject):
 
 @dearpygui_wrapper('mvAppItemType::ProgressBar')
 class ProgressBar(PyGuiObject):
-    """A progress bar, displays a value given between 0 and 1."""
+    """A progress bar.
+    Displays a value given between 0.0 and 1.0."""
 
     value: float
 

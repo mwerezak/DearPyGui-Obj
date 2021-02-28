@@ -27,7 +27,7 @@ Basic Content
     :members:
     :undoc-members:
 
-.. autoclass:: HSeparator
+.. autoclass:: Separator
     :members:
     :undoc-members:
 

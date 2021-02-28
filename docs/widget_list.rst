@@ -27,7 +27,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 
     dearpygui_obj.basic.Text
     dearpygui_obj.basic.LabelText
-    dearpygui_obj.basic.HSeparator
+    dearpygui_obj.basic.Separator
     dearpygui_obj.basic.ProgressBar
 
 

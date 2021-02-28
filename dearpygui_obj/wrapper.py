@@ -97,9 +97,16 @@ class ConfigProperty:
 class PyGuiObject:
     """This is the base class for all GUI item wrapper objects.
 
-    Keyword arguments passed to ``__init__`` will be given to the :meth:`_setup_add_item` method used to
-    add the item to DearPyGui. Subclasses may also specify custom keyword parameters using the
-    :meth:`add_init_handler` class method."""
+    Keyword arguments passed to ``__init__`` will be used to set the initial values of any
+    :class:`ConfigProperty` descriptors added with :meth:`add_config_property`. Any left over
+    keywords will be passed to the :meth:`_setup_add_widget` method to be given to DPG.
+
+    It's important that PyGuiObject and subclasses can be instantiated with only the **name_id**
+    argument being passed to ``__init__``. This allows :func:`.get_item_by_id` to work.
+
+    Parameters:
+        name_id: optionally specify the unique widget ID.
+    """
 
     # subclasses can prevent inheritance of this by overriding it's value with a new mapping.
     _config_properties: ChainMap[str, ConfigProperty] = chain_map()
@@ -125,12 +132,6 @@ class PyGuiObject:
         return list(cls._config_properties.keys())
 
     def __init__(self, *, name_id: Optional[str] = None, **kwargs: Any):
-        """
-
-        Parameters:
-            name_id: optionally specify the object's ID instead of autogenerating it.
-            \**kwargs: initial values for config properties and keyword arguments for DPG.
-        """
         if name_id is not None:
             self._name_id = name_id
         else:
@@ -269,9 +270,11 @@ class PyGuiObject:
     ## Containers
 
     def is_container(self) -> bool:
+        """Checks if DPG considers this item to be a container."""
         return dpgcore.is_item_container(self.id)
 
     def iter_children(self) -> Iterable[PyGuiObject]:
+        """Iterates all of the item's children."""
         children = dpgcore.get_item_children(self.id)
         if not children:
             return
@@ -279,7 +282,7 @@ class PyGuiObject:
             yield get_item_by_id(child)
 
     def add_child(self, child: PyGuiObject) -> None:
-        """Alternative to ``child.set_parent(self)``."""
+        """Alternative to :meth:`set_parent`."""
         dpgcore.move_item(child.id, parent=self.id)
 
     def create_child(self, child_type: Type[PyGuiObject], *args, **kwargs) -> PyGuiObject:
@@ -321,7 +324,7 @@ class PyGuiObject:
 
     @ConfigProperty()
     def size(self) -> Tuple[float, float]:
-        """The item's current size as (width, height)."""
+        """The item's current size as ``(width, height)``."""
         return tuple(dpgcore.get_item_rect_size(self.id))
 
     @size.getconfig
@@ -331,12 +334,12 @@ class PyGuiObject:
 
     @property
     def max_size(self) -> Tuple[float, float]:
-        """An item's maximum allowable size as (width, height)."""
+        """An item's maximum allowable size as ``(width, height)``."""
         return tuple(dpgcore.get_item_rect_max(self.id))
 
     @property
     def min_size(self) -> Tuple[float, float]:
-        """An item's minimum allowable size as (width, height)."""
+        """An item's minimum allowable size as ``(width, height)``."""
         return tuple(dpgcore.get_item_rect_min(self.id))
 
     tooltip: str = ConfigProperty(key='tip')
@@ -349,9 +352,11 @@ class PyGuiObject:
         return dpgcore.is_item_visible(self.id)
 
     def is_hovered(self) -> bool:
+        """Checks if an item is hovered."""
         return dpgcore.is_item_hovered(self.id)
 
     def is_focused(self) -> bool:
+        """Checks if an item is focused."""
         return dpgcore.is_item_focused(self.id)
 
 
