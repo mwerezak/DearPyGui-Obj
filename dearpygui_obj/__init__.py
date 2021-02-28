@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from warnings import warn
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 
 if TYPE_CHECKING:
-    from typing import Dict, Iterable, Optional, Callable, Any, List
+    from typing import Dict, Iterable, Optional, Callable, Any
     from dearpygui_obj.wrapper import PyGuiObject
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
@@ -74,8 +74,15 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
             for child_name in children:
                 _unregister_item(child_name, True)
 
+_IDGEN_SEQ = 0
 def _generate_id(o: Any) -> str:
-    return f'{o.__class__.__name__}##{id(o):x}'
+    global _IDGEN_SEQ
+
+    clsname = o.__class__.__name__
+    while dpgcore.does_item_exist(name := clsname + '##' + str(_IDGEN_SEQ)):
+        _IDGEN_SEQ += 1
+    _IDGEN_SEQ += 1
+    return name
 
 ## Start/Stop DearPyGui
 
