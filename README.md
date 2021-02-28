@@ -7,6 +7,9 @@ This project aims to implement a pure-Python interface to Dear PyGui that takes 
 
 Another goal of DearPyGui-Obj is that the object library should be *fully compatible* with Dear PyGui. This means that any DPG code that executes outside of DearPyGui-Obj should not invalidate or break any part of the object library.
 
+## Documentation
+Documentation (on ReadTheDocs) can be found [here](https://dearpygui-obj.readthedocs.io/en/latest/index.html).
+
 ## Example Usage
 Using *DearPyGui-Obj* is as simple as creating a script like the one below:
 
@@ -50,9 +53,6 @@ This project is currently in the very early planning and implementation stages, 
 - dearpygui 0.6.x
 
 To install, simply copy the `dearpygui_obj` package somewhere where Python can find it. *DearPyGui-Obj* will be available on the Test PyPI in the near future, and on PyPI proper once it has reached a fuller level of feature-completeness.
-
-## Documentation
-Documentation can be found [here](https://dearpygui-obj.readthedocs.io/en/latest/index.html).
 
 ## License
 
