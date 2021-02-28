@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, TypeVar, Generic
 
 import dearpygui.core as dpgcore
-from dearpygui_obj import _dearpygui_wrapper
+from dearpygui_obj import _register_item_type
 from dearpygui_obj.wrapper import PyGuiObject, ConfigProperty
 
 if TYPE_CHECKING:
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 ## Input Boxes
 
-@_dearpygui_wrapper('mvAppItemType::InputText')
+@_register_item_type('mvAppItemType::InputText')
 class InputText(PyGuiObject):
     """A text input box."""
 
@@ -82,7 +82,7 @@ class NumberInput(PyGuiObject, Generic[_TInput]):
 
 _TElem = TypeVar('_TElem')
 
-@_dearpygui_wrapper('mvAppItemType::InputFloat')
+@_register_item_type('mvAppItemType::InputFloat')
 class InputFloat(NumberInput[float]):
     """A float input box."""
     _default_value = 0.0
@@ -90,7 +90,7 @@ class InputFloat(NumberInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_float(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::InputFloat2')
+@_register_item_type('mvAppItemType::InputFloat2')
 class InputFloat2(NumberInput[float]):
     """An input box for 2 floats."""
     value: Tuple[float, float]
@@ -99,7 +99,7 @@ class InputFloat2(NumberInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_float2(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::InputFloat3')
+@_register_item_type('mvAppItemType::InputFloat3')
 class InputFloat3(NumberInput[float]):
     """An input box for 3 floats."""
     value: Tuple[float, float, float]
@@ -108,7 +108,7 @@ class InputFloat3(NumberInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_float3(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::InputFloat4')
+@_register_item_type('mvAppItemType::InputFloat4')
 class InputFloat4(NumberInput[float]):
     """An input box for 4 floats."""
     value: Tuple[float, float, float, float]
@@ -117,7 +117,7 @@ class InputFloat4(NumberInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_float4(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::InputInt')
+@_register_item_type('mvAppItemType::InputInt')
 class InputInt(NumberInput[int]):
     """An integer input box."""
     _default_value = 0
@@ -125,7 +125,7 @@ class InputInt(NumberInput[int]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_int(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::InputInt2')
+@_register_item_type('mvAppItemType::InputInt2')
 class InputInt2(NumberInput[int]):
     """An input box for 2 ints."""
     value: Tuple[int, int]
@@ -134,7 +134,7 @@ class InputInt2(NumberInput[int]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_int2(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::InputInt3')
+@_register_item_type('mvAppItemType::InputInt3')
 class InputInt3(NumberInput[int]):
     """An input box for 3 ints."""
     value: Tuple[int, int, int]
@@ -143,7 +143,7 @@ class InputInt3(NumberInput[int]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_int3(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::InputInt4')
+@_register_item_type('mvAppItemType::InputInt4')
 class InputInt4(NumberInput[int]):
     """An input box for 4 ints."""
     value: Tuple[int, int, int, int]
@@ -176,7 +176,7 @@ class SliderInput(PyGuiObject, Generic[_TInput]):
         value = value or self._default_value
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
-@_dearpygui_wrapper('mvAppItemType::SliderFloat')
+@_register_item_type('mvAppItemType::SliderFloat')
 class SliderFloat(SliderInput[float]):
     """A slider for a float value.
 
@@ -188,7 +188,7 @@ class SliderFloat(SliderInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_float(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::SliderFloat2')
+@_register_item_type('mvAppItemType::SliderFloat2')
 class SliderFloat2(SliderInput[float]):
     """A slider for 2 float values.
 
@@ -200,7 +200,7 @@ class SliderFloat2(SliderInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_float2(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::SliderFloat3')
+@_register_item_type('mvAppItemType::SliderFloat3')
 class SliderFloat3(SliderInput[float]):
     """A slider for 3 float values.
 
@@ -212,7 +212,7 @@ class SliderFloat3(SliderInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_float3(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::SliderFloat4')
+@_register_item_type('mvAppItemType::SliderFloat4')
 class SliderFloat4(SliderInput[float]):
     """A slider for 4 float values.
 
@@ -224,7 +224,7 @@ class SliderFloat4(SliderInput[float]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_float4(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::SliderInt')
+@_register_item_type('mvAppItemType::SliderInt')
 class SliderInt(SliderInput[int]):
     """A slider for an integer value.
 
@@ -236,7 +236,7 @@ class SliderInt(SliderInput[int]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::SliderInt2')
+@_register_item_type('mvAppItemType::SliderInt2')
 class SliderInt2(SliderInput[int]):
     """A slider for 2 integer values.
 
@@ -248,7 +248,7 @@ class SliderInt2(SliderInput[int]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int2(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::SliderInt3')
+@_register_item_type('mvAppItemType::SliderInt3')
 class SliderInt3(SliderInput[int]):
     """A slider for 3 integer values.
 
@@ -260,7 +260,7 @@ class SliderInt3(SliderInput[int]):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int3(self.id, **dpg_args)
 
-@_dearpygui_wrapper('mvAppItemType::SliderInt4')
+@_register_item_type('mvAppItemType::SliderInt4')
 class SliderInt4(SliderInput[int]):
     """A slider for 4 integer values.
 

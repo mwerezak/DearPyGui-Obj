@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, NamedTuple, Protocol
 
 import dearpygui.core as dpgcore
-from dearpygui_obj import _dearpygui_wrapper
+from dearpygui_obj import _register_item_type
 from dearpygui_obj.wrapper import ConfigProperty
 
 if TYPE_CHECKING:

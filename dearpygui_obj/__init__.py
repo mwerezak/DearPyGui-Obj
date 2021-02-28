@@ -81,7 +81,7 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
             for child_name in children:
                 _unregister_item(child_name, True)
 
-def _dearpygui_wrapper(item_type: str) -> Callable:
+def _register_item_type(item_type: str) -> Callable:
     """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
 
     This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting
