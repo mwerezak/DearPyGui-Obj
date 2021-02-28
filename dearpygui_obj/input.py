@@ -28,7 +28,7 @@ class InputText(PyGuiObject):
     label: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
 
-    def __init__(self, label: str, default_value: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = '', default_value: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, default_value=default_value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -73,7 +73,7 @@ class NumberInput(PyGuiObject, Generic[_TInput]):
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}
 
-    def __init__(self, label: str, default_value: _TInput = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = '', default_value: _TInput = None, *, name_id: str = None, **config):
         default_value = default_value or self._default_value
         if isinstance(default_value, Sequence):
             default_value = list(default_value)
@@ -170,7 +170,7 @@ class SliderInput(PyGuiObject, Generic[_TInput]):
     #: Whether to clamp the value when using manual input. By default CTRL+Click allows going out of bounds.
     clamped: bool = ConfigProperty()
 
-    def __init__(self, label: str, default_value: _TInput = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = '', default_value: _TInput = None, *, name_id: str = None, **config):
         default_value = default_value or self._default_value
         if isinstance(default_value, Sequence):
             default_value = list(default_value)

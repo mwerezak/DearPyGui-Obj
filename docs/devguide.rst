@@ -1,7 +1,9 @@
 Deveoper's Guide
 ================
 
-This is a work in progress.
+.. note::
+
+	This is a work in progress.
 
 
 Constructing GUI Objects

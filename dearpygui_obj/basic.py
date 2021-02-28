@@ -32,7 +32,7 @@ class Text(PyGuiObject):
     def color(self, value: ColorRGBA) -> ItemConfigData:
         return {'color' : value.dpg_export()}
 
-    def __init__(self, text: str, *, name_id: str = None, **config):
+    def __init__(self, text: str = '', *, name_id: str = None, **config):
         super().__init__(default_value=text, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -54,7 +54,7 @@ class LabelText(PyGuiObject):
     def color(self, value: ColorRGBA) -> ItemConfigData:
         return {'color' : value.dpg_export()}
 
-    def __init__(self, label: str, text: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = '', text: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, default_value=text, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -116,11 +116,11 @@ if __name__ == '__main__':
         print(get_item_configuration(txt.id))
         print(txt.color)
 
-        label = LabelText('Value:')
+        label = LabelText('<<< Value')
         slider = SliderFloat('')
         @slider.callback()
         def callback(sender, data):
-            print(slider.value)
+            label.value = str(slider.value)
 
         b1 = Button('Regular Button')
         @b1.callback()

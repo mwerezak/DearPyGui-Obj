@@ -6,10 +6,24 @@ Basic Widgets
 .. contents:: Contents
     :local:
 
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+
+    Text
+    LabelText
+    Button
+    ButtonArrow
+
 Basic Content
 -------------
 
 .. autoclass:: Text
+    :members:
+    :undoc-members:
+
+.. autoclass:: LabelText
     :members:
     :undoc-members:
 

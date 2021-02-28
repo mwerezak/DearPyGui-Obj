@@ -21,10 +21,11 @@ Core Functionality
     set_start_callback
     set_exit_callback
     set_render_callback
+    create_value
+    DataValue
     get_delta_time
     get_total_time
     enable_vsync
-    GuiData
 
 Start/Stop the GUI Engine
 -------------------------

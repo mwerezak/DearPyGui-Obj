@@ -9,21 +9,35 @@ This project aims to implement a pure-Python interface to *Dear PyGui* that take
 Using *DearPyGui-Obj* is as simple as creating a script like the one below:
 
 ``` python
-import dearpygui_obj
+from dearpygui_obj import get_item_by_id, start_gui
 from dearpygui_obj.window import Window
 from dearpygui_obj.basic import Text, Button
 from dearpygui_obj.input import InputText, SliderFloat
 
 with Window("Example Window"):
     Text("Hello world!")
-    Button("Save").set_callback(lambda sender, data: print("Save Clicked"))
-    InputText("string")
-    SliderFloat("float")
+    textbox = InputText("string")
+    slider = SliderFloat("float")
+    btn = Button("Save")
 
-dearpygui_obj.start_gui()
+    ## Mark callback functions using decorators
+    @btn.callback()
+    def callback(sender, data):
+        textbox.value = str(slider.value)
+
+    ## You can also still use dearpygui functions, if you really want
+    from dearpygui.core import add_spacing, add_label_text
+    add_spacing(count=10)
+    add_label_text("label##example")
+
+    btn2 = Button("Save")
+    @btn2.callback()
+    def callback(sender, data):
+        label = get_item_by_id("label##example")
+        label.value = str(slider.value)
+
+start_gui()
 ```
-Result:
-<BR>![BasicUsageExample](https://raw.githubusercontent.com/mwerezak/DearPyGui-Obj/master/docs/example.png)
 
 ## Installation
 This project is currently in the very early planning and implementation stages, and a lot of features still need to be implemented. Even the current name for the project is provisional and may change.
