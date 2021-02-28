@@ -150,6 +150,9 @@ class PyGuiObject:
 
             self._setup_add_widget(kwargs)
 
+            if 'label' in config and not config['label']:
+                config['label'] = self.id
+
             for name, value in config.items():
                 setattr(self, name, value)
 
