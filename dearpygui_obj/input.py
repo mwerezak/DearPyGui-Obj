@@ -294,5 +294,6 @@ if __name__ == '__main__':
         print(get_item_type(sf.id))
         print(get_item_configuration(sf.id))
 
+    print(get_all_items())
 
     start_dearpygui()

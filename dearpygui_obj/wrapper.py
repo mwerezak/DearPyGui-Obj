@@ -74,9 +74,6 @@ class ConfigProperty:
         """Allows the ConfigProperty itself to be used as a decorator equivalent to :attr:`getvalue`."""
         return self.getvalue(get_value)
 
-    _get_value: GetValueFunc
-    _get_config: GetConfigFunc
-
     def getvalue(self, get_value: GetValueFunc):
         self._get_value = get_value
         self.__doc__ = get_value.__doc__ # use the docstring of the getter, the same way property() works
@@ -87,6 +84,8 @@ class ConfigProperty:
         return self
 
     ## default implementations
+    _get_value: GetValueFunc
+    _get_config: GetConfigFunc
 
     def _get_value(self, instance: PyGuiObject) -> Any:
         return dpgcore.get_item_configuration(instance.id)[self.key]

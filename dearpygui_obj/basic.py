@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.data import ColorRGBA
+from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA
 from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
@@ -23,14 +23,7 @@ class Text(PyGuiObject):
     #: Display a bullet point with the text.
     bullet: bool = ConfigProperty()
 
-    @ConfigProperty()
-    def color(self) -> ColorRGBA:
-        """Color of the text."""
-        return ColorRGBA.dpg_import(self.get_config()['color'])
-
-    @color.getconfig
-    def color(self, value: ColorRGBA) -> ItemConfigData:
-        return {'color' : value.dpg_export()}
+    color: ColorRGBA = ConfigPropertyColorRGBA()
 
     def __init__(self, text: str = '', *, name_id: str = None, **config):
         super().__init__(default_value=text, name_id=name_id, **config)
@@ -44,15 +37,7 @@ class LabelText(PyGuiObject):
     """Adds text with a label. Useful for output values when used with a data_source."""
 
     label: str = ConfigProperty()
-
-    @ConfigProperty()
-    def color(self) -> ColorRGBA:
-        """Color of the text."""
-        return ColorRGBA.dpg_import(self.get_config()['color'])
-
-    @color.getconfig
-    def color(self, value: ColorRGBA) -> ItemConfigData:
-        return {'color' : value.dpg_export()}
+    color: ColorRGBA = ConfigPropertyColorRGBA()
 
     def __init__(self, label: str = '', text: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, default_value=text, name_id=name_id, **config)
