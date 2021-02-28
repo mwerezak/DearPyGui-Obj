@@ -27,6 +27,14 @@ Basic Content
     :members:
     :undoc-members:
 
+.. autoclass:: HSeparator
+    :members:
+    :undoc-members:
+
+.. autoclass:: ProgressBar
+    :members:
+    :undoc-members:
+
 Buttons
 -------
 
@@ -38,4 +46,7 @@ Buttons
     :members:
     :undoc-members:
 
+.. autoclass:: Checkbox
+    :members:
+    :undoc-members:
 

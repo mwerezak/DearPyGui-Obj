@@ -46,6 +46,12 @@ class LabelText(PyGuiObject):
         dpgcore.add_label_text(self.id, **dpg_args)
 
 
+@dearpygui_wrapper('mvAppItemType::Separator')
+class HSeparator(PyGuiObject):
+    """Adds a horizontal line."""
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_separator(name=self.id, **dpg_args)
+
 ## Buttons
 
 class ButtonArrow(Enum):
@@ -90,6 +96,33 @@ class Button(PyGuiObject):
         dpgcore.add_button(self.id, **dpg_args)
 
 
+@dearpygui_wrapper('mvAppItemType::Checkbox')
+class Checkbox(PyGuiObject):
+    """Simple checkbox widget."""
+
+    label: str = ConfigProperty()
+
+    def __init__(self, label: str = '', checked: bool = False, *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=checked, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_checkbox(self.id, **dpg_args)
+
+
+@dearpygui_wrapper('mvAppItemType::ProgressBar')
+class ProgressBar(PyGuiObject):
+    """A progress bar, displays a value given between 0 and 1."""
+
+    overlay_text: str = ConfigProperty(key='overlay') #: Overlayed text.
+
+    def __init__(self, value: float = 0.0, *, name_id: str = None, **config):
+        super().__init__(default_value=value, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_progress_bar(self.id, **dpg_args)
+
+
+
 
 if __name__ == '__main__':
     from dearpygui.core import *
@@ -106,6 +139,16 @@ if __name__ == '__main__':
         @slider.callback()
         def callback(sender, data):
             label.value = str(slider.value)
+
+        chk = Checkbox('checked?', True)
+        @chk.callback()
+        def callback(sender, data):
+            print(chk.value, type(chk.value), get_item_type(chk.id))
+
+        progress = ProgressBar(0.67, overlay_text='overlay')
+        print(get_item_type(progress.id))
+
+
 
         b1 = Button('Regular Button')
         @b1.callback()
