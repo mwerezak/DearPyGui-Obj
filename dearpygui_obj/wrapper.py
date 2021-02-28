@@ -317,6 +317,14 @@ class PyGuiObject:
 
     ## Other properties and status
 
+    tooltip: str = ConfigProperty(key='tip')
+    enabled: bool = ConfigProperty()  #: If not enabled, display greyed out text and disable interaction.
+
+    @property
+    def active(self) -> bool:
+        """Get whether the item is being interacted with."""
+        return dpgcore.is_item_active(self.id)
+
     show: bool = ConfigProperty() #: Enable/disable rendering of the item.
 
     width: int = ConfigProperty()
@@ -342,9 +350,6 @@ class PyGuiObject:
         """An item's minimum allowable size as ``(width, height)``."""
         return tuple(dpgcore.get_item_rect_min(self.id))
 
-    tooltip: str = ConfigProperty(key='tip')
-    enabled: bool = ConfigProperty()  #: If ``False``, display greyed out text and disable interaction.
-
     # these are intentionally not properties, as they are status queries
 
     def is_visible(self) -> bool:
@@ -359,6 +364,25 @@ class PyGuiObject:
         """Checks if an item is focused."""
         return dpgcore.is_item_focused(self.id)
 
+    def was_clicked(self) -> bool:
+        """Checks if an item was just clicked (this frame?)"""
+        return dpgcore.is_item_clicked(self.id)
+
+    def was_activated(self) -> bool:
+        """Checks if an item just became active (this frame?)"""
+        return dpgcore.is_item_activated(self.id)
+
+    def was_deactivated(self) -> bool:
+        """Checks if an item just stopped being active (this frame?)."""
+        return dpgcore.is_item_deactivated(self.id)
+
+    def was_edited(self) -> bool:
+        """Checks if an item was just edited (this frame?)"""
+        return dpgcore.is_item_edited(self.id)
+
+    def was_deactivated_after_edit(self) -> bool:
+        """Checks if an item was edited and deactivated (this frame?)."""
+        return dpgcore.is_item_deactivated_after_edit(self.id)
 
 
 import dearpygui_obj
