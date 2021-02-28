@@ -28,8 +28,8 @@ class InputText(PyGuiObject):
     label: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
 
-    def __init__(self, label: str = '', default_value: str = '', *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=default_value, name_id=name_id, **config)
+    def __init__(self, label: str = '', value: str = '', *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_input_text(self.id, **dpg_args)
@@ -73,11 +73,9 @@ class NumberInput(PyGuiObject, Generic[_TInput]):
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}
 
-    def __init__(self, label: str = '', default_value: _TInput = None, *, name_id: str = None, **config):
-        default_value = default_value or self._default_value
-        if isinstance(default_value, Sequence):
-            default_value = list(default_value)
-        super().__init__(label=label, default_value=default_value, name_id=name_id, **config)
+    def __init__(self, label: str = '', value: _TInput = None, *, name_id: str = None, **config):
+        value = value or self._default_value
+        super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
 @dearpygui_wrapper('mvAppItemType::InputFloat')
 class InputFloat(NumberInput[float]):
@@ -170,11 +168,9 @@ class SliderInput(PyGuiObject, Generic[_TInput]):
     #: Whether to clamp the value when using manual input. By default CTRL+Click allows going out of bounds.
     clamped: bool = ConfigProperty()
 
-    def __init__(self, label: str = '', default_value: _TInput = None, *, name_id: str = None, **config):
-        default_value = default_value or self._default_value
-        if isinstance(default_value, Sequence):
-            default_value = list(default_value)
-        super().__init__(label=label, default_value=default_value, name_id=name_id, **config)
+    def __init__(self, label: str = '', value: _TInput = None, *, name_id: str = None, **config):
+        value = value or self._default_value
+        super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
 @dearpygui_wrapper('mvAppItemType::SliderFloat')
 class SliderFloat(SliderInput[float]):
@@ -284,7 +280,7 @@ if __name__ == '__main__':
     with Window('Test Window') as window:
         t = InputText('InputText')
         t2 = InputText('Deleted')
-        f = InputFloat('InputFloat', default_value=4.3)
+        f = InputFloat('InputFloat', value=4.3)
         f2 = InputFloat2('InputFloat2', tooltip='tooltip')
         i = InputInt('InputInt', data_source = linked_ints)
         i2 = InputInt2('InputInt2', data_source = linked_ints)

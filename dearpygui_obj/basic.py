@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 class Text(PyGuiObject):
     """A basic element that displays some text."""
 
+    value: str
+
     #: Wrap after this many characters. Set to -1 to disable.
     wrap: int = ConfigProperty()
 
@@ -25,8 +27,8 @@ class Text(PyGuiObject):
 
     color: ColorRGBA = ConfigPropertyColorRGBA()
 
-    def __init__(self, text: str = '', *, name_id: str = None, **config):
-        super().__init__(default_value=text, name_id=name_id, **config)
+    def __init__(self, value: str = '', *, name_id: str = None, **config):
+        super().__init__(default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_text(self.id, **dpg_args)
@@ -36,11 +38,12 @@ class Text(PyGuiObject):
 class LabelText(PyGuiObject):
     """Adds text with a label. Useful for output values when used with a data_source."""
 
+    value: str
     label: str = ConfigProperty()
     color: ColorRGBA = ConfigPropertyColorRGBA()
 
-    def __init__(self, label: str = '', text: str = '', *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=text, name_id=name_id, **config)
+    def __init__(self, label: str = '', value: str = '', *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_label_text(self.id, **dpg_args)
@@ -100,10 +103,12 @@ class Button(PyGuiObject):
 class Checkbox(PyGuiObject):
     """Simple checkbox widget."""
 
+    value: bool
+
     label: str = ConfigProperty()
 
-    def __init__(self, label: str = '', checked: bool = False, *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=checked, name_id=name_id, **config)
+    def __init__(self, label: str = '', value: bool = False, *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_checkbox(self.id, **dpg_args)
@@ -112,6 +117,8 @@ class Checkbox(PyGuiObject):
 @dearpygui_wrapper('mvAppItemType::ProgressBar')
 class ProgressBar(PyGuiObject):
     """A progress bar, displays a value given between 0 and 1."""
+
+    value: float
 
     overlay_text: str = ConfigProperty(key='overlay') #: Overlayed text.
 
