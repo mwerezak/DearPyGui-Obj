@@ -4,7 +4,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, TypeVar, Generic, Sequence, Tuple
 
 import dearpygui.core as dpgcore
-from dearpygui_obj import GuiData
 from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
@@ -278,8 +277,9 @@ class SliderInt4(SliderInput[Tuple[int, int, int, int]]):
 if __name__ == '__main__':
     from dearpygui.core import *
     from dearpygui_obj.window import Window
+    from dearpygui_obj import create_value
 
-    linked_ints = GuiData([0, 3, -1, 2])
+    linked_ints = create_value([0, 3, -1, 2])
 
     with Window('Test Window') as window:
         t = InputText('InputText')

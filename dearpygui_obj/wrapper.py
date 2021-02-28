@@ -6,21 +6,19 @@ from collections import ChainMap as chain_map
 from typing import TYPE_CHECKING
 
 from dearpygui import core as dpgcore
-from dearpygui_obj import _ITEM_TYPES, _register_item, _unregister_item, get_item_by_id, GuiData
+from dearpygui_obj import (
+    _ITEM_TYPES, _generate_id, _register_item, _unregister_item, get_item_by_id, DataValue,
+)
 
 if TYPE_CHECKING:
-    from typing import (
-        Callable, Mapping, Any, Optional, Union, Type, Iterable, Tuple, ChainMap, List
-    )
+    from typing import Callable, Mapping, Any, Optional, Type, Iterable, Tuple, ChainMap, List
 
 
 ## Type Aliases
 if TYPE_CHECKING:
     ItemConfigData = Mapping[str, Any]  #: Alias for GUI item configuration data
-    GetValueFunc = Callable[['GuiWrapper'], Any]
-    GetConfigFunc = Callable[['GuiWrapper', Any], ItemConfigData]
-    DataSource = Union[GuiData, str]
-
+    GetValueFunc = Callable[['PyGuiObject'], Any]
+    GetConfigFunc = Callable[['PyGuiObject', Any], ItemConfigData]
 
 def dearpygui_wrapper(item_type: str) -> Callable:
     """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
@@ -137,7 +135,7 @@ class PyGuiObject:
         if name_id is not None:
             self._name_id = name_id
         else:
-            self._name_id = f'{self.__class__.__name__}##{id(self):x}'
+            self._name_id = _generate_id(self)
 
         if dpgcore.does_item_exist(self.id):
             self._setup_preexisting()
@@ -285,15 +283,15 @@ class PyGuiObject:
     ## Data and Values
 
     @ConfigProperty(key='source')
-    def data_source(self) -> Optional[GuiData]:
+    def data_source(self) -> Optional[DataValue]:
         """Get the :class:`GuiData` used as the data source, if any."""
-        source = self.get_config().get('source')
-        return GuiData(name=source) if source else None
+        source_id = self.get_config().get('source')
+        return DataValue(source_id) if source_id else None
 
     @data_source.getconfig
-    def data_source(self, value: Optional[DataSource]):
+    def data_source(self, source: Optional[Any]):
         # accept plain string in addition to GuiData
-        return {'source' : str(value) if value else ''}
+        return {'source' : str(source) if source is not None else ''}
 
     @property
     def value(self) -> Any:

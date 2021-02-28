@@ -50,18 +50,11 @@ Get/Iterate Items
 Value Storage System
 --------------------
 
-.. autoclass:: GuiData
+.. autofunction:: create_value
+
+.. autoclass:: DataValue
     :members:
     :undoc-members:
-
-    .. note::
-
-        If the GuiData's name does not reference a value that exists, attempts to
-        manipulate the value will also fail silently, and attempts to retrieve the value will
-        produce ``None``.
-
-        DearPyGui does not provide a function like :func:`does_item_exist` for values so it is
-        impossible to detect this.
 
 
 System-Level Callbacks

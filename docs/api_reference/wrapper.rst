@@ -13,7 +13,7 @@ Wrapper Object System
     ConfigProperty
 
 PyGuiObject
----------
+-----------
 
 .. autodecorator:: dearpygui_wrapper
 

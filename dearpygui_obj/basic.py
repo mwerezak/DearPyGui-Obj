@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj import ColorRGBA
+from dearpygui_obj.data import ColorRGBA
 from dearpygui_obj.wrapper import PyGuiObject, dearpygui_wrapper, ConfigProperty
 
 if TYPE_CHECKING:
