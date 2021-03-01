@@ -6,7 +6,7 @@
 DearPyGui-Obj
 =============
 
-**DearPyGui-Obj** is an object-oriented wrapper around `DearPyGui <https://github.com/hoffstadt/DearPyGui>`_.
+**DearPyGui-Obj** is an object-oriented interface for `DearPyGui <https://github.com/hoffstadt/DearPyGui>`_.
 
 .. caution::
 

@@ -23,36 +23,29 @@ with Window("Example Window") as win:
     Text("Hello world!")
     textbox = InputText("string")
     slider = SliderFloat("float")
+    
     btn = Button("Save")
-
-    ## Mark callback functions using decorators
     @btn.callback()
     def callback(sender, data):
         textbox.value = str(slider.value)
-
-    ## You can also still use dearpygui functions, if you want
-    from dearpygui.core import add_spacing, add_label_text
-    add_spacing(count=10)
-    add_label_text("label##example", default_value="Value: --")
-
-## Add items to window after it has already been set up
-btn2 = win.create_child(Button, "Save")
-@btn2.callback()
-def callback(sender, data):
-    label = get_item_by_id("label##example")
-    label.value = "Value: " + str(slider.value)
 
 start_gui()
 ```
 
 ## Installation
-This project is currently in the very early planning and implementation stages, and a lot of features still need to be implemented. Even the current name for the project is provisional and may change.
+This project is currently in the early implementation stage, and a lot of features still need to be implemented. Even the current name for the project is provisional and may change.
 
 **Requirements**
 - Python 3.8 64-bit
 - dearpygui 0.6.x
 
-To install, simply copy the `dearpygui_obj` package somewhere where Python can find it. *DearPyGui-Obj* will be available on the Test PyPI in the near future, and on PyPI proper once it has reached a fuller level of feature-completeness.
+You can install from [TestPyPI](https://test.pypi.org/project/dearpygui-obj/):
+```
+pip install -i https://test.pypi.org/simple/ dearpygui-obj
+```
+
+Or you can simply copy the `dearpygui_obj` package somewhere where Python can find it. 
+DearPyGui-Obj will be available on PyPI proper once it has reached a fuller level of feature-completeness.
 
 ## License
 
