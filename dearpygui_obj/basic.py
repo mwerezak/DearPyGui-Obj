@@ -53,6 +53,9 @@ class LabelText(PyGuiObject):
 @_register_item_type('mvAppItemType::Separator')
 class Separator(PyGuiObject):
     """Adds a horizontal line."""
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
+
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_separator(name=self.id, **dpg_args)
 

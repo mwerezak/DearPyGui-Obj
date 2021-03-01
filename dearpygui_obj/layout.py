@@ -16,6 +16,9 @@ class VSpacing(PyGuiObject):
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
 
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
+
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_spacing(name=self.id, **dpg_args)
 
@@ -27,6 +30,9 @@ class HAlignNext(PyGuiObject):
 
     xoffset: float = ConfigProperty() #: offset from containing window
     spacing: float = ConfigProperty() #: offset from previous widget
+
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_same_line(name=self.id, **dpg_args)
@@ -45,6 +51,9 @@ class LayoutGroup(PyGuiObject):
     horizontal: bool = ConfigProperty()
     horizontal_spacing: float = ConfigProperty()
 
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
+
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_group(self.id, **dpg_args)
 
@@ -59,6 +68,9 @@ class LayoutIndent(PyGuiObject):
     """Adds an indent to contained items."""
 
     offset: float = ConfigProperty()
+
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_indent(name=self.id, **dpg_args)
@@ -98,5 +110,8 @@ class ScrollView(PyGuiObject):
 @_register_item_type('mvAppItemType::Dummy')
 class Dummy(PyGuiObject):
     """Adds a spacer or 'dummy' widget."""
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
+
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_dummy(name=self.id, **dpg_args)

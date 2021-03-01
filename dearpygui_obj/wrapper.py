@@ -135,7 +135,8 @@ class PyGuiObject:
             # at no point should a PyGuiObject object exist for an item that hasn't
             # actually been added, so if the item doesn't exist we need to add it now.
 
-            # set config properties after adding the widget
+            # subclasses will pass both config values and keywords to _setup_add_widget()
+            # separate them now
             config = {}
             for name, value in list(kwargs.items()):
                 if name in self._config_properties:
@@ -143,7 +144,9 @@ class PyGuiObject:
 
             self._setup_add_widget(kwargs)
 
-            if 'label' in config and not config['label']:
+            # labels are handled specially because they are very common
+            # and setting a default label only makes sense at init-time
+            if 'label' in config and not config['label']:  #TODO use None as a sentinel
                 config['label'] = self.id
 
             for name, value in config.items():
