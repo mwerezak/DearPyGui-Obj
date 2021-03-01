@@ -13,6 +13,7 @@ Windows
 
     MainWindow
     Window
+    MenuBar
 
 
 Main Window
@@ -27,5 +28,10 @@ Window
 ------
 
 .. autoclass:: Window
+    :members:
+    :undoc-members:
+
+
+.. autoclass:: MenuBar
     :members:
     :undoc-members:

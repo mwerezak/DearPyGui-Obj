@@ -18,6 +18,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 
     dearpygui_obj.window.MainWindow
     dearpygui_obj.window.Window
+    dearpygui_obj.window.MenuBar
 
 
 .. rubric:: Basic Content
@@ -83,6 +84,13 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
     dearpygui_obj.layout.ScrollView
     dearpygui_obj.layout.Dummy
 
+.. rubric:: Containers
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.containers.Menu
+    dearpygui_obj.containers.MenuItem
 
 .. rubric:: Developer Tool Windows
 

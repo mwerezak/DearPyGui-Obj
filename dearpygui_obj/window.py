@@ -144,3 +144,21 @@ class Window(PyGuiObject):
         """Set resized callback, can be used as a decorator."""
         dpgcore.set_resize_callback(callback, handler=self.id)
         return callback
+
+## Menu Bars and Menus
+
+@_register_item_type('mvAppItemType::MenuBar')
+class MenuBar(PyGuiObject):
+    """A menu bar that can be added to a :class:`.Window`."""
+
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_menu_bar(self.id, **dpg_args)
+
+    def __enter__(self) -> MenuBar:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        dpgcore.end()
