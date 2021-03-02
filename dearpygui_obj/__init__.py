@@ -196,14 +196,14 @@ class DataValue:
     def value(self) -> Any:
         value = dpgcore.get_value(self.id)
         # need to return an immutable value since modifying the list wont actually change the value in DPG
-        if isinstance(value, list):
-            value = tuple(value)
+        # if isinstance(value, list):
+        #     value = tuple(value)
         return value
 
     @value.setter
     def value(self, value: Any) -> None:
-        if isinstance(value, Sequence):
-            value = list(value)  # DPG only accepts lists for sequence values
+        # if isinstance(value, Sequence):
+        #     value = list(value)  # DPG only accepts lists for sequence values
         dpgcore.set_value(self.id, value)
 
 ## Callbacks
