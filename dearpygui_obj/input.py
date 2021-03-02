@@ -1,6 +1,8 @@
 """Widgets for inputting values."""
 
 from __future__ import annotations
+
+from enum import Enum
 from typing import TYPE_CHECKING, TypeVar, Generic
 
 import dearpygui.core as dpgcore
@@ -293,6 +295,11 @@ class ColorButton(PyGuiWidget):
         dpgcore.add_color_button(self.id, **dpg_args)
 
 
+class ColorFormatMode(Enum):
+    """Specifies how color element values are formatted."""
+    UInt8 = 0  #: Format as 0-255
+    Float = 1  #: Format as 0.0-1.0
+
 @_register_item_type('mvAppItemType::ColorEdit4')
 class ColorEdit(PyGuiWidget):
     """A color editing widget.
@@ -314,10 +321,23 @@ class ColorEdit(PyGuiWidget):
     display_rgb: bool = ConfigProperty()
     display_hsv: bool = ConfigProperty()
     display_hex: bool = ConfigProperty()
-    uint8: bool = ConfigProperty()
-    floats: bool = ConfigProperty()
     input_rgb: bool = ConfigProperty()
-    input_hsv: bool =ConfigProperty()
+    input_hsv: bool = ConfigProperty()
+
+    @ConfigProperty()
+    def color_format(self) -> ColorFormatMode:
+        config = self.get_config()
+        if config['floats'] and not config['uint8']:
+            return ColorFormatMode.Float
+        return ColorFormatMode.UInt8
+
+    @color_format.getconfig
+    def color_format(self, value: ColorFormatMode):
+        if value == ColorFormatMode.UInt8:
+            return {'uint8':False, 'floats':True}
+        if value == ColorFormatMode.Float:
+            return {'uint8':True, 'floats':False}
+        raise ValueError('invalid color format mode')
 
     def __init__(self, label: str = '', value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
@@ -346,12 +366,25 @@ class ColorPicker(PyGuiWidget):
     display_rgb: bool = ConfigProperty()
     display_hsv: bool = ConfigProperty()
     display_hex: bool = ConfigProperty()
-    uint8: bool = ConfigProperty()
-    floats: bool = ConfigProperty()
     picker_hue_bar: bool = ConfigProperty()
     picker_hue_wheel: bool = ConfigProperty()
     input_rgb: bool = ConfigProperty()
     input_hsv: bool = ConfigProperty()
+
+    @ConfigProperty()
+    def color_format(self) -> ColorFormatMode:
+        config = self.get_config()
+        if config['floats'] and not config['uint8']:
+            return ColorFormatMode.Float
+        return ColorFormatMode.UInt8
+
+    @color_format.getconfig
+    def color_format(self, value: ColorFormatMode):
+        if value == ColorFormatMode.UInt8:
+            return {'uint8':False, 'floats':True}
+        if value == ColorFormatMode.Float:
+            return {'uint8':True, 'floats':False}
+        raise ValueError('invalid color format mode')
 
     def __init__(self, label: str = '', value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
