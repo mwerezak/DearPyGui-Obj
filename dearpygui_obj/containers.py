@@ -43,8 +43,8 @@ class MenuItem(PyGuiObject):
     #: Keyboard shortcut, e.g. `'CTRL+M'`.
     shortcut: str = ConfigProperty()
 
-    #: If ``True``, draw a checkmark inside the menu item.
-    checked: bool = ConfigProperty(key='check')
+    #: If ``True``, a checkmark is shown if the item's :attr:`value` is ``True``.
+    enable_check: bool = ConfigProperty(key='check')
 
     def __init__(self, label: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
