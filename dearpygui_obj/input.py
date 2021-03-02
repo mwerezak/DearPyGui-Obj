@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, TypeVar, Generic
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.data import ColorRGBA
-from dearpygui_obj.wrapper import PyGuiObject, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 ## Input Boxes
 
 @_register_item_type('mvAppItemType::InputText')
-class InputText(PyGuiObject):
+class InputText(PyGuiWidget):
     """A text input box."""
 
     hint: str = ConfigProperty()
@@ -38,7 +38,7 @@ class InputText(PyGuiObject):
 
 _TInput = TypeVar('_TInput')
 
-class NumberInput(PyGuiObject, Generic[_TInput]):
+class NumberInput(PyGuiWidget, Generic[_TInput]):
     """Base class for number input boxes."""
     value: _TInput
     _default_value: _TInput
@@ -156,7 +156,7 @@ class InputInt4(NumberInput[int]):
 
 ## Sliders
 
-class SliderInput(PyGuiObject, Generic[_TInput]):
+class SliderInput(PyGuiWidget, Generic[_TInput]):
     """Base class for slider types."""
     value: _TInput
     _default_value: _TInput
@@ -277,7 +277,7 @@ class SliderInt4(SliderInput[int]):
 ## Color
 
 @_register_item_type('mvAppItemType::ColorButton')
-class ColorButton(PyGuiObject):
+class ColorButton(PyGuiWidget):
     """A button that displays and enables copying of color data.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
@@ -294,7 +294,7 @@ class ColorButton(PyGuiObject):
 
 
 @_register_item_type('mvAppItemType::ColorEdit4')
-class ColorEdit(PyGuiObject):
+class ColorEdit(PyGuiWidget):
     """A color editing widget.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
@@ -327,7 +327,7 @@ class ColorEdit(PyGuiObject):
 
 
 @_register_item_type('mvAppItemType::ColorPicker4')
-class ColorPicker(PyGuiObject):
+class ColorPicker(PyGuiWidget):
     """A color picking widget.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget.

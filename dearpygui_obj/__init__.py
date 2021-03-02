@@ -9,28 +9,28 @@ import dearpygui.core as dpgcore
 
 if TYPE_CHECKING:
     from typing import Dict, Iterable, Optional, Callable, Any, Union
-    from dearpygui_obj.wrapper import PyGuiObject
+    from dearpygui_obj.wrapper import PyGuiWidget
     from dearpygui_obj.window import Window
 
     ## Type Aliases
-    PyGuiCallback = Callable[[Union[PyGuiObject, str], Any], None]
+    PyGuiCallback = Callable[[Union[PyGuiWidget, str], Any], None]
     _DPGCallback = Callable[[str, Any], None]
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
-_ITEM_LOOKUP: Dict[str, PyGuiObject] = {}
+_ITEM_LOOKUP: Dict[str, PyGuiWidget] = {}
 
 # Used to construct the correct type when getting an item
 # that was created outside the object wrapper library
-_ITEM_TYPES: Dict[str, Callable[..., PyGuiObject]] = {}
+_ITEM_TYPES: Dict[str, Callable[..., PyGuiWidget]] = {}
 
 # Fallback constructor used when getting a type that isn't registered in _ITEM_TYPES
-_default_ctor: Optional[Callable[..., PyGuiObject]] = None
+_default_ctor: Optional[Callable[..., PyGuiWidget]] = None
 
 
-def get_item_by_id(name: str) -> PyGuiObject:
+def get_item_by_id(name: str) -> PyGuiWidget:
     """Retrieve an item using its unique name.
 
-    If the item was created by instantiating a :class:`PyGuiObject` object, this will return that
+    If the item was created by instantiating a :class:`PyGuiWidget` object, this will return that
     object. Otherwise, a new wrapper object will be created for that item and returned. Future calls
     for the same ID will return the same object.
 
@@ -47,29 +47,29 @@ def get_item_by_id(name: str) -> PyGuiObject:
     item_type = dpgcore.get_item_type(name) ## WARNING: this will segfault if name does not exist
     return _create_item_wrapper(name, item_type)
 
-def _create_item_wrapper(name: str, item_type: str) -> PyGuiObject:
+def _create_item_wrapper(name: str, item_type: str) -> PyGuiWidget:
     ctor = _ITEM_TYPES.get(item_type, _default_ctor)
     if ctor is None:
         raise ValueError(f"could not create wrapper for '{name}': no constructor for item type '{item_type}'")
 
     return ctor(name_id = name)
 
-def iter_all_items() -> Iterable[PyGuiObject]:
+def iter_all_items() -> Iterable[PyGuiWidget]:
     """Iterate all items (*NOT* windows) and yield their wrapper objects."""
     for name in dpgcore.get_all_items():
         yield get_item_by_id(name)
 
-def iter_all_windows() -> Iterable[PyGuiObject]:
+def iter_all_windows() -> Iterable[PyGuiWidget]:
     """Iterate all windows and yield their wrapper objects."""
     for name in dpgcore.get_windows():
         yield get_item_by_id(name)
 
-def get_active_window() -> PyGuiObject:
+def get_active_window() -> PyGuiWidget:
     """Get the active window."""
     active = dpgcore.get_active_window()
     return get_item_by_id(active)
 
-def _register_item(name: str, instance: PyGuiObject) -> None:
+def _register_item(name: str, instance: PyGuiWidget) -> None:
     if name in _ITEM_LOOKUP:
         warn(f"item with name '{name}' already exists in global item registry, overwriting")
     _ITEM_LOOKUP[name] = instance
@@ -83,18 +83,18 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
                 _unregister_item(child_name, True)
 
 def _register_item_type(item_type: str) -> Callable:
-    """Associate a :class:`PyGuiObject` class or constructor with a DearPyGui item type.
+    """Associate a :class:`PyGuiWidget` class or constructor with a DearPyGui item type.
 
     This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting
     an item that was not created by the object library."""
-    def decorator(ctor: Callable[..., PyGuiObject]):
+    def decorator(ctor: Callable[..., PyGuiWidget]):
         if item_type in _ITEM_TYPES:
             raise ValueError(f"'{item_type}' is already registered to {_ITEM_TYPES[item_type]!r}")
         _ITEM_TYPES[item_type] = ctor
         return ctor
     return decorator
 
-def _set_default_ctor(default_ctor: Callable[..., PyGuiObject]) -> None:
+def _set_default_ctor(default_ctor: Callable[..., PyGuiWidget]) -> None:
     global _default_ctor
     if _default_ctor is not None:
         raise ValueError(f"default ctor is already registered to {_default_ctor!r}")

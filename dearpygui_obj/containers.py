@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper import PyGuiObject, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
     pass
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 ## Menus and Menu Items
 
 @_register_item_type('mvAppItemType::Menu')
-class Menu(PyGuiObject):
+class Menu(PyGuiWidget):
     """A menu containing :class:`MenuItem` objects.
 
     While they are often found inside a :class:`.MenuBar`, they are actually a general container
@@ -35,7 +35,7 @@ class Menu(PyGuiObject):
 
 
 @_register_item_type('mvAppItemType::MenuItem')
-class MenuItem(PyGuiObject):
+class MenuItem(PyGuiWidget):
     """An item for a :class:`.Menu`."""
 
     label: str = ConfigProperty()

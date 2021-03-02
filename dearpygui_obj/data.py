@@ -8,7 +8,7 @@ from dearpygui_obj.wrapper import ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Any, List
-    from dearpygui_obj.wrapper import PyGuiObject, ItemConfigData
+    from dearpygui_obj.wrapper import PyGuiWidget, ItemConfigData
 
 ## Colors
 
@@ -50,10 +50,10 @@ class ColorRGBA(NamedTuple):
 class ConfigPropertyColorRGBA(ConfigProperty):
     """A ConfigProperty that accesses a ColorRGBA value by default."""
 
-    def _get_value(self, instance: PyGuiObject) -> Any:
+    def _get_value(self, instance: PyGuiWidget) -> Any:
         return ColorRGBA.dpg_import(instance.get_config()[self.key])
 
-    def _get_config(self, instance: PyGuiObject, value: Any) -> ItemConfigData:
+    def _get_config(self, instance: PyGuiWidget, value: Any) -> ItemConfigData:
         return {self.key : value.dpg_export()}
 
 ## Textures

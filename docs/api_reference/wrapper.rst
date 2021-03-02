@@ -8,13 +8,13 @@ Wrapper Object System
 .. autosummary:: 
     :nosignatures:
 
-    PyGuiObject
+    PyGuiWidget
     ConfigProperty
 
-PyGuiObject
+PyGuiWidget
 -----------
 
-.. autoclass:: PyGuiObject
+.. autoclass:: PyGuiWidget
     :members:
     :undoc-members:
 

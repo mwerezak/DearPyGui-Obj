@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper import PyGuiObject, ConfigProperty
+from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Tuple
 
 @_register_item_type('mvAppItemType::Spacing')
-class VSpacing(PyGuiObject):
+class VSpacing(PyGuiWidget):
     """Adds vertical spacing."""
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
@@ -24,7 +24,7 @@ class VSpacing(PyGuiObject):
 
 
 @_register_item_type('mvAppItemType::SameLine')
-class HAlignNext(PyGuiObject):
+class HAlignNext(PyGuiWidget):
     """Places a widget on the same line as the previous widget.
     Can also be used for horizontal spacing."""
 
@@ -42,7 +42,7 @@ def align_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup
     return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id)
 
 @_register_item_type('mvAppItemType::Group')
-class LayoutGroup(PyGuiObject):
+class LayoutGroup(PyGuiWidget):
     """Grouped widgets behave as a single unit when acted on by e.g. :class:`HAlignNext`.
 
     They can optionally have their contents flow horizontally instead of vertically.
@@ -64,7 +64,7 @@ class LayoutGroup(PyGuiObject):
         dpgcore.end()
 
 @_register_item_type('mvAppItemType::Indent')
-class LayoutIndent(PyGuiObject):
+class LayoutIndent(PyGuiWidget):
     """Adds an indent to contained items."""
 
     offset: float = ConfigProperty()
@@ -83,7 +83,7 @@ class LayoutIndent(PyGuiObject):
 
 
 @_register_item_type('mvAppItemType::Child')
-class ScrollView(PyGuiObject):
+class ScrollView(PyGuiWidget):
     """Adds an embedded child window with optional scollbars."""
 
     border: bool = ConfigProperty()
@@ -108,7 +108,7 @@ class ScrollView(PyGuiObject):
 
 
 @_register_item_type('mvAppItemType::Dummy')
-class Dummy(PyGuiObject):
+class Dummy(PyGuiWidget):
     """Adds a spacer or 'dummy' widget."""
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)

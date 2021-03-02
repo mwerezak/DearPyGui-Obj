@@ -20,8 +20,8 @@ if TYPE_CHECKING:
     ## Type Aliases
     ItemConfigData = Mapping[str, Any]  #: Alias for GUI item configuration data
 
-    GetValueFunc = Callable[['PyGuiObject'], Any]
-    GetConfigFunc = Callable[['PyGuiObject', Any], ItemConfigData]
+    GetValueFunc = Callable[['PyGuiWidget'], Any]
+    GetConfigFunc = Callable[['PyGuiWidget', Any], ItemConfigData]
 
 
 class ConfigProperty:
@@ -41,7 +41,7 @@ class ConfigProperty:
         self.key = key
         self.__doc__ = doc
 
-    def __set_name__(self, owner: Type[PyGuiObject], name: str):
+    def __set_name__(self, owner: Type[PyGuiWidget], name: str):
         self.owner = owner
         self.name = name
 
@@ -53,12 +53,12 @@ class ConfigProperty:
         if not self.__doc__:
             self.__doc__ = f"Read or modify the '{self.key}' config field."
 
-    def __get__(self, instance: Optional[PyGuiObject], owner: Type[PyGuiObject]) -> Any:
+    def __get__(self, instance: Optional[PyGuiWidget], owner: Type[PyGuiWidget]) -> Any:
         if instance is None:
             return self
         return self._get_value(instance)
 
-    def __set__(self, instance: PyGuiObject, value: Any) -> None:
+    def __set__(self, instance: PyGuiWidget, value: Any) -> None:
         config = self._get_config(instance, value)
         dpgcore.configure_item(instance.id, **config)
 
@@ -79,21 +79,21 @@ class ConfigProperty:
     _get_value: GetValueFunc
     _get_config: GetConfigFunc
 
-    def _get_value(self, instance: PyGuiObject) -> Any:
+    def _get_value(self, instance: PyGuiWidget) -> Any:
         return dpgcore.get_item_configuration(instance.id)[self.key]
 
-    def _get_config(self, instance: PyGuiObject, value: Any) -> ItemConfigData:
+    def _get_config(self, instance: PyGuiWidget, value: Any) -> ItemConfigData:
         return {self.key : value}
 
 
-class PyGuiObject:
+class PyGuiWidget:
     """This is the base class for all GUI item wrapper objects.
 
     Keyword arguments passed to ``__init__`` will be used to set the initial values of any
     :class:`ConfigProperty` descriptors added with :meth:`add_config_property`. Any left over
     keywords will be passed to the :meth:`_setup_add_widget` method to be given to DPG.
 
-    It's important that PyGuiObject and subclasses can be instantiated with only the **name_id**
+    It's important that PyGuiWidget and subclasses can be instantiated with only the **name_id**
     argument being passed to ``__init__``. This allows :func:`.get_item_by_id` to work.
 
     Parameters:
@@ -132,7 +132,7 @@ class PyGuiObject:
         if dpgcore.does_item_exist(self.id):
             self._setup_preexisting()
         else:
-            # at no point should a PyGuiObject object exist for an item that hasn't
+            # at no point should a PyGuiWidget object exist for an item that hasn't
             # actually been added, so if the item doesn't exist we need to add it now.
 
             # subclasses will pass both config values and keywords to _setup_add_widget()
@@ -240,14 +240,14 @@ class PyGuiObject:
 
     ## Parent/Children
 
-    def get_parent(self) -> Optional[PyGuiObject]:
+    def get_parent(self) -> Optional[PyGuiWidget]:
         """Get this item's parent."""
         parent_id = dpgcore.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
 
-    def set_parent(self, parent: PyGuiObject) -> None:
+    def set_parent(self, parent: PyGuiWidget) -> None:
         """Re-parent the item, moving it."""
         dpgcore.move_item(self.id, parent=parent.id)
 
@@ -259,7 +259,7 @@ class PyGuiObject:
         """Move the item down within its parent, if possible."""
         dpgcore.move_item_down(self.id)
 
-    def move_item_before(self, other: PyGuiObject) -> None:
+    def move_item_before(self, other: PyGuiWidget) -> None:
         """Attempt to place the item before another item, re-parenting it if necessary."""
         dpgcore.move_item(self.id, parent=other.get_parent().id, before=other.id)
 
@@ -269,7 +269,7 @@ class PyGuiObject:
         """Checks if DPG considers this item to be a container."""
         return dpgcore.is_item_container(self.id)
 
-    def iter_children(self) -> Iterable[PyGuiObject]:
+    def iter_children(self) -> Iterable[PyGuiWidget]:
         """Iterates all of the item's children."""
         children = dpgcore.get_item_children(self.id)
         if not children:
@@ -277,11 +277,11 @@ class PyGuiObject:
         for child in children:
             yield get_item_by_id(child)
 
-    def add_child(self, child: PyGuiObject) -> None:
+    def add_child(self, child: PyGuiWidget) -> None:
         """Alternative to :meth:`set_parent`."""
         dpgcore.move_item(child.id, parent=self.id)
 
-    def create_child(self, child_type: Type[PyGuiObject], *args, **kwargs) -> PyGuiObject:
+    def create_child(self, child_type: Type[PyGuiWidget], *args, **kwargs) -> PyGuiWidget:
         """Add a child item after the container has already been setup.
 
         Not all child types are supported. Which ones are is entirely up to DearPyGui."""
@@ -380,4 +380,4 @@ class PyGuiObject:
         return dpgcore.is_item_deactivated_after_edit(self.id)
 
 
-_set_default_ctor(PyGuiObject)
+_set_default_ctor(PyGuiWidget)
