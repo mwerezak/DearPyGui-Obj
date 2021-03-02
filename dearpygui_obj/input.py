@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, TypeVar, Generic
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
+from dearpygui_obj.data import ColorRGBA
 from dearpygui_obj.wrapper import PyGuiObject, ConfigProperty
 
 if TYPE_CHECKING:
@@ -271,3 +272,90 @@ class SliderInt4(SliderInput[int]):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_slider_int4(self.id, **dpg_args)
+
+
+## Color
+
+@_register_item_type('mvAppItemType::ColorButton')
+class ColorButton(PyGuiObject):
+    """A button that displays and enables copying of color data.
+
+    Clicking and draging the color square will copy the color to be applied on any other color widget."""
+
+    no_border: bool = ConfigProperty()
+    no_alpha: bool = ConfigProperty()  #: Don't include alpha channel.
+    no_drag_drop: bool = ConfigProperty()
+
+    def __init__(self, color: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
+        super().__init__(color=color.dpg_export(), name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_color_button(self.id, **dpg_args)
+
+
+@_register_item_type('mvAppItemType::ColorEdit4')
+class ColorEdit(PyGuiObject):
+    """A color editing widget.
+
+    Clicking and draging the color square will copy the color to be applied on any other color widget."""
+
+    label: str = ConfigProperty()
+    no_alpha: bool = ConfigProperty()  #: Don't include alpha channel.
+    no_picker: bool = ConfigProperty()
+    no_options: bool = ConfigProperty()
+    no_small_preview: bool = ConfigProperty()
+    no_inputs: bool = ConfigProperty()
+    no_tooltip: bool = ConfigProperty()
+    no_label: bool = ConfigProperty()
+    no_drag_drop: bool = ConfigProperty()
+    alpha_bar: bool = ConfigProperty()
+    alpha_preview: bool = ConfigProperty()
+    alpha_preview_half: bool = ConfigProperty()
+    display_rgb: bool = ConfigProperty()
+    display_hsv: bool = ConfigProperty()
+    display_hex: bool = ConfigProperty()
+    uint8: bool = ConfigProperty()
+    floats: bool = ConfigProperty()
+    input_rgb: bool = ConfigProperty()
+    input_hsv: bool =ConfigProperty()
+
+    def __init__(self, label: str = '', value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_color_edit4(self.id, **dpg_args)
+
+
+@_register_item_type('mvAppItemType::ColorPicker4')
+class ColorPicker(PyGuiObject):
+    """A color picking widget.
+
+    Clicking and draging the color square will copy the color to be applied on any other color widget.
+    Right-click allows the style of the color picker to be changed."""
+
+    label: str = ConfigProperty()
+    no_alpha: bool = ConfigProperty()
+    no_small_preview: bool = ConfigProperty()
+    no_inputs: bool = ConfigProperty()
+    no_tooltip: bool = ConfigProperty()
+    no_label: bool = ConfigProperty()
+    no_side_preview: bool = ConfigProperty()
+    alpha_bar: bool = ConfigProperty()
+    alpha_preview: bool = ConfigProperty()
+    alpha_preview_half: bool = ConfigProperty()
+    display_rgb: bool = ConfigProperty()
+    display_hsv: bool = ConfigProperty()
+    display_hex: bool = ConfigProperty()
+    uint8: bool = ConfigProperty()
+    floats: bool = ConfigProperty()
+    picker_hue_bar: bool = ConfigProperty()
+    picker_hue_wheel: bool = ConfigProperty()
+    input_rgb: bool = ConfigProperty()
+    input_hsv: bool = ConfigProperty()
+
+    def __init__(self, label: str = '', value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_color_picker4(self.id, **dpg_args)
+

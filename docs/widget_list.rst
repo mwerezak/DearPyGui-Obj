@@ -71,6 +71,15 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
     dearpygui_obj.input.SliderInt4
 
 
+.. rubric:: Colors
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.input.ColorButton
+    dearpygui_obj.input.ColorEdit
+    dearpygui_obj.input.ColorPicker
+
 .. rubric:: Layout
 
 .. autosummary:: 

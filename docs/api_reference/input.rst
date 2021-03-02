@@ -86,6 +86,8 @@ Sliders
     SliderInt2
     SliderInt3
     SliderInt4
+    ColorPicker
+    ColorEdit
 
 
 Float Sliders
@@ -124,5 +126,30 @@ Integer Sliders
     :undoc-members:
 
 .. autoclass:: SliderInt4
+    :members:
+    :undoc-members:
+
+
+Color Input
+-----------
+
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+
+    ColorButton
+    ColorEdit
+    ColorPicker
+
+.. autoclass:: ColorButton
+    :members:
+    :undoc-members:
+
+.. autoclass:: ColorPicker
+    :members:
+    :undoc-members:
+
+.. autoclass:: ColorEdit
     :members:
     :undoc-members:
