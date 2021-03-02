@@ -83,7 +83,7 @@ class LayoutIndent(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::Child')
-class ScrollView(PyGuiWidget):
+class ChildView(PyGuiWidget):
     """Adds an embedded child window with optional scollbars."""
 
     border: bool = ConfigProperty()
@@ -100,7 +100,7 @@ class ScrollView(PyGuiWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_child(self.id, **dpg_args)
 
-    def __enter__(self) -> ScrollView:
+    def __enter__(self) -> ChildView:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:

@@ -13,7 +13,7 @@ Layout
     align_horizontal
     LayoutGroup
     LayoutIndent
-    ScrollView
+    ChildView
     Dummy
 
 .. autoclass:: VSpacing
@@ -34,7 +34,7 @@ Layout
     :members:
     :undoc-members:
 
-.. autoclass:: ScrollView
+.. autoclass:: ChildView
     :members:
     :undoc-members:
 
