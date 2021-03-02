@@ -112,7 +112,7 @@ class Window(PyGuiWidget):
         width, height = value
         return {'x_pos': width, 'y_pos' : height}
 
-    def __init__(self, label: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = None, *, name_id: str = None, **config):
         """
         Parameters:
              label: window label.

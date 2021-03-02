@@ -43,7 +43,7 @@ class LabelText(PyGuiWidget):
     label: str = ConfigProperty()
     color: ColorRGBA = ConfigPropertyColorRGBA()
 
-    def __init__(self, label: str = '', value: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -96,7 +96,7 @@ class Button(PyGuiWidget):
             return {'arrow': False}
         return {'arrow': True, 'direction': adir.value}
 
-    def __init__(self, label: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -111,7 +111,7 @@ class Checkbox(PyGuiWidget):
 
     label: str = ConfigProperty()
 
-    def __init__(self, label: str = '', value: bool = False, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: bool = False, *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:

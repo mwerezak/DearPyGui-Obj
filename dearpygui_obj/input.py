@@ -32,7 +32,7 @@ class InputText(PyGuiWidget):
     label: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
 
-    def __init__(self, label: str = '', value: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -78,7 +78,7 @@ class NumberInput(PyGuiWidget, Generic[_TInput]):
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}
 
-    def __init__(self, label: str = '', value: _TInput = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: _TInput = None, *, name_id: str = None, **config):
         value = value or self._default_value
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
@@ -175,7 +175,7 @@ class SliderInput(PyGuiWidget, Generic[_TInput]):
     #: Whether to clamp the value when using manual input. By default CTRL+Click allows going out of bounds.
     clamped: bool = ConfigProperty()
 
-    def __init__(self, label: str = '', value: _TInput = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: _TInput = None, *, name_id: str = None, **config):
         value = value or self._default_value
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
@@ -339,7 +339,7 @@ class ColorEdit(PyGuiWidget):
             return {'uint8':True, 'floats':False}
         raise ValueError('invalid color format mode')
 
-    def __init__(self, label: str = '', value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -386,7 +386,7 @@ class ColorPicker(PyGuiWidget):
             return {'uint8':True, 'floats':False}
         raise ValueError('invalid color format mode')
 
-    def __init__(self, label: str = '', value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:

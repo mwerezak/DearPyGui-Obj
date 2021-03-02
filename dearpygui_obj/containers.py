@@ -21,7 +21,7 @@ class Menu(PyGuiWidget):
 
     label: str = ConfigProperty()
 
-    def __init__(self, label: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
@@ -46,7 +46,7 @@ class MenuItem(PyGuiWidget):
     #: If ``True``, a checkmark is shown if the item's :attr:`value` is ``True``.
     enable_check: bool = ConfigProperty(key='check')
 
-    def __init__(self, label: str = '', *, name_id: str = None, **config):
+    def __init__(self, label: str = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:

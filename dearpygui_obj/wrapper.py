@@ -146,7 +146,7 @@ class PyGuiWidget:
 
             # labels are handled specially because they are very common
             # and setting a default label only makes sense at init-time
-            if 'label' in config and not config['label']:  #TODO use None as a sentinel
+            if 'label' in config and config['label'] is None:
                 config['label'] = self.id
 
             for name, value in config.items():
