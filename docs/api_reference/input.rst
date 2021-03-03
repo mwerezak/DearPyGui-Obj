@@ -6,9 +6,6 @@ Input Widgets
 .. contents:: Contents
     :local:
 
-Input Boxes
------------
-
 .. rubric:: Summary
 
 .. autosummary:: 
@@ -23,11 +20,34 @@ Input Boxes
     InputInt2
     InputInt3
     InputInt4
+    SliderFloat
+    SliderFloat2
+    SliderFloat3
+    SliderFloat4
+    SliderInt
+    SliderInt2
+    SliderInt3
+    SliderInt4
+    ColorPicker
+    ColorEdit
+    ColorButton
+    ColorEdit
+    ColorPicker
+
+Input Boxes
+-----------
 
 Text Input
 ^^^^^^^^^^
 
 .. autoclass:: InputText
+    :members:
+    :undoc-members:
+
+Number Input
+^^^^^^^^^^^^
+
+.. autoclass:: NumberInput
     :members:
     :undoc-members:
 
@@ -73,26 +93,12 @@ Integer Input
 Sliders
 -------
 
-.. rubric:: Summary
-
-.. autosummary:: 
-    :nosignatures:
-
-    SliderFloat
-    SliderFloat2
-    SliderFloat3
-    SliderFloat4
-    SliderInt
-    SliderInt2
-    SliderInt3
-    SliderInt4
-    ColorPicker
-    ColorEdit
-
+.. autoclass:: SliderInput
+    :members:
+    :undoc-members:
 
 Float Sliders
 ^^^^^^^^^^^^^
-
 
 .. autoclass:: SliderFloat
     :members:
@@ -132,15 +138,6 @@ Integer Sliders
 
 Color Input
 -----------
-
-.. rubric:: Summary
-
-.. autosummary:: 
-    :nosignatures:
-
-    ColorButton
-    ColorEdit
-    ColorPicker
 
 .. autoclass:: ColorButton
     :members:
