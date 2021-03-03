@@ -124,8 +124,9 @@ class RadioButtons(PyGuiWidget, MutableSequence[str]):
     """A set of radio buttons.
 
     This widget can be used as a mutable sequence of labels. Changing the sequence will
-    change the radio buttons in the group and their labels. The value of this widget is the index
-    of the selected button.
+    change the radio buttons in the group and their labels.
+
+    The index of the selected button is obtained from the :attr:`value` property.
     """
     value: int
 
