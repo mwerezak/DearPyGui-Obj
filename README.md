@@ -5,8 +5,9 @@ An object-oriented interface for [Dear PyGui](https://github.com/hoffstadt/DearP
 
 This project aims to implement a pure-Python interface to Dear PyGui that takes full advantage of the Python language to provide a concise and ergonomic API.
 
-Another goal of DearPyGui-Obj is that the object library should be *fully compatible* with Dear PyGui. This means that any DPG code that executes outside of DearPyGui-Obj should not invalidate or break any part of the object library.
+DearPyGui-Obj aims to be *fully compatible* with Dear PyGui. This means that you can freely mix modules and code that use DearPyGui and DearPyGui-Obj without issues. Wherever possible, widget classes are designed to draw all of their state from DPG so that there is no possibility of invalidation. You can even create instances for widgets that were created from outside of DearPyGui-Obj. 
 
+You'll find that there's a strong correspondence between DearPyGui-Obj and DearPyGui for the most part, but you may find that the interface is nicer which makes coding faster :)
 ## Documentation
 Documentation (on ReadTheDocs) can be found [here](https://dearpygui-obj.readthedocs.io/en/latest/index.html).
 
