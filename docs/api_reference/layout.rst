@@ -30,22 +30,22 @@ Layout
 .. autoclass:: LayoutGroup
     :members:
     :undoc-members:
-    :special-members: __enter__, __exit__
+    :special-members: __exit__
 
 .. autoclass:: LayoutColumns
     :members:
     :undoc-members:
-    :special-members: __enter__, __exit__
+    :special-members: __exit__
 
 .. autoclass:: LayoutIndent
     :members:
     :undoc-members:
-    :special-members: __enter__, __exit__
+    :special-members: __exit__
 
 .. autoclass:: ChildView
     :members:
     :undoc-members:
-    :special-members: __enter__, __exit__
+    :special-members: __exit__
 
 .. autoclass:: Dummy
     :members:

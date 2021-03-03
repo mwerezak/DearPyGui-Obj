@@ -22,7 +22,7 @@ Simple Containers
 .. autoclass:: CollapsingHeader
     :members:
     :undoc-members:
-    :special-members: __enter__, __exit__
+    :special-members: __exit__
 
 
 Menus
@@ -31,7 +31,7 @@ Menus
 .. autoclass:: Menu
     :members:
     :undoc-members:
-    :special-members: __enter__, __exit__
+    :special-members: __exit__
 
 .. autoclass:: MenuItem
     :members:
