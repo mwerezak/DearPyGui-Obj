@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from collections import ChainMap as chain_map
 from typing import TYPE_CHECKING
 
@@ -87,8 +88,8 @@ class ConfigProperty:
         return {self.key : value}
 
 
-class PyGuiWidget:
-    """This is the base class for all GUI item wrapper objects.
+class PyGuiWidget(ABC):
+    """This is the abstract base class for all GUI item wrapper objects.
 
     Keyword arguments passed to ``__init__`` will be used to set the initial values of any
     :class:`ConfigProperty` descriptors added with :meth:`add_config_property`. Any left over
@@ -167,9 +168,9 @@ class PyGuiWidget:
 
     ## Overrides
 
+    @abstractmethod
     def _setup_add_widget(self, dpg_args: Mapping[str, Any]) -> None:
         """This should create the widget using DearPyGui's ``add_*()`` functions."""
-        pass
 
     def _setup_preexisting(self) -> None:
         """This can be overriden by subclasses to setup an object wrapper that has been created
@@ -385,4 +386,15 @@ class PyGuiWidget:
         return dpgcore.is_item_deactivated_after_edit(self.id)
 
 
-_set_default_ctor(PyGuiWidget)
+@_set_default_ctor
+class DefaultWidget(PyGuiWidget):
+    """A fallback class used when getting a widget that does not have a wrapper class.
+
+    When :func:`.get_item_by_name` is called to retrieve an item whose widget type does not
+    have a wrapper object class associated with it, an instance of this type is created as
+    a fallback."""
+
+    def _setup_add_widget(self, dpg_args: Mapping[str, Any]) -> None:
+        pass
+
+

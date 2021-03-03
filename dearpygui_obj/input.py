@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from abc import ABC
 from typing import TYPE_CHECKING, TypeVar, Generic
 
 import dearpygui.core as dpgcore

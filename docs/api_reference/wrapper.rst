@@ -9,6 +9,7 @@ Wrapper Object System
     :nosignatures:
 
     PyGuiWidget
+    DefaultWidget
     ConfigProperty
 
 PyGuiWidget
@@ -86,6 +87,11 @@ PyGuiWidget
 
     .. automethod:: _setup_add_widget
     .. automethod:: _setup_preexisting
+
+
+.. autoclass:: DefaultWidget
+    :members:
+    :undoc-members:
 
 ConfigProperty
 --------------
