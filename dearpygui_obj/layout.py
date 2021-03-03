@@ -88,11 +88,11 @@ class LayoutColumns(PyGuiWidget):
 
     Each new widget added will be placed in the next column, wrapping around to the start."""
 
-    columns: int = ConfigProperty(no_init=True)  #: Number of columns.
+    num_cols: int = ConfigProperty(key='columns', no_init=True)  #: Number of columns.
     border: bool = ConfigProperty()  #: Draw a border between columns.
 
-    def __init__(self, columns: int = 2, *, name_id: str = None, **config):
-        super().__init__(columns=columns, name_id=name_id, **config)
+    def __init__(self, num_cols: int = 2, *, name_id: str = None, **config):
+        super().__init__(columns=num_cols, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_managed_columns(name=self.id, **dpg_args)

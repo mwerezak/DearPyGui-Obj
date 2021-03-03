@@ -57,10 +57,10 @@ class ConfigProperty:
     def __get__(self, instance: Optional[PyGuiWidget], owner: Type[PyGuiWidget]) -> Any:
         if instance is None:
             return self
-        return self._get_value(instance)
+        return self.get_value(instance)
 
     def __set__(self, instance: PyGuiWidget, value: Any) -> None:
-        config = self._get_config(instance, value)
+        config = self.get_config(instance, value)
         dpgcore.configure_item(instance.id, **config)
 
     def __call__(self, get_value: GetValueFunc):
@@ -68,22 +68,22 @@ class ConfigProperty:
         return self.getvalue(get_value)
 
     def getvalue(self, get_value: GetValueFunc):
-        self._get_value = get_value
+        self.get_value = get_value
         self.__doc__ = get_value.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
     def getconfig(self, get_config: GetConfigFunc):
-        self._get_config = get_config
+        self.get_config = get_config
         return self
 
     ## default implementations
-    _get_value: GetValueFunc
-    _get_config: GetConfigFunc
+    get_value: GetValueFunc
+    get_config: GetConfigFunc
 
-    def _get_value(self, instance: PyGuiWidget) -> Any:
+    def get_value(self, instance: PyGuiWidget) -> Any:
         return dpgcore.get_item_configuration(instance.id)[self.key]
 
-    def _get_config(self, instance: PyGuiWidget, value: Any) -> ItemConfigData:
+    def get_config(self, instance: PyGuiWidget, value: Any) -> ItemConfigData:
         return {self.key : value}
 
 
@@ -136,23 +136,26 @@ class PyGuiWidget:
             # at no point should a PyGuiWidget object exist for an item that hasn't
             # actually been added, so if the item doesn't exist we need to add it now.
 
+            # labels are handled specially because they are very common
+            if 'label' in kwargs and kwargs['label'] is None:
+                kwargs['label'] = self.id
+
             # subclasses will pass both config values and keywords to _setup_add_widget()
             # separate them now
             config = {}
-            props = self._config_properties
             for name, value in list(kwargs.items()):
-                if name in props and not props[name].no_init:
-                    config[name] = kwargs.pop(name)
+                prop = self._config_properties.get(name)
+                if prop is not None and not prop.no_init:
+                    config[prop] = kwargs.pop(name)
 
+            # just keywords left in kwargs
             self._setup_add_widget(kwargs)
 
-            # labels are handled specially because they are very common
-            # and setting a default label only makes sense at init-time
-            if 'label' in config and config['label'] is None:
-                config['label'] = self.id
+            config_data = {}
+            for prop, value in config.items():
+                config_data.update(prop.get_config(self, value))
 
-            for name, value in config.items():
-                setattr(self, name, value)
+            dpgcore.configure_item(self.id, **config_data)
 
         _register_item(self.id, self)
 
@@ -198,7 +201,7 @@ class PyGuiWidget:
     def get_config(self) -> ItemConfigData:
         return dpgcore.get_item_configuration(self.id)
 
-    def set_config(self, config: ItemConfigData) -> None:
+    def set_config(self, **config: Any) -> None:
         dpgcore.configure_item(self.id, **config)
 
     ## Callbacks

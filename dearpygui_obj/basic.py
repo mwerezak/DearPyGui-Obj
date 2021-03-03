@@ -158,17 +158,17 @@ class RadioButtons(PyGuiWidget, MutableSequence[str]):
     def __setitem__(self, idx: int, label: str) -> None:
         items = self._get_items()
         items[idx] = label
-        self.set_config({'items':items})
+        self.set_config(items=items)
 
     def __delitem__(self, idx: int) -> None:
         items = self._get_items()
         del items[idx]
-        self.set_config({'items':items})
+        self.set_config(items=items)
 
     def insert(self, idx: int, label: str) -> None:
         items = self._get_items()
         items.insert(idx, label)
-        self.set_config({'items':items})
+        self.set_config(items=items)
 
 
 @_register_item_type('mvAppItemType::ProgressBar')
