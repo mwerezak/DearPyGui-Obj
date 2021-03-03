@@ -11,8 +11,18 @@ Containers
 .. autosummary:: 
     :nosignatures:
 
+    CollapsingHeader
     Menu
     MenuItem
+
+
+Simple Containers
+^^^^^^^^^^^^^^^^^
+
+.. autoclass:: CollapsingHeader
+    :members:
+    :undoc-members:
+    :special-members: __enter__, __exit__
 
 
 Menus

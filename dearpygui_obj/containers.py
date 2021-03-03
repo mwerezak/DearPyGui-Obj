@@ -9,6 +9,40 @@ if TYPE_CHECKING:
     pass
 
 
+@_register_item_type('mvAppItemType::CollapsingHeader')
+class CollapsingHeader(PyGuiWidget):
+    """A collapsing container with a label."""
+
+    value: bool  #: ``True`` if the header is uncollapsed.
+
+    label: str = ConfigProperty()
+    closable: bool = ConfigProperty()
+    default_open: bool = ConfigProperty()
+    bullet: bool = ConfigProperty()  #: Display a bullet instead of arrow.
+
+    #: If ``True``, a double click is needed to toggle
+    open_on_double_click: bool = ConfigProperty()
+
+    #: If ``True``, the user must click on the arrow/bullet to toggle
+    open_on_arrow: bool = ConfigProperty()
+
+    #: If ``True``, the header is always open and cannot be collapsed,
+    #: and the arrow/bullet not shown (use as a convenience for leaf nodes).
+    is_leaf: bool = ConfigProperty(key='leaf')
+
+    def __init__(self, label: str = None, *, name_id: str = None, **config):
+        super().__init__(label=label, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_collapsing_header(self.id, **dpg_args)
+
+    def __enter__(self) -> CollapsingHeader:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        dpgcore.end()
+
+
 ## Menus and Menu Items
 
 @_register_item_type('mvAppItemType::Menu')
