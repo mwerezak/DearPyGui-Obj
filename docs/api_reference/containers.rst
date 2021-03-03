@@ -11,15 +11,22 @@ Containers
 .. autosummary:: 
     :nosignatures:
 
-    CollapsingHeader
+    TreeNode
+    TreeNodeHeader
     Menu
     MenuItem
 
 
-Simple Containers
-^^^^^^^^^^^^^^^^^
+Tree Nodes
+^^^^^^^^^^
 
-.. autoclass:: CollapsingHeader
+.. autoclass:: TreeNode
+    :members:
+    :undoc-members:
+    :special-members: __exit__
+
+
+.. autoclass:: TreeNodeHeader
     :members:
     :undoc-members:
     :special-members: __exit__

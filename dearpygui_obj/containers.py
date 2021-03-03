@@ -8,9 +8,10 @@ from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
 if TYPE_CHECKING:
     pass
 
+## Tree Nodes
 
-@_register_item_type('mvAppItemType::CollapsingHeader')
-class CollapsingHeader(PyGuiWidget):
+@_register_item_type('mvAppItemType::TreeNode')
+class TreeNode(PyGuiWidget):
     """A collapsing container with a label."""
 
     value: bool  #: ``True`` if the header is uncollapsed.
@@ -34,13 +35,21 @@ class CollapsingHeader(PyGuiWidget):
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
-        dpgcore.add_collapsing_header(self.id, **dpg_args)
+        dpgcore.add_tree_node(self.id, **dpg_args)
 
-    def __enter__(self) -> CollapsingHeader:
+    def __enter__(self) -> TreeNode:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
+
+
+@_register_item_type('mvAppItemType::CollapsingHeader')
+class TreeNodeHeader(TreeNode):
+    """Similar to :class:`TreeNode`, but the label is visually emphasized."""
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_collapsing_header(self.id, **dpg_args)
 
 
 ## Menus and Menu Items

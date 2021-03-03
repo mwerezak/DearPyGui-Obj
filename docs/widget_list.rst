@@ -92,7 +92,8 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 .. autosummary:: 
     :nosignatures:
 
-    dearpygui_obj.containers.CollapsingHeader
+    dearpygui_obj.containers.TreeNode
+    dearpygui_obj.containers.TreeNodeHeader
     dearpygui_obj.containers.Menu
     dearpygui_obj.containers.MenuItem
 
