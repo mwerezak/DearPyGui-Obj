@@ -31,14 +31,6 @@ Basic Content
     :members:
     :undoc-members:
 
-.. autoclass:: ProgressBar
-    :members:
-    :undoc-members:
-
-
-Buttons
--------
-
 .. autoclass:: Button
     :members:
     :undoc-members:
@@ -51,3 +43,11 @@ Buttons
     :members:
     :undoc-members:
 
+.. autoclass:: RadioButtons
+    :members:
+    :undoc-members:
+    :special-members: __len__, __getitem__, __setitem__, __delitem__
+
+.. autoclass:: ProgressBar
+    :members:
+    :undoc-members:

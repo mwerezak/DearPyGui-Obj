@@ -12,6 +12,7 @@ Layout
     HAlignNext
     align_horizontal
     LayoutGroup
+    LayoutColumns
     LayoutIndent
     ChildView
     Dummy
@@ -27,6 +28,10 @@ Layout
 .. autofunction:: align_horizontal
 
 .. autoclass:: LayoutGroup
+    :members:
+    :undoc-members:
+
+.. autoclass:: LayoutColumns
     :members:
     :undoc-members:
 

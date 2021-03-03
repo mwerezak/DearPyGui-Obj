@@ -8,7 +8,7 @@ from dearpygui_obj import _register_item_type
 from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Tuple
+    from typing import Sequence
 
 @_register_item_type('mvAppItemType::Spacing')
 class VSpacing(PyGuiWidget):
@@ -80,6 +80,51 @@ class LayoutIndent(PyGuiWidget):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.unindent()
+
+
+@_register_item_type('mvAppItemType::ManagedColumns')
+class LayoutColumns(PyGuiWidget):
+    """Places contents into columns.
+
+    Each new widget added will be placed in the next column, wrapping around to the start."""
+
+    columns: int = ConfigProperty(no_init=True)  #: Number of columns.
+    border: bool = ConfigProperty()  #: Draw a border between columns.
+
+    def __init__(self, columns: int = 2, *, name_id: str = None, **config):
+        super().__init__(columns=columns, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_managed_columns(name=self.id, **dpg_args)
+
+    def __enter__(self) -> LayoutColumns:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        dpgcore.end()
+
+    @property
+    def column_widths(self) -> Sequence[float]:
+        """Get or set column widths as a sequence of floats."""
+        return tuple(
+            dpgcore.get_managed_column_width(self.id, i)
+            for i in range(self.columns)
+        )
+
+    @column_widths.setter
+    def column_widths(self, widths: Sequence[float]) -> None:
+        if len(widths) != self.columns:
+            raise ValueError('incorrect number of widths')
+        for i, width in enumerate(widths):
+            dpgcore.set_managed_column_width(self.id, i, width)
+
+    def get_column_width(self, col_idx: int) -> float:
+        """Get an individual column width."""
+        return dpgcore.get_managed_column_width(self.id, col_idx)
+
+    def set_column_width(self, col_idx: int, width: float) -> None:
+        """Set an individual column width."""
+        dpgcore.set_managed_column_width(self.id, col_idx, width)
 
 
 @_register_item_type('mvAppItemType::Child')

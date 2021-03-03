@@ -29,16 +29,17 @@ class ConfigProperty:
 
     def __init__(self,
                  key: Optional[str] = None, *,
-                 add_init: bool = True,
+                 no_init: bool = False,
                  doc: str = ''):
         """
         Parameters:
             key: the config key to get/set with the default implementation.
-            add_init: If ``True``, add an init argument handler to the owner type.
+            no_init: If ``True``, don't receive initial value from the widget constructor.
             doc: custom docstring.
         """
         self.owner = None
         self.key = key
+        self.no_init = no_init
         self.__doc__ = doc
 
     def __set_name__(self, owner: Type[PyGuiWidget], name: str):
@@ -138,8 +139,9 @@ class PyGuiWidget:
             # subclasses will pass both config values and keywords to _setup_add_widget()
             # separate them now
             config = {}
+            props = self._config_properties
             for name, value in list(kwargs.items()):
-                if name in self._config_properties:
+                if name in props and not props[name].no_init:
                     config[name] = kwargs.pop(name)
 
             self._setup_add_widget(kwargs)

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from abc import abstractmethod
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, MutableSequence
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
@@ -9,7 +10,7 @@ from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA
 from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Optional
+    from typing import Optional, Iterable, Sequence, List
     from dearpygui_obj.wrapper import ItemConfigData
 
 ## Basic Content
@@ -116,6 +117,58 @@ class Checkbox(PyGuiWidget):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_checkbox(self.id, **dpg_args)
+
+
+@_register_item_type('mvAppItemType::RadioButtons')
+class RadioButtons(PyGuiWidget, MutableSequence[str]):
+    """A set of radio buttons.
+
+    This widget can be used as a mutable sequence of labels. Changing the sequence will
+    change the radio buttons in the group and their labels. The value of this widget is the index
+    of the selected button.
+    """
+    value: int
+
+    horizontal: bool = ConfigProperty()
+
+    @ConfigProperty()
+    def items(self) -> Sequence[str]:
+        """Get or set this widget's items as a sequence."""
+        return tuple(self._get_items())
+
+    @items.getconfig
+    def items(self, items: Sequence[str]):
+        return {'items':list(items)}
+
+    def __init__(self, labels: Iterable[str], value: int = 0, *, name_id: str = None, **config):
+        super().__init__(items=labels, default_value=value, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_radio_button(self.id, **dpg_args)
+
+    def _get_items(self) -> List[str]:
+        return self.get_config()['items']
+
+    def __len__(self) -> int:
+        return len(self._get_items())
+
+    def __getitem__(self, idx: int) -> str:
+        return self._get_items()[idx]
+
+    def __setitem__(self, idx: int, label: str) -> None:
+        items = self._get_items()
+        items[idx] = label
+        self.set_config({'items':items})
+
+    def __delitem__(self, idx: int) -> None:
+        items = self._get_items()
+        del items[idx]
+        self.set_config({'items':items})
+
+    def insert(self, idx: int, label: str) -> None:
+        items = self._get_items()
+        items.insert(idx, label)
+        self.set_config({'items':items})
 
 
 @_register_item_type('mvAppItemType::ProgressBar')

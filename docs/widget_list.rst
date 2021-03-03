@@ -29,17 +29,10 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
     dearpygui_obj.basic.Text
     dearpygui_obj.basic.LabelText
     dearpygui_obj.basic.Separator
-    dearpygui_obj.basic.ProgressBar
-
-
-.. rubric:: Buttons
-
-.. autosummary:: 
-    :nosignatures:
-
     dearpygui_obj.basic.Button
     dearpygui_obj.basic.Checkbox
-
+    dearpygui_obj.basic.RadioButtons
+    dearpygui_obj.basic.ProgressBar
 
 .. rubric:: Input Boxes
 
@@ -89,6 +82,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
     dearpygui_obj.layout.HAlignNext
     dearpygui_obj.layout.align_horizontal
     dearpygui_obj.layout.LayoutGroup
+    dearpygui_obj.layout.LayoutColumns
     dearpygui_obj.layout.LayoutIndent
     dearpygui_obj.layout.ChildView
     dearpygui_obj.layout.Dummy
