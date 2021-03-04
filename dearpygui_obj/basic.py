@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 @_register_item_type('mvAppItemType::Text')
 class Text(PyGuiWidget):
-    """A basic element that displays some text."""
+    """Just text. A basic element that displays some text."""
 
     value: str
 
