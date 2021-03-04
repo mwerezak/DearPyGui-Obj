@@ -17,7 +17,6 @@ DearPyGui-Obj
    :caption: Contents:
 
    widget_list
-   devguide
    api_reference/index
 
 
