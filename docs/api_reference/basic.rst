@@ -15,6 +15,11 @@ Basic Widgets
     LabelText
     Button
     ButtonArrow
+    Checkbox
+    RadioButtons
+    Combo
+    ComboHeightMode
+    ProgressBar
 
 Basic Content
 -------------
@@ -47,6 +52,15 @@ Basic Content
     :members:
     :undoc-members:
     :special-members: __len__, __getitem__, __setitem__, __delitem__
+
+.. autoclass:: Combo
+    :members:
+    :undoc-members:
+    :special-members: __len__, __getitem__, __setitem__, __delitem__
+
+.. autoclass:: ComboHeightMode
+    :members:
+    :undoc-members:
 
 .. autoclass:: ProgressBar
     :members:

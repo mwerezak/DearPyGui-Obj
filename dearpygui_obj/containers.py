@@ -89,8 +89,10 @@ class MenuItem(PyGuiWidget):
     #: If ``True``, a checkmark is shown if the item's :attr:`value` is ``True``.
     enable_check: bool = ConfigProperty(key='check')
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: bool = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
+        if value is not None:
+            self.value = value
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_menu_item(self.id, **dpg_args)
