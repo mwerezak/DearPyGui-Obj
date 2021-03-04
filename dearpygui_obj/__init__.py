@@ -113,7 +113,7 @@ def _generate_id(o: Any) -> str:
 ## Start/Stop DearPyGui
 
 def start_gui(*, primary_window: Window = None) -> None:
-    """Starts the GUI engine (DearPyGui)."""
+    """Start the GUI engine and show the main window."""
     if primary_window is not None:
         dpgcore.start_dearpygui(primary_window=primary_window.id)
     else:
