@@ -10,7 +10,7 @@ from dearpygui import core as dpgcore
 from dearpygui_obj import (
     _generate_id, _set_default_ctor,
     _register_item, _unregister_item,
-    _wrap_callback, _unwrap_callback,
+    wrap_callback, unwrap_callback,
     get_item_by_id, DataValue,
 )
 
@@ -209,12 +209,12 @@ class PyGuiWidget(ABC):
 
     def set_callback(self, callback: PyGuiCallback) -> None:
         """Set the callback used by DearPyGui."""
-        dpgcore.set_item_callback(self.id, _wrap_callback(callback))
+        dpgcore.set_item_callback(self.id, wrap_callback(callback))
 
     def get_callback(self) -> PyGuiCallback:
         """Get the callback used by DearPyGui."""
         dpg_callback = dpgcore.get_item_callback(self.id)
-        return _unwrap_callback(dpg_callback)
+        return unwrap_callback(dpg_callback)
 
     @property
     def callback_data(self) -> Any:

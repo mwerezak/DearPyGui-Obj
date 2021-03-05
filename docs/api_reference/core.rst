@@ -23,6 +23,8 @@ Core Functionality
     set_render_callback
     create_value
     DataValue
+    wrap_callback
+    unwrap_callback
     get_delta_time
     get_total_time
     enable_vsync
@@ -67,6 +69,13 @@ System-Level Callbacks
 
 .. autofunction:: set_render_callback
 
+
+Callback Helpers
+----------------
+
+.. autofunction:: wrap_callback
+
+.. autofunction:: unwrap_callback
 
 Miscellaneous
 -------------

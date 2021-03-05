@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from warnings import warn
-from typing import TYPE_CHECKING, Sequence
+from inspect import signature, Parameter
+from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 
@@ -13,7 +14,11 @@ if TYPE_CHECKING:
     from dearpygui_obj.window import Window
 
     ## Type Aliases
-    PyGuiCallback = Callable[[Union[PyGuiWidget, str], Any], None]
+    PyGuiCallback = Union[
+        Callable[[Union[PyGuiWidget, str], Any], None],
+        Callable[[Union[PyGuiWidget, str]], None],
+        Callable[[], None],
+    ]
     _DPGCallback = Callable[[str, Any], None]
 
 # DearPyGui's widget name scope is global, so I guess it's okay that this is too.
@@ -208,25 +213,79 @@ class DataValue:
 
 ## Callbacks
 
-def _wrap_callback(callback: PyGuiCallback) -> _DPGCallback:
-    """Wrap a :data:`PyGuiCallback` making it compatible with DPG."""
-    def dpg_callback(sender: str, data: Any) -> None:
-        if dpgcore.does_item_exist(sender):
-            if sender in _ITEM_LOOKUP:
-                sender = _ITEM_LOOKUP[sender]
-            else:
-                # warning, this will segfault if sender does not exist!
-                sender_type = dpgcore.get_item_type(sender)
-                sender = _create_item_wrapper(sender, sender_type)
+def wrap_callback(callback: PyGuiCallback) -> _DPGCallback:
+    """Wraps callbacks that expect ``sender`` to be an object.
 
-        return callback(sender, data)
+    DPG expects callbacks' sender argument to take the sender ID as a string.
+    However it is convenient to write callbacks where the sender is an object.
 
-    dpg_callback._internal_callback = callback
-    return dpg_callback
+    This can be used to wrap such callbacks, ensuring that the ID is resolved
+    into an object before the wrapped callback is invoked."""
 
-def _unwrap_callback(callback: Callable) -> Callable:
-    """If the callback was wrapped with :func:`_wrap_callback`, this will unwrap it.
+    ## This is a workaround for the fact that DPG cannot use Callables as callbacks.
+    wrapper_obj = CallbackWrapper(callback)
+    def invoke_wrapper(sender, data):
+        wrapper_obj(sender, data)
+    invoke_wrapper.wrapped = wrapper_obj.wrapped
+    return invoke_wrapper
+
+def unwrap_callback(callback: Callable) -> Callable:
+    """If the callback was wrapped with :func:`wrap_callback`, this will unwrap it.
 
     Otherwise, the callback will just be returned unchanged.
     """
-    return getattr(callback, '_internal_callback', callback)
+    return getattr(callback, 'wrapped', callback)
+
+class CallbackWrapper:
+    """Wraps callbacks that expect ``sender`` to be an object.
+
+    DPG expects callbacks' sender argument to take the sender ID as a string.
+    However it is convenient to write callbacks where the sender is an object.
+
+    This can be used to wrap such callbacks, ensuring that the ID is resolved
+    into an object before the wrapped callback is invoked.
+
+    Parameters:
+        callback: The callback to wrap.
+    """
+
+    def __init__(self, callback: PyGuiCallback):
+        self.wrapped = callback
+
+        positional = (Parameter.POSITIONAL_ONLY, Parameter.POSITIONAL_OR_KEYWORD)
+        sig = signature(callback)
+        arg_count = sum(1 for param in sig.parameters.values() if param.kind in positional)
+        if arg_count == 0:
+            self._invoke = self._call_noargs
+        elif arg_count == 1:
+            self._invoke = self._call_sender_only
+        else:
+            self._invoke = self._call_sender_data
+
+    def __call__(self, sender: str, data: Any) -> None:
+        """Invoke the callback.
+
+        Parameters:
+            sender: The sender, typically given by DPG.
+            data: The callback data, typically given by DPG.
+        """
+        self._invoke(sender, data)
+
+    @staticmethod
+    def _resolve_sender(sender: str) -> Any:
+        if dpgcore.does_item_exist(sender):
+            if sender in _ITEM_LOOKUP:
+                return _ITEM_LOOKUP[sender]
+
+            # warning, this will segfault if sender does not exist!
+            sender_type = dpgcore.get_item_type(sender)
+            return _create_item_wrapper(sender, sender_type)
+
+    def _call_sender_data(self, sender: Any, data: Any) -> None:
+        self.wrapped(self._resolve_sender(sender), data)
+
+    def _call_sender_only(self, sender: Any, data: Any) -> None:
+        self.wrapped(self._resolve_sender(sender))
+
+    def _call_noargs(self, sender: Any, data: Any) -> None:
+        self.wrapped()  # no need to resolve sender either!

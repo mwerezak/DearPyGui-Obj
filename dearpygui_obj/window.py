@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
-from dearpygui_obj import _register_item_type, _wrap_callback
+from dearpygui_obj import _register_item_type, wrap_callback
 from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
@@ -120,7 +120,7 @@ class Window(PyGuiWidget):
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
-        on_close = _wrap_callback(self._on_close)
+        on_close = wrap_callback(self._on_close)
         dpgcore.add_window(self.id, on_close=on_close, **dpg_args)
 
     def __enter__(self) -> Window:
