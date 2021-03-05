@@ -50,10 +50,10 @@ class ColorRGBA(NamedTuple):
 class ConfigPropertyColorRGBA(ConfigProperty):
     """A ConfigProperty that accesses a ColorRGBA value by default."""
 
-    def _get_value(self, instance: PyGuiWidget) -> Any:
+    def get_value(self, instance: PyGuiWidget) -> Any:
         return ColorRGBA.dpg_import(instance.get_config()[self.key])
 
-    def _get_config(self, instance: PyGuiWidget, value: Any) -> ItemConfigData:
+    def get_config(self, instance: PyGuiWidget, value: Any) -> ItemConfigData:
         return {self.key : value.dpg_export()}
 
 ## Textures
