@@ -118,6 +118,21 @@ class Checkbox(PyGuiWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_checkbox(self.id, **dpg_args)
 
+@_register_item_type('mvAppItemType::Selectable')
+class Selectable(PyGuiWidget):
+    """Text that can be selected, functionally similar to a checkbox."""
+
+    value: bool
+    label: str = ConfigProperty()
+    span_columns: bool = ConfigProperty()
+
+    def __init__(self, label: str = None, value: bool = False, *, name_id: str = None, **config):
+        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_selectable(self.id, **dpg_args)
+
+
 
 @_register_item_type('mvAppItemType::RadioButtons')
 class RadioButtons(PyGuiWidget, MutableSequence[str]):
@@ -181,7 +196,7 @@ class ComboHeightMode(Enum):
 
 @_register_item_type('mvAppItemType::Combo')
 class Combo(PyGuiWidget, MutableSequence[str]):
-    """Adds a combo box (a drop down).
+    """A combo box (drop down).
 
     Unlike :class:`RadioButtons`, the value of a Combo is one of the item strings,
     not the index.

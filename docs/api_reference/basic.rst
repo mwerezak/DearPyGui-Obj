@@ -16,6 +16,7 @@ Basic Widgets
     Button
     ButtonArrow
     Checkbox
+    Selectable
     RadioButtons
     Combo
     ComboHeightMode
@@ -45,6 +46,10 @@ Basic Content
     :undoc-members:
 
 .. autoclass:: Checkbox
+    :members:
+    :undoc-members:
+
+.. autoclass:: Selectable
     :members:
     :undoc-members:
 
