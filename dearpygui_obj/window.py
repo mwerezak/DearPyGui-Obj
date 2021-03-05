@@ -93,7 +93,7 @@ class Window(PyGuiWidget):
     no_close: bool = ConfigProperty()
     no_background: bool = ConfigProperty()
 
-    menubar: bool = ConfigProperty()
+    show_menubar: bool = ConfigProperty(key='menubar')
 
     #: Disable scrollbars (can still scroll with mouse or programmatically).
     no_scrollbar: bool = ConfigProperty()
