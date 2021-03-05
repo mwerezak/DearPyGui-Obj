@@ -32,6 +32,7 @@ class TreeNode(PyGuiWidget):
     is_leaf: bool = ConfigProperty(key='leaf')
 
     def __init__(self, label: str = None, *, name_id: str = None, **config):
+        config.setdefault('show', True)  # workaround for DPG 0.6
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
