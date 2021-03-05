@@ -23,6 +23,7 @@ class DebugWindow(Window):
 
     @classmethod
     def show_debug(cls) -> None:
+        """Show the standard instance that is automatically created by DPG."""
         cls.get_instance().show = True
 
 
@@ -40,6 +41,7 @@ class MetricsWindow(Window):
 
     @classmethod
     def show_metrics(cls) -> None:
+        """Show the standard instance that is automatically created by DPG."""
         cls.get_instance().show = True
 
 @_register_item_type('mvAppItemType::StyleWindow')
@@ -56,6 +58,7 @@ class StyleEditorWindow(Window):
 
     @classmethod
     def show_style_editor(cls) -> None:
+        """Show the standard instance that is automatically created by DPG."""
         cls.get_instance().show = True
 
 @_register_item_type('mvAppItemType::DocWindow')
@@ -72,6 +75,7 @@ class DocumentationWindow(Window):
 
     @classmethod
     def show_documentation(cls) -> None:
+        """Show the standard instance that is automatically created by DPG."""
         cls.get_instance().show = True
 
 @_register_item_type('mvAppItemType::AboutWindow')
@@ -88,4 +92,5 @@ class AboutWindow(Window):
 
     @classmethod
     def show_about(cls) -> None:
+        """Show the standard instance that is automatically created by DPG."""
         cls.get_instance().show = True
