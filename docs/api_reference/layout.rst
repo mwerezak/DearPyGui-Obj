@@ -10,12 +10,15 @@ Layout
 
     VSpacing
     HAlignNext
-    align_horizontal
+    Dummy
+    group_horizontal
     LayoutGroup
     LayoutColumns
     LayoutIndent
     ChildView
-    Dummy
+
+Simple Layout
+-------------
 
 .. autoclass:: VSpacing
     :members:
@@ -25,7 +28,14 @@ Layout
     :members:
     :undoc-members:
 
-.. autofunction:: align_horizontal
+.. autoclass:: Dummy
+    :members:
+    :undoc-members:
+
+Containers
+----------
+
+.. autofunction:: group_horizontal
 
 .. autoclass:: LayoutGroup
     :members:
@@ -47,6 +57,3 @@ Layout
     :undoc-members:
     :special-members: __exit__
 
-.. autoclass:: Dummy
-    :members:
-    :undoc-members:

@@ -37,6 +37,9 @@ Basic Content
     :members:
     :undoc-members:
 
+Button-Like
+-----------
+
 .. autoclass:: Button
     :members:
     :undoc-members:
@@ -52,6 +55,9 @@ Basic Content
 .. autoclass:: Selectable
     :members:
     :undoc-members:
+
+Selection List
+--------------
 
 .. autoclass:: RadioButtons
     :members:

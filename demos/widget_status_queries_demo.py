@@ -6,7 +6,7 @@ from dearpygui_obj.data import ColorRGBA
 from dearpygui_obj.window import Window
 from dearpygui_obj.basic import Text, Button, Separator
 from dearpygui_obj.input import InputText, SliderFloat
-from dearpygui_obj.layout import align_horizontal, LayoutGroup
+from dearpygui_obj.layout import group_horizontal, LayoutGroup
 
 class StatusFlags(LayoutGroup):
     def __init__(self, target, **config):
@@ -14,13 +14,13 @@ class StatusFlags(LayoutGroup):
         super().__init__(**config)
 
         with self:
-            with align_horizontal(spacing=5):
+            with group_horizontal(spacing=5):
                 self.visible_label = Text('[visible]')
                 self.hovered_label = Text('[hovered]')
                 self.focused_label = Text('[focused]')
                 self.clicked_label = Text('[clicked]')
 
-            with align_horizontal(spacing=5):
+            with group_horizontal(spacing=5):
                 self.active_label = Text('[active]')
                 self.activated_label = Text('[activated]')
                 self.deactivated_label = Text('[deactivated]')

@@ -37,7 +37,7 @@ class HAlignNext(PyGuiWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
-def align_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup:
+def group_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup:
     """Shortcut for ``LayoutGroup(horizontal=True)``"""
     return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id)
 

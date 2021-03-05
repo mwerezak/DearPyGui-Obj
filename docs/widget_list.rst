@@ -82,7 +82,7 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
 
     dearpygui_obj.layout.VSpacing
     dearpygui_obj.layout.HAlignNext
-    dearpygui_obj.layout.align_horizontal
+    dearpygui_obj.layout.group_horizontal
     dearpygui_obj.layout.LayoutGroup
     dearpygui_obj.layout.LayoutColumns
     dearpygui_obj.layout.LayoutIndent
