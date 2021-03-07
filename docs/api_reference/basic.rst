@@ -13,14 +13,16 @@ Basic Widgets
 
     Text
     LabelText
+    Separator
+    ProgressBar
     Button
     ButtonArrow
     Checkbox
     Selectable
     RadioButtons
+    ListBox
     Combo
     ComboHeightMode
-    ProgressBar
 
 Basic Content
 -------------
@@ -34,6 +36,10 @@ Basic Content
     :undoc-members:
 
 .. autoclass:: Separator
+    :members:
+    :undoc-members:
+
+.. autoclass:: ProgressBar
     :members:
     :undoc-members:
 
@@ -64,6 +70,11 @@ Selection List
     :undoc-members:
     :special-members: __len__, __getitem__, __setitem__, __delitem__
 
+.. autoclass:: ListBox
+    :members:
+    :undoc-members:
+    :special-members: __len__, __getitem__, __setitem__, __delitem__
+
 .. autoclass:: Combo
     :members:
     :undoc-members:
@@ -73,6 +84,3 @@ Selection List
     :members:
     :undoc-members:
 
-.. autoclass:: ProgressBar
-    :members:
-    :undoc-members:

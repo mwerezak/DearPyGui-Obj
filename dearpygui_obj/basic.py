@@ -240,10 +240,60 @@ class Combo(PyGuiWidget, MutableSequence[str]):
         }
 
     def __init__(self, label: str = None, items: Iterable[str] = (), value: str = '', *, name_id: str = None, **config):
-        super().__init__(items=items, default_value=value, name_id=name_id, **config)
+        super().__init__(label=label, items=items, default_value=value, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_combo(self.id, **dpg_args)
+
+    def _get_items(self) -> List[str]:
+        return self.get_config()['items']
+
+    def __len__(self) -> int:
+        return len(self._get_items())
+
+    def __getitem__(self, idx: int) -> str:
+        return self._get_items()[idx]
+
+    def __setitem__(self, idx: int, label: str) -> None:
+        items = self._get_items()
+        items[idx] = label
+        self.set_config(items=items)
+
+    def __delitem__(self, idx: int) -> None:
+        items = self._get_items()
+        del items[idx]
+        self.set_config(items=items)
+
+    def insert(self, idx: int, label: str) -> None:
+        items = self._get_items()
+        items.insert(idx, label)
+        self.set_config(items=items)
+
+@_register_item_type('mvAppItemType::Listbox')
+class ListBox(PyGuiWidget, MutableSequence[str]):
+    """A scrollable box containing a selection of items.
+
+    The :attr:`value` property produces the index of the selected item."""
+
+    value: int
+
+    label: str = ConfigProperty()
+    num_visible: int = ConfigProperty(key='num_items')  #: The number of items to show.
+
+    @ConfigProperty()
+    def items(self) -> Sequence[str]:
+        """Get or set this widget's items as a sequence."""
+        return tuple(self._get_items())
+
+    @items.getconfig
+    def items(self, items: Sequence[str]):
+        return {'items':list(items)}
+
+    def __init__(self, label: str = None, items: Iterable[str] = (), value: int = 0, *, name_id: str = None, **config):
+        super().__init__(label=label, items=items, default_value=value, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_listbox(self.id, **dpg_args)
 
     def _get_items(self) -> List[str]:
         return self.get_config()['items']
