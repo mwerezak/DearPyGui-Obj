@@ -12,4 +12,5 @@ API Reference
    input
    layout
    containers
+   drawing
    devtools

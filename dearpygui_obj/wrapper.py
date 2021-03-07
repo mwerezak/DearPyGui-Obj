@@ -25,6 +25,8 @@ if TYPE_CHECKING:
     GetConfigFunc = Callable[['PyGuiWidget', Any], ItemConfigData]
 
 
+## WIDGET WRAPPERS
+
 class ConfigProperty:
     """Descriptor used to get or set an item's configuration."""
 
@@ -396,5 +398,3 @@ class DefaultWidget(PyGuiWidget):
 
     def _setup_add_widget(self, dpg_args: Mapping[str, Any]) -> None:
         pass
-
-

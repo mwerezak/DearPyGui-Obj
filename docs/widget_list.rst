@@ -100,6 +100,15 @@ The following tables list the widgets currently implemented in DearPyGui-Obj.
     dearpygui_obj.containers.Menu
     dearpygui_obj.containers.MenuItem
 
+.. rubric:: Drawing
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.drawing.DrawingCanvas
+    dearpygui_obj.drawing.DrawLine
+    dearpygui_obj.drawing.DrawCircle
+
 .. rubric:: Developer Tool Windows
 
 .. autosummary:: 

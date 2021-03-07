@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from enum import Enum
 from typing import TYPE_CHECKING, NamedTuple
 
 import dearpygui.core as dpgcore
 from dearpygui_obj.wrapper import ConfigProperty
+from dearpygui_obj.draw.wrapper import DrawProperty, DrawCommand
 
 if TYPE_CHECKING:
-    from typing import Any, List
+    from typing import Any, Sequence, List, Tuple
     from dearpygui_obj.wrapper import PyGuiWidget, ItemConfigData
+    from dearpygui_obj.draw.wrapper import DrawConfigData
 
 ## Colors
 
@@ -30,6 +31,9 @@ def color_from_hex(color: str) -> ColorRGBA:
 
     return color_from_rgba8(*(int(value, 16) for value in values))
 
+if TYPE_CHECKING:
+    ColorData = Sequence[float]
+
 class ColorRGBA(NamedTuple):
     """RGBA color data.
 
@@ -41,30 +45,48 @@ class ColorRGBA(NamedTuple):
     a: float = 1.0
 
     def dpg_export(self) -> List[float]:
-        return [ 255.0 * value for value in self ]
+        return [ min(max(0.0, 255.0 * value), 255.0) for value in self ]
 
     @classmethod
     def dpg_import(cls, colorlist: List[float]) -> ColorRGBA:
-        return ColorRGBA(*(value / 255.0 for value in colorlist))
+        return ColorRGBA(*(min(max(0.0, value / 255.0), 1.0) for value in colorlist))
 
 class ConfigPropertyColorRGBA(ConfigProperty):
-    """A ConfigProperty that accesses a ColorRGBA value by default."""
-
     def get_value(self, instance: PyGuiWidget) -> Any:
         return ColorRGBA.dpg_import(instance.get_config()[self.key])
+    def get_config(self, instance: PyGuiWidget, value: ColorData) -> ItemConfigData:
+        return {self.key : ColorRGBA(*value).dpg_export()}
 
-    def get_config(self, instance: PyGuiWidget, value: Any) -> ItemConfigData:
-        return {self.key : value.dpg_export()}
+class DrawPropertyColorRGBA(DrawProperty):
+    def get_value(self, instance: PyGuiWidget) -> Any:
+        return ColorRGBA.dpg_import(instance.get_config()[self.key])
+    def get_config(self, instance: PyGuiWidget, value: ColorData) -> DrawConfigData:
+        return {self.key : ColorRGBA(*value).dpg_export()}
+
+
+if TYPE_CHECKING:
+    Pos2D = Tuple[float, float]
+
+class DrawPos(NamedTuple):
+    x: float
+    y: float
+
+class DrawPropertyPos(DrawProperty):
+    def get_value(self, instance: DrawCommand) -> DrawPos:
+        return DrawPos(*instance.get_config()[self.key])
+    def get_config(self, instance: DrawCommand, value: Pos2D) -> DrawConfigData:
+        return {self.key : list(value)}
+
 
 ## Textures
 
-class TextureFormat(Enum):
-    """Texture format useds by DPG.
-
-    Values come from DPG's "mvTEX_XXXX_XXXXX" constants.
-    """
-    RGBA_INT   = 0
-    RGBA_FLOAT = 1
-    RGB_FLOAT  = 2
-    RGB_INT    = 3
-
+# class TextureFormat(Enum):
+#     """Texture format useds by DPG.
+#
+#     Values come from DPG's "mvTEX_XXXX_XXXXX" constants.
+#     """
+#     RGBA_INT   = 0
+#     RGBA_FLOAT = 1
+#     RGB_FLOAT  = 2
+#     RGB_INT    = 3
+#
