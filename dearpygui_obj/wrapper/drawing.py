@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections import ChainMap as chain_map
-from typing import TYPE_CHECKING, Optional, Type, ChainMap
+from typing import TYPE_CHECKING, Optional, Type
 
 from dearpygui import core as dpgcore
 
@@ -35,8 +34,6 @@ class DrawProperty:
     def __set_name__(self, owner: Type[DrawCommand], name: str):
         self.owner = owner
         self.name = name
-
-        owner.add_draw_property(self)
 
         if self.key is None:
             self.key = name
@@ -80,20 +77,17 @@ class DrawProperty:
 class DrawCommand(ABC):
     """Base class for drawing commands."""
 
-    # subclasses can prevent inheritance of this by overriding it's value with a new mapping.
-    _draw_properties: ChainMap[str, DrawProperty] = chain_map()
-
     @classmethod
-    def add_draw_property(cls, prop: DrawProperty) -> None:
+    def _draw_properties(cls) -> Mapping[str, DrawProperty]:
         draw_properties = cls.__dict__.get('_draw_properties')
         if draw_properties is None:
-            # inherit keyword params from parent
-            if hasattr(cls._draw_properties, 'new_child'):
-                draw_properties = cls._draw_properties.new_child({})
-            else:
-                draw_properties = chain_map({}, cls._draw_properties)
+            draw_properties = {}
+            for name in cls.__annotations__:
+                value = getattr(cls, name)
+                if isinstance(value, DrawProperty):
+                    draw_properties[name] = value
             setattr(cls, '_draw_properties', draw_properties)
-        draw_properties[prop.name] = prop
+        return draw_properties
 
     def __init__(self, canvas: DrawingCanvas, *args, tag_id: str = None, **kwargs: Any):
         self._canvas = canvas
@@ -102,12 +96,13 @@ class DrawCommand(ABC):
         else:
             self._tag_id = _generate_id(self)
 
+        props = self._draw_properties()
         draw_data = {}
-        for prop, value in zip(self._draw_properties.values(), args):
+        for prop, value in zip(props.values(), args):
             draw_data.update(prop.get_config(self, value))
 
         for name, value in kwargs.items():
-            prop = self._draw_properties.get(name)
+            prop = props.get(name)
             if prop is not None:
                 draw_data.update(prop.get_config(self, value))
 

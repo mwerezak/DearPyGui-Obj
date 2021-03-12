@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections import ChainMap as chain_map
 from typing import TYPE_CHECKING
 
 from dearpygui import core as dpgcore
@@ -15,7 +14,7 @@ from dearpygui_obj import (
 )
 
 if TYPE_CHECKING:
-    from typing import Callable, Mapping, Any, Optional, Type, Iterable, Tuple, ChainMap, List
+    from typing import Callable, Mapping, Any, Optional, Type, Iterable, Tuple, Sequence
     from dearpygui_obj import PyGuiCallback
 
     ## Type Aliases
@@ -48,8 +47,6 @@ class ConfigProperty:
     def __set_name__(self, owner: Type[PyGuiWidget], name: str):
         self.owner = owner
         self.name = name
-
-        owner.add_config_property(self)
 
         if self.key is None:
             self.key = name
@@ -90,6 +87,7 @@ class ConfigProperty:
         return {self.key : value}
 
 
+
 class PyGuiWidget(ABC):
     """This is the abstract base class for all GUI item wrapper objects.
 
@@ -104,28 +102,25 @@ class PyGuiWidget(ABC):
         name_id: optionally specify the unique widget ID.
     """
 
-    # subclasses can prevent inheritance of this by overriding it's value with a new mapping.
-    _config_properties: ChainMap[str, ConfigProperty] = chain_map()
-
     @classmethod
-    def add_config_property(cls, prop: ConfigProperty) -> None:
+    def _config_properties(cls) -> Mapping[str, ConfigProperty]:
         config_properties = cls.__dict__.get('_config_properties')
         if config_properties is None:
-            # inherit keyword params from parent
-            if hasattr(cls._config_properties, 'new_child'):
-                config_properties = cls._config_properties.new_child({})
-            else:
-                config_properties = chain_map({}, cls._config_properties)
+            config_properties = {}
+            for name in dir(cls):
+                value = getattr(cls, name)
+                if isinstance(value, ConfigProperty):
+                    config_properties[name] = value
             setattr(cls, '_config_properties', config_properties)
-        config_properties[prop.name] = prop
+        return config_properties
 
     @classmethod
-    def get_config_properties(cls) -> List[str]:
+    def get_config_properties(cls) -> Sequence[str]:
         """Get the names of configuration properties as a list.
 
         This can be useful to check which attributes are configuration properties
         and therefore can be given as keywords to ``__init__``."""
-        return list(cls._config_properties.keys())
+        return list(cls._config_properties().keys())
 
     def __init__(self, *, name_id: Optional[str] = None, **kwargs: Any):
         if name_id is not None:
@@ -145,17 +140,18 @@ class PyGuiWidget(ABC):
 
             # subclasses will pass both config values and keywords to _setup_add_widget()
             # separate them now
-            config = {}
+            config_props = self._config_properties()
+            config_args = {}
             for name, value in list(kwargs.items()):
-                prop = self._config_properties.get(name)
+                prop = config_props.get(name)
                 if prop is not None and not prop.no_init:
-                    config[prop] = kwargs.pop(name)
+                    config_args[prop] = kwargs.pop(name)
 
             # just keywords left in kwargs
             self._setup_add_widget(kwargs)
 
             config_data = {}
-            for prop, value in config.items():
+            for prop, value in config_args.items():
                 config_data.update(prop.get_config(self, value))
 
             dpgcore.configure_item(self.id, **config_data)
