@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Sequence

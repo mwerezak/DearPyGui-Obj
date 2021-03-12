@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper import ConfigProperty
-from dearpygui_obj.draw.wrapper import DrawProperty, DrawCommand
+from dearpygui_obj.wrapper.widget import ConfigProperty
+from dearpygui_obj.wrapper.drawing import DrawProperty, DrawCommand
 
 if TYPE_CHECKING:
     from typing import Any, Sequence, List, Tuple
-    from dearpygui_obj.wrapper import PyGuiWidget, ItemConfigData
-    from dearpygui_obj.draw.wrapper import DrawConfigData
+    from dearpygui_obj.wrapper.widget import PyGuiWidget, ItemConfigData
+    from dearpygui_obj.wrapper.drawing import DrawConfigData
 
 ## Colors
 

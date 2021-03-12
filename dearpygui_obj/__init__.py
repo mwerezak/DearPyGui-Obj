@@ -10,7 +10,7 @@ import dearpygui.core as dpgcore
 
 if TYPE_CHECKING:
     from typing import Dict, Iterable, Optional, Callable, Any, Union
-    from dearpygui_obj.wrapper import PyGuiWidget
+    from dearpygui_obj.wrapper.widget import PyGuiWidget
     from dearpygui_obj.window import Window
 
     ## Type Aliases

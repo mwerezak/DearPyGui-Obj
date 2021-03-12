@@ -37,7 +37,7 @@ Draw Commands
 Draw Wrapper
 ------------
 
-.. automodule:: dearpygui_obj.draw.wrapper
+.. automodule:: dearpygui_obj.wrapper.drawing
 
 .. rubric:: Summary
 

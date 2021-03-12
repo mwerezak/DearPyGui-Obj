@@ -7,11 +7,11 @@ from typing import TYPE_CHECKING, MutableSequence
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA
-from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Iterable, Sequence, List
-    from dearpygui_obj.wrapper import ItemConfigData
+    from dearpygui_obj.wrapper.widget import ItemConfigData
 
 ## Basic Content
 

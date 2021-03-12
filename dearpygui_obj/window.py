@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type, wrap_callback
-from dearpygui_obj.wrapper import PyGuiWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
     from dearpygui_obj import PyGuiCallback
-    from dearpygui_obj.wrapper import ItemConfigData
+    from dearpygui_obj.wrapper.widget import ItemConfigData
 
 
 class MainWindow:

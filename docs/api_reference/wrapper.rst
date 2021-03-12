@@ -1,7 +1,7 @@
 Wrapper Object System
 =====================
 
-.. automodule:: dearpygui_obj.wrapper
+.. automodule:: dearpygui_obj.wrapper.widget
 
 .. rubric:: Summary
 
@@ -88,10 +88,6 @@ PyGuiWidget
     .. automethod:: _setup_add_widget
     .. automethod:: _setup_preexisting
 
-
-.. autoclass:: DefaultWidget
-    :members:
-    :undoc-members:
 
 ConfigProperty
 --------------
