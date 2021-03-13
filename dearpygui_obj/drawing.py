@@ -8,7 +8,7 @@ from dearpygui_obj.wrapper.widget import PyGuiWidget
 from dearpygui_obj.wrapper.drawing import DrawCommand, DrawProperty
 
 if TYPE_CHECKING:
-    from dearpygui_obj.data import Pos2D, ColorData, Sequence
+    from dearpygui_obj.data import Pos2D, ColorRGBA
 
 
 @_register_item_type('mvAppItemType::Drawing')
@@ -38,15 +38,15 @@ class DrawingCanvas(PyGuiWidget):
             return None
         return dpgcore.get_drawing_mouse_pos()
 
-    def draw_line(self, p1: Pos2D, p2: Pos2D, color: ColorData, thickness: int) -> DrawLine:
+    def draw_line(self, p1: Pos2D, p2: Pos2D, color: ColorRGBA, thickness: int) -> DrawLine:
         """See :class:`.DrawLine`"""
         return DrawLine(self, p1, p2, color, thickness)
 
-    def draw_rectangle(self, pmin: Pos2D, pmax: Pos2D, color: ColorData, **kwargs: Any) -> DrawRectangle:
+    def draw_rectangle(self, pmin: Pos2D, pmax: Pos2D, color: ColorRGBA, **kwargs: Any) -> DrawRectangle:
         """See :class:`.DrawRectangle` for keyword arguments."""
         return DrawRectangle(self, pmin, pmax, color, **kwargs)
 
-    def draw_circle(self, center: Pos2D, radius: float, color: ColorData, **kwargs: Any) -> DrawCircle:
+    def draw_circle(self, center: Pos2D, radius: float, color: ColorRGBA, **kwargs: Any) -> DrawCircle:
         """See :class:`.DrawCircle` for keyword arguments."""
         return DrawCircle(self, center, radius, color, **kwargs)
 
@@ -54,27 +54,27 @@ class DrawingCanvas(PyGuiWidget):
         """See :class:`.DrawText` for keyword arguments."""
         return DrawText(self, pos, text, **kwargs)
 
-    def draw_arrow(self, p1: Pos2D, p2: Pos2D, color: ColorData, thickness: int, arrow_size: int) -> DrawArrow:
+    def draw_arrow(self, p1: Pos2D, p2: Pos2D, color: ColorRGBA, thickness: int, arrow_size: int) -> DrawArrow:
         """See :class:`.DrawArrow` for keyword arguments."""
         return DrawArrow(self, p1, p2, color, thickness, arrow_size)
 
-    def draw_polyline(self, points: Sequence[Pos2D], color: ColorData, **kwargs: Any) -> DrawPolyLine:
+    def draw_polyline(self, points: Sequence[Pos2D], color: ColorRGBA, **kwargs: Any) -> DrawPolyLine:
         """See :class:`.DrawPolyLine` for keyword arguments."""
         return DrawPolyLine(self, points, color, **kwargs)
 
-    def draw_triangle(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, color: ColorData, **kwargs: Any) -> DrawTriangle:
+    def draw_triangle(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, color: ColorRGBA, **kwargs: Any) -> DrawTriangle:
         """See :class:`.DrawTriangle` for keyword arguments."""
         return DrawTriangle(self, p1, p2, p3, color, **kwargs)
 
-    def draw_quad(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, p4: Pos2D, color: ColorData, **kwargs: Any) -> DrawQuad:
+    def draw_quad(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, p4: Pos2D, color: ColorRGBA, **kwargs: Any) -> DrawQuad:
         """See :class:`.DrawQuod` for keyword arguments."""
         return DrawQuad(self, p1, p2, p3, p4, color, **kwargs)
 
-    def draw_polygon(self, points: Sequence[Pos2D], color: ColorData, **kwargs) -> DrawPolygon:
+    def draw_polygon(self, points: Sequence[Pos2D], color: ColorRGBA, **kwargs) -> DrawPolygon:
         """See :class:`.DrawPolygon` for keyword arguments."""
         return DrawPolygon(self, points, color, **kwargs)
 
-    def draw_bezier_curve(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, p4: Pos2D, color: ColorData, **kwargs: Any) -> DrawBezierCurve:
+    def draw_bezier_curve(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, p4: Pos2D, color: ColorRGBA, **kwargs: Any) -> DrawBezierCurve:
         """See :class:`.DrawBezierCurve` for keyword arguments."""
         return DrawBezierCurve(self, p1, p2, p3, p4, color, **kwargs)
 
@@ -83,7 +83,7 @@ class DrawLine(DrawCommand):
 
     p1: Pos2D = DrawPropertyPos()
     p2: Pos2D = DrawPropertyPos()
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
     thickness: int = DrawProperty()
 
     def _draw_internal(self, draw_args) -> None:
@@ -94,9 +94,9 @@ class DrawRectangle(DrawCommand):
 
     pmin: Pos2D = DrawPropertyPos()
     pmax: Pos2D = DrawPropertyPos()
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
 
-    fill: ColorData = DrawPropertyColorRGBA()
+    fill: ColorRGBA = DrawPropertyColorRGBA()
     rounding: float = DrawProperty()
     thickness: float = DrawProperty()
 
@@ -108,11 +108,11 @@ class DrawCircle(DrawCommand):
 
     center: Pos2D = DrawPropertyPos()
     radius: float = DrawProperty()
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
 
     segments: int = DrawProperty()
     thickness: float = DrawProperty()
-    fill: ColorData = DrawPropertyColorRGBA()
+    fill: ColorRGBA = DrawPropertyColorRGBA()
 
     def _draw_internal(self, draw_args) -> None:
         dpgcore.draw_circle(self.canvas.id, tag=self.id, **draw_args)
@@ -123,7 +123,7 @@ class DrawText(DrawCommand):
     pos: Pos2D = DrawPropertyPos()
     text: str = DrawProperty()
 
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
     font_size: int = DrawProperty(key='size')
 
     def _draw_internal(self, draw_args) -> None:
@@ -134,7 +134,7 @@ class DrawArrow(DrawCommand):
 
     p1: Pos2D = DrawPropertyPos()
     p2: Pos2D = DrawPropertyPos()
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
     thickness: int = DrawProperty()
     arrow_size: int = DrawProperty(key='size')
 
@@ -152,7 +152,7 @@ class DrawPolyLine(DrawCommand):
     def points(self, value: Sequence[Pos2D]):
         return { 'points' : [ list(p) for p in value ] }
 
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
 
     closed: bool = DrawProperty()
     thickness: float = DrawProperty()
@@ -166,9 +166,9 @@ class DrawTriangle(DrawCommand):
     p1: Pos2D = DrawPropertyPos()
     p2: Pos2D = DrawPropertyPos()
     p3: Pos2D = DrawPropertyPos()
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
 
-    fill: ColorData = DrawPropertyColorRGBA()
+    fill: ColorRGBA = DrawPropertyColorRGBA()
     thickness: float = DrawProperty()
 
     def _draw_internal(self, draw_args) -> None:
@@ -181,9 +181,9 @@ class DrawQuad(DrawCommand):
     p2: Pos2D = DrawPropertyPos()
     p3: Pos2D = DrawPropertyPos()
     p4: Pos2D = DrawPropertyPos()
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
 
-    fill: ColorData = DrawPropertyColorRGBA()
+    fill: ColorRGBA = DrawPropertyColorRGBA()
     thickness: float = DrawProperty()
 
     def _draw_internal(self, draw_args) -> None:
@@ -200,9 +200,9 @@ class DrawPolygon(DrawCommand):
     def points(self, value: Sequence[Pos2D]):
         return { 'points' : [ list(p) for p in value ] }
 
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
 
-    fill: ColorData = DrawPropertyColorRGBA()
+    fill: ColorRGBA = DrawPropertyColorRGBA()
     thickness: float = DrawProperty()
 
     def _draw_internal(self, draw_args) -> None:
@@ -215,7 +215,7 @@ class DrawBezierCurve(DrawCommand):
     p2: Pos2D = DrawPropertyPos()
     p3: Pos2D = DrawPropertyPos()
     p4: Pos2D = DrawPropertyPos()
-    color: ColorData = DrawPropertyColorRGBA()
+    color: ColorRGBA = DrawPropertyColorRGBA()
 
     thickness: float = DrawProperty()
     segments: int = DrawProperty()

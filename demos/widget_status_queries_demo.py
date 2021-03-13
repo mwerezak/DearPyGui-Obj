@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
 
 from dearpygui_obj import start_gui, stop_gui, set_render_callback
 from dearpygui_obj.data import ColorRGBA
@@ -58,28 +57,29 @@ class StatusFlags(LayoutGroup):
         self._update_color(self.edited_label, self.target.was_edited())
         self._update_color(self.deact_after_edit_label, self.target.was_deactivated_after_edit())
 
-with Window("Example Window") as win:
-    btn = Button()
-    btn_status = StatusFlags(btn)
+if __name__ == '__main__':
+    with Window("Example Window") as win:
+        btn = Button()
+        btn_status = StatusFlags(btn)
 
-    Separator()
+        Separator()
 
-    textbox = InputText()
-    textbox_status = StatusFlags(textbox)
+        textbox = InputText()
+        textbox_status = StatusFlags(textbox)
 
-    Separator()
+        Separator()
 
-    slider = SliderFloat()
-    slider_status = StatusFlags(slider)
+        slider = SliderFloat()
+        slider_status = StatusFlags(slider)
 
-@win.on_close
-def on_close(sender, data):
-    stop_gui()
+    @win.on_close
+    def on_close(sender, data):
+        stop_gui()
 
-@set_render_callback
-def render(sender, data):
-    btn_status.update()
-    textbox_status.update()
-    slider_status.update()
+    @set_render_callback
+    def render(sender, data):
+        btn_status.update()
+        textbox_status.update()
+        slider_status.update()
 
-start_gui()
+    start_gui()

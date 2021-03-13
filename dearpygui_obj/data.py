@@ -6,7 +6,7 @@ from dearpygui_obj.wrapper.widget import ConfigProperty
 from dearpygui_obj.wrapper.drawing import DrawProperty, DrawCommand
 
 if TYPE_CHECKING:
-    from typing import Any, Sequence, List, Tuple
+    from typing import Any, List, Tuple
     from dearpygui_obj.wrapper.widget import PyGuiWidget, ItemConfigData
     from dearpygui_obj.wrapper.drawing import DrawConfigData
 
@@ -30,8 +30,6 @@ def color_from_hex(color: str) -> ColorRGBA:
 
     return color_from_rgba8(*(int(value, 16) for value in values))
 
-if TYPE_CHECKING:
-    ColorData = Sequence[float]
 
 class ColorRGBA(NamedTuple):
     """RGBA color data.
@@ -53,14 +51,14 @@ class ColorRGBA(NamedTuple):
 class ConfigPropertyColorRGBA(ConfigProperty):
     def get_value(self, instance: PyGuiWidget) -> Any:
         return ColorRGBA.dpg_import(instance.get_config()[self.key])
-    def get_config(self, instance: PyGuiWidget, value: ColorData) -> ItemConfigData:
-        return {self.key : ColorRGBA(*value).dpg_export()}
+    def get_config(self, instance: PyGuiWidget, value: ColorRGBA) -> ItemConfigData:
+        return {self.key : value.dpg_export()}
 
 class DrawPropertyColorRGBA(DrawProperty):
     def get_value(self, instance: PyGuiWidget) -> Any:
         return ColorRGBA.dpg_import(instance.get_config()[self.key])
-    def get_config(self, instance: PyGuiWidget, value: ColorData) -> DrawConfigData:
-        return {self.key : ColorRGBA(*value).dpg_export()}
+    def get_config(self, instance: PyGuiWidget, value: ColorRGBA) -> DrawConfigData:
+        return {self.key : value.dpg_export()}
 
 
 if TYPE_CHECKING:
