@@ -91,6 +91,9 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
 
     dearpygui_obj.containers.TreeNode
     dearpygui_obj.containers.TreeNodeHeader
+    dearpygui_obj.containers.TabBar
+    dearpygui_obj.containers.TabItem
+    dearpygui_obj.containers.TabButton
     dearpygui_obj.containers.Menu
     dearpygui_obj.containers.MenuItem
 

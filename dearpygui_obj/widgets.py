@@ -47,6 +47,10 @@ from dearpygui_obj.input import (
 from dearpygui_obj.containers import (
     TreeNode,
     TreeNodeHeader,
+    TabBar,
+    TabItem,
+    TabButton,
+    TabOrderMode,
     Menu,
     MenuItem,
 )
@@ -119,6 +123,10 @@ __all__ = [
 
     'TreeNode',
     'TreeNodeHeader',
+    'TabBar',
+    'TabItem',
+    'TabButton',
+    'TabOrderMode',
     'Menu',
     'MenuItem',
 
