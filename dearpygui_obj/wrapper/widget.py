@@ -103,7 +103,7 @@ class PyGuiWidget(ABC):
     """
 
     @classmethod
-    def _config_properties(cls) -> Mapping[str, ConfigProperty]:
+    def _get_config_properties(cls) -> Mapping[str, ConfigProperty]:
         config_properties = cls.__dict__.get('_config_properties')
         if config_properties is None:
             config_properties = {}
@@ -120,7 +120,7 @@ class PyGuiWidget(ABC):
 
         This can be useful to check which attributes are configuration properties
         and therefore can be given as keywords to ``__init__``."""
-        return list(cls._config_properties().keys())
+        return list(cls._get_config_properties().keys())
 
     def __init__(self, *, name_id: Optional[str] = None, **kwargs: Any):
         if name_id is not None:
@@ -140,7 +140,7 @@ class PyGuiWidget(ABC):
 
             # subclasses will pass both config values and keywords to _setup_add_widget()
             # separate them now
-            config_props = self._config_properties()
+            config_props = self._get_config_properties()
             config_args = {}
             for name, value in list(kwargs.items()):
                 prop = config_props.get(name)
