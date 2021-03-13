@@ -100,8 +100,6 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     :nosignatures:
 
     dearpygui_obj.drawing.DrawingCanvas
-    dearpygui_obj.drawing.DrawLine
-    dearpygui_obj.drawing.DrawCircle
 
 .. rubric:: Developer Tool Windows
 

@@ -13,7 +13,15 @@ Drawing
 
     DrawingCanvas
     DrawLine
+    DrawRectangle
     DrawCircle
+    DrawText
+    DrawArrow
+    DrawPolyLine
+    DrawTriangle
+    DrawQuad
+    DrawPolygon
+    DrawBezierCurve
 
 Drawing Canvas
 --------------
@@ -29,10 +37,41 @@ Draw Commands
     :members:
     :undoc-members:
 
+.. autoclass:: DrawRectangle
+    :members:
+    :undoc-members:
+
 .. autoclass:: DrawCircle
     :members:
     :undoc-members:
 
+.. autoclass:: DrawText
+    :members:
+    :undoc-members:
+
+.. autoclass:: DrawArrow
+    :members:
+    :undoc-members:
+
+.. autoclass:: DrawPolyLine
+    :members:
+    :undoc-members:
+
+.. autoclass:: DrawTriangle
+    :members:
+    :undoc-members:
+
+.. autoclass:: DrawQuad
+    :members:
+    :undoc-members:
+
+.. autoclass:: DrawPolygon
+    :members:
+    :undoc-members:
+
+.. autoclass:: DrawBezierCurve
+    :members:
+    :undoc-members:
 
 Draw Wrapper
 ------------
