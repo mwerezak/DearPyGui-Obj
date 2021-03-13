@@ -15,7 +15,7 @@ Documentation (on ReadTheDocs) can be found [here](https://dearpygui-obj.readthe
 Using *DearPyGui-Obj* is as simple as creating a script like the one below:
 
 ``` python
-from dearpygui_obj import get_item_by_id, start_gui
+from dearpygui_obj import start_gui
 from dearpygui_obj.widgets import *
 
 with Window("Example Window") as win:
