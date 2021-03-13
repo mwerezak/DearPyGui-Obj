@@ -6,6 +6,7 @@ API Reference
    :caption: Contents:
 
    core
+   data
    wrapper
    windows
    basic
