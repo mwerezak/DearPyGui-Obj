@@ -89,6 +89,11 @@ PyGuiWidget
     .. automethod:: _setup_preexisting
 
 
+.. autoclass:: DefaultWidget
+    :members:
+    :undoc-members:
+
+
 ConfigProperty
 --------------
 

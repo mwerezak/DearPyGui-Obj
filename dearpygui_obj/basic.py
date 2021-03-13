@@ -198,7 +198,7 @@ class ComboHeightMode(Enum):
 class Combo(PyGuiWidget, MutableSequence[str]):
     """A combo box (drop down).
 
-    Unlike :class:`RadioButtons`, the value of a Combo is one of the item strings,
+    Unlike :class:`.RadioButtons`, the value of a Combo is one of the item strings,
     not the index.
 
     Unless specified, none of the items are initially selected and :attr:`value` is an empty string.

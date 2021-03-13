@@ -25,7 +25,7 @@ class DrawingCanvas(PyGuiWidget):
         """Clears the drawing.
 
         Warning:
-            Any :class:`DrawCommand` objects created using this canvas must not be used after this
+            Any :class:`.DrawCommand` objects created using this canvas must not be used after this
             method is called.
 
             This includes reading or writing to any properties of :class:`DrawCommand` objects.
@@ -39,43 +39,43 @@ class DrawingCanvas(PyGuiWidget):
         return dpgcore.get_drawing_mouse_pos()
 
     def draw_line(self, p1: Pos2D, p2: Pos2D, color: ColorData, thickness: int) -> DrawLine:
-        """See :class:`DrawLine`"""
+        """See :class:`.DrawLine`"""
         return DrawLine(self, p1, p2, color, thickness)
 
     def draw_rectangle(self, pmin: Pos2D, pmax: Pos2D, color: ColorData, **kwargs: Any) -> DrawRectangle:
-        """See :class:`DrawRectangle` for keyword arguments."""
+        """See :class:`.DrawRectangle` for keyword arguments."""
         return DrawRectangle(self, pmin, pmax, color, **kwargs)
 
     def draw_circle(self, center: Pos2D, radius: float, color: ColorData, **kwargs: Any) -> DrawCircle:
-        """See :class:`DrawCircle` for keyword arguments."""
+        """See :class:`.DrawCircle` for keyword arguments."""
         return DrawCircle(self, center, radius, color, **kwargs)
 
     def draw_text(self, pos: Pos2D, text: str, **kwargs) -> DrawText:
-        """See :class:`DrawText` for keyword arguments."""
+        """See :class:`.DrawText` for keyword arguments."""
         return DrawText(self, pos, text, **kwargs)
 
     def draw_arrow(self, p1: Pos2D, p2: Pos2D, color: ColorData, thickness: int, arrow_size: int) -> DrawArrow:
-        """See :class:`DrawArrow` for keyword arguments."""
+        """See :class:`.DrawArrow` for keyword arguments."""
         return DrawArrow(self, p1, p2, color, thickness, arrow_size)
 
     def draw_polyline(self, points: Sequence[Pos2D], color: ColorData, **kwargs: Any) -> DrawPolyLine:
-        """See :class:`DrawPolyLine` for keyword arguments."""
+        """See :class:`.DrawPolyLine` for keyword arguments."""
         return DrawPolyLine(self, points, color, **kwargs)
 
     def draw_triangle(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, color: ColorData, **kwargs: Any) -> DrawTriangle:
-        """See :class:`DrawTriangle` for keyword arguments."""
+        """See :class:`.DrawTriangle` for keyword arguments."""
         return DrawTriangle(self, p1, p2, p3, color, **kwargs)
 
     def draw_quad(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, p4: Pos2D, color: ColorData, **kwargs: Any) -> DrawQuad:
-        """See :class:`DrawQuod` for keyword arguments."""
+        """See :class:`.DrawQuod` for keyword arguments."""
         return DrawQuad(self, p1, p2, p3, p4, color, **kwargs)
 
     def draw_polygon(self, points: Sequence[Pos2D], color: ColorData, **kwargs) -> DrawPolygon:
-        """See :class:`DrawPolygon` for keyword arguments."""
+        """See :class:`.DrawPolygon` for keyword arguments."""
         return DrawPolygon(self, points, color, **kwargs)
 
     def draw_bezier_curve(self, p1: Pos2D, p2: Pos2D, p3: Pos2D, p4: Pos2D, color: ColorData, **kwargs: Any) -> DrawBezierCurve:
-        """See :class:`DrawBezierCurve` for keyword arguments."""
+        """See :class:`.DrawBezierCurve` for keyword arguments."""
         return DrawBezierCurve(self, p1, p2, p3, p4, color, **kwargs)
 
 class DrawLine(DrawCommand):

@@ -140,9 +140,9 @@ class Window(PyGuiWidget):
         self._on_close_callback = callback
         return callback
 
-    def resized(self, callback: Callable) -> Callable:
+    def resized(self, callback: PyGuiCallback) -> Callable:
         """Set resized callback, can be used as a decorator."""
-        dpgcore.set_resize_callback(callback, handler=self.id)
+        dpgcore.set_resize_callback(wrap_callback(callback), handler=self.id)
         return callback
 
 ## Menu Bars and Menus

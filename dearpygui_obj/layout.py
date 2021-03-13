@@ -43,7 +43,7 @@ def group_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup
 
 @_register_item_type('mvAppItemType::Group')
 class LayoutGroup(PyGuiWidget):
-    """Grouped widgets behave as a single unit when acted on by e.g. :class:`HAlignNext`.
+    """Grouped widgets behave as a single unit when acted on by other layout widgets.
 
     They can optionally have their contents flow horizontally instead of vertically.
     """

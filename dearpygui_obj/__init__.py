@@ -35,7 +35,7 @@ _default_ctor: Optional[Callable[..., PyGuiWidget]] = None
 def get_item_by_id(name: str) -> PyGuiWidget:
     """Retrieve an item using its unique name.
 
-    If the item was created by instantiating a :class:`PyGuiWidget` object, this will return that
+    If the item was created by instantiating a :class:`.PyGuiWidget` object, this will return that
     object. Otherwise, a new wrapper object will be created for that item and returned. Future calls
     for the same ID will return the same object.
 
@@ -88,9 +88,9 @@ def _unregister_item(name: str, unregister_children: bool = True) -> None:
                 _unregister_item(child_name, True)
 
 def _register_item_type(item_type: str) -> Callable:
-    """Associate a :class:`PyGuiWidget` class or constructor with a DearPyGui item type.
+    """Associate a :class:`.PyGuiWidget` class or constructor with a DearPyGui item type.
 
-    This will let :func:`dearpygui_obj.get_item_by_id` know what constructor to use when getting
+    This will let :func:`.get_item_by_id` know what constructor to use when getting
     an item that was not created by the object library."""
     def decorator(ctor: Callable[..., PyGuiWidget]):
         if item_type in _ITEM_TYPES:
@@ -134,15 +134,15 @@ def is_running() -> bool:
 
 def set_start_callback(callback: Callable) -> None:
     """Fires when the main window is started."""
-    dpgcore.set_start_callback(callback)
+    dpgcore.set_start_callback(callback)  # not wrapped because sender will not be a widget anyways
 
 def set_exit_callback(callback: Callable) -> None:
     """Fires when the main window is exited."""
-    dpgcore.set_exit_callback(callback)
+    dpgcore.set_exit_callback(callback)  # not wrapped because sender will not be a widget anyways
 
 def set_render_callback(callback: Callable) -> None:
     """Fires after rendering each frame."""
-    dpgcore.set_render_callback(callback)
+    dpgcore.set_render_callback(callback)  # not wrapped because sender will not be a widget anyways
 
 def get_delta_time() -> float:
     """Get the time elapsed since the last frame."""
@@ -220,7 +220,12 @@ def wrap_callback(callback: PyGuiCallback) -> _DPGCallback:
     However it is convenient to write callbacks where the sender is an object.
 
     This can be used to wrap such callbacks, ensuring that the ID is resolved
-    into an object before the wrapped callback is invoked."""
+    into an object before the wrapped callback is invoked.
+
+    Note:
+        DearPyGui-Obj will typically wrap callbacks for you so this function
+        should only be needed if you are calling DPG functions yourself directly.
+    """
 
     ## This is a workaround for the fact that DPG cannot use Callables as callbacks.
     wrapper_obj = CallbackWrapper(callback)
@@ -230,7 +235,7 @@ def wrap_callback(callback: PyGuiCallback) -> _DPGCallback:
     return invoke_wrapper
 
 def unwrap_callback(callback: Callable) -> Callable:
-    """If the callback was wrapped with :func:`wrap_callback`, this will unwrap it.
+    """If the callback was wrapped with :func:`.wrap_callback`, this will unwrap it.
 
     Otherwise, the callback will just be returned unchanged.
     """

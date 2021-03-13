@@ -92,7 +92,7 @@ class PyGuiWidget(ABC):
     """This is the abstract base class for all GUI item wrapper objects.
 
     Keyword arguments passed to ``__init__`` will be used to set the initial values of any
-    :class:`ConfigProperty` descriptors added with :meth:`add_config_property`. Any left over
+    :class:`.ConfigProperty` descriptors added with :meth:`add_config_property`. Any left over
     keywords will be passed to the :meth:`_setup_add_widget` method to be given to DPG.
 
     It's important that PyGuiWidget and subclasses can be instantiated with only the **name_id**
@@ -238,7 +238,7 @@ class PyGuiWidget(ABC):
                     ...
         """
         def decorator(callback: PyGuiCallback) -> PyGuiCallback:
-            dpgcore.set_item_callback(self.id, callback, callback_data=data)
+            dpgcore.set_item_callback(self.id, wrap_callback(callback), callback_data=data)
             return callback
         return decorator
 
@@ -295,7 +295,7 @@ class PyGuiWidget(ABC):
 
     @ConfigProperty(key='source')
     def data_source(self) -> DataValue:
-        """Get the :class:`GuiData` used as the data source, if any."""
+        """Get the :class:`.GuiData` used as the data source, if any."""
         source_id = self.get_config().get('source') or self.id
         return DataValue(source_id)
 
@@ -384,13 +384,15 @@ class PyGuiWidget(ABC):
         return dpgcore.is_item_deactivated_after_edit(self.id)
 
 
-@_set_default_ctor
 class DefaultWidget(PyGuiWidget):
-    """A fallback class used when getting a widget that does not have a wrapper class.
+    """Fallback type used when getting a widget that does not have a wrapper class.
 
-    When :func:`.get_item_by_name` is called to retrieve an item whose widget type does not
+    When :func:`.get_item_by_id` is called to retrieve an item whose widget type does not
     have a wrapper object class associated with it, an instance of this type is created as
     a fallback."""
 
     def _setup_add_widget(self, dpg_args: Mapping[str, Any]) -> None:
         pass
+
+
+_set_default_ctor(DefaultWidget)

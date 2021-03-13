@@ -47,7 +47,7 @@ class TreeNode(PyGuiWidget):
 
 @_register_item_type('mvAppItemType::CollapsingHeader')
 class TreeNodeHeader(TreeNode):
-    """Similar to :class:`TreeNode`, but the label is visually emphasized."""
+    """Similar to :class:`.TreeNode`, but the label is visually emphasized."""
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_collapsing_header(self.id, **dpg_args)
@@ -57,7 +57,7 @@ class TreeNodeHeader(TreeNode):
 
 @_register_item_type('mvAppItemType::Menu')
 class Menu(PyGuiWidget):
-    """A menu containing :class:`MenuItem` objects.
+    """A menu containing :class:`.MenuItem` objects.
 
     While they are often found inside a :class:`.MenuBar`, they are actually a general container
     that can be added anywhere and contain other kinds of widgets (e.g. buttons and text),
