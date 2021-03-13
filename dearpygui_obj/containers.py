@@ -97,3 +97,11 @@ class MenuItem(PyGuiWidget):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_menu_item(self.id, **dpg_args)
+
+
+__all__ = [
+    'TreeNode',
+    'TreeNodeHeader',
+    'Menu',
+    'MenuItem',
+]

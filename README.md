@@ -16,9 +16,7 @@ Using *DearPyGui-Obj* is as simple as creating a script like the one below:
 
 ``` python
 from dearpygui_obj import get_item_by_id, start_gui
-from dearpygui_obj.window import Window
-from dearpygui_obj.basic import Text, Button
-from dearpygui_obj.input import InputText, SliderFloat
+from dearpygui_obj.widgets import *
 
 with Window("Example Window") as win:
     Text("Hello world!")

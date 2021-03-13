@@ -10,9 +10,6 @@ from dearpygui_obj.wrapper.drawing import DrawCommand, DrawProperty
 if TYPE_CHECKING:
     from dearpygui_obj.data import Pos2D, ColorData
 
-__all__ = [
-    'DrawingCanvas',
-]
 
 @_register_item_type('mvAppItemType::Drawing')
 class DrawingCanvas(PyGuiWidget):
@@ -72,3 +69,10 @@ class DrawCircle(DrawCommand):
 
     def _draw_internal(self, draw_args) -> None:
         dpgcore.draw_circle(self.canvas.id, tag=self.id, **draw_args)
+
+
+__all__ = [
+    'DrawingCanvas',
+    'DrawLine',
+    'DrawCircle',
+]

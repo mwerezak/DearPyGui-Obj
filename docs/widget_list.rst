@@ -3,13 +3,7 @@ Table of Widgets
 
 The following tables list the widgets currently implemented in DearPyGui-Obj.
 
-.. rubric:: Widget Base Class
-
-.. autosummary:: 
-    :nosignatures:
-
-    dearpygui_obj.wrapper.PyGuiWidget
-
+Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
 
 .. rubric:: Windows
 

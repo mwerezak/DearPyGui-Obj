@@ -114,3 +114,12 @@ class AboutWindow(Window):
     def show_about(cls) -> None:
         """Show the standard instance that is automatically created by DPG."""
         cls.get_instance().show = True
+
+
+__all__ = [
+    'DebugWindow',
+    'MetricsWindow',
+    'StyleEditorWindow',
+    'DocumentationWindow',
+    'AboutWindow',
+]

@@ -162,3 +162,10 @@ class MenuBar(PyGuiWidget):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
+
+
+__all__ = [
+    'MainWindow',
+    'Window',
+    'MenuBar',
+]

@@ -334,3 +334,19 @@ class ProgressBar(PyGuiWidget):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_progress_bar(self.id, **dpg_args)
+
+
+__all__ = [
+    'Text',
+    'LabelText',
+    'Separator',
+    'ButtonArrow',
+    'Button',
+    'Checkbox',
+    'Selectable',
+    'RadioButtons',
+    'ComboHeightMode',
+    'Combo',
+    'ListBox',
+    'ProgressBar',
+]
