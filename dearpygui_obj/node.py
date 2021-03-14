@@ -3,7 +3,7 @@ from typing import Tuple, List
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper import PyGuiWidget
+from dearpygui_obj.wrapper.widget import PyGuiWidget
 
 __all__ = [
 	'NodeEditor',
@@ -49,6 +49,12 @@ class NodeEditor(PyGuiWidget):
 		"""Deletes a node link if it exist."""
 		dpgcore.delete_node_link(self.id, link.id)
 
+	def __enter__(self):
+		return self
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		dpgcore.end()
+
 @_register_item_type('mvAppItemType::Node')
 class Node(PyGuiWidget):
 	"""A NodeEditor node."""
@@ -57,6 +63,12 @@ class Node(PyGuiWidget):
 
 	def _setup_add_widget(self, dpg_args) -> None:
 		dpgcore.add_node(self.id, **dpg_args)
+
+	def __enter__(self):
+		return self
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		dpgcore.end()
 
 @_register_item_type('mvAppItemType::NodeAttribute')
 class NodeAttribute(PyGuiWidget):
