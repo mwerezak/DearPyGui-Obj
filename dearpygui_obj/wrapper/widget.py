@@ -92,8 +92,11 @@ class PyGuiWidget(ABC):
     """This is the abstract base class for all GUI item wrapper objects.
 
     Keyword arguments passed to ``__init__`` will be used to set the initial values of any
-    :class:`.ConfigProperty` descriptors added with :meth:`add_config_property`. Any left over
-    keywords will be passed to the :meth:`_setup_add_widget` method to be given to DPG.
+    config properties that belong to the class. Any left over keywords will be passed to the
+    :meth:`_setup_add_widget` method to be given to DPG.
+
+    You can find out what config properties there are using the
+    :meth:`get_config_properties` method.
 
     It's important that PyGuiWidget and subclasses can be instantiated with only the **name_id**
     argument being passed to ``__init__``. This allows :func:`.get_item_by_id` to work.
