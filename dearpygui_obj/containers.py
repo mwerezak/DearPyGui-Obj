@@ -100,7 +100,6 @@ class TabItem(PyGuiWidget):
     closable: bool = ConfigProperty()
 
     order_mode: TabOrderMode
-
     @ConfigProperty()
     def order_mode(self) -> TabOrderMode:
         config = self.get_config()
@@ -148,7 +147,6 @@ class TabButton(PyGuiWidget):
     closable: bool = ConfigProperty()
 
     order_mode: TabOrderMode
-
     @ConfigProperty()
     def order_mode(self) -> TabOrderMode:
         config = self.get_config()

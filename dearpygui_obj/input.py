@@ -52,6 +52,7 @@ class NumberInput(PyGuiWidget, Generic[_TInput]):
     readonly: bool = ConfigProperty()
     label: str = ConfigProperty()
 
+    min_value: Optional[_TInput]
     @ConfigProperty()
     def min_value(self) -> Optional[_TInput]:
         config = self.get_config()
@@ -65,6 +66,7 @@ class NumberInput(PyGuiWidget, Generic[_TInput]):
             return {'min_clamped': False}
         return {'min_clamped': True, 'min_value': value}
 
+    max_value: Optional[_TInput]
     @ConfigProperty()
     def max_value(self) -> Optional[_TInput]:
         config = self.get_config()
@@ -324,6 +326,7 @@ class ColorEdit(PyGuiWidget):
     input_rgb: bool = ConfigProperty()
     input_hsv: bool = ConfigProperty()
 
+    color_format: ColorFormatMode
     @ConfigProperty()
     def color_format(self) -> ColorFormatMode:
         config = self.get_config()
@@ -371,6 +374,7 @@ class ColorPicker(PyGuiWidget):
     input_rgb: bool = ConfigProperty()
     input_hsv: bool = ConfigProperty()
 
+    color_format: ColorFormatMode
     @ConfigProperty()
     def color_format(self) -> ColorFormatMode:
         config = self.get_config()

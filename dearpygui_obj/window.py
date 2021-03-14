@@ -101,6 +101,7 @@ class Window(PyGuiWidget):
     #: Allow horizontal scrollbar to appear.
     horizontal_scrollbar: bool = ConfigProperty()
 
+    pos: Tuple[int, int]
     @ConfigProperty()
     def pos(self) -> Tuple[int, int]:
         """Get or set (x_pos, y_pos) as a tuple."""

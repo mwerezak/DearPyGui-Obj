@@ -78,6 +78,7 @@ class Button(PyGuiWidget):
     #: If ``True``, makes the button a small button. Useful for embedding in text.
     small: bool = ConfigProperty()
 
+    arrow: Optional[ButtonArrow]
     @ConfigProperty()
     def arrow(self) -> Optional[ButtonArrow]:
         """Configure the button as an arrow button.
@@ -147,6 +148,7 @@ class RadioButtons(PyGuiWidget, MutableSequence[str]):
 
     horizontal: bool = ConfigProperty()
 
+    items: Sequence[str]
     @ConfigProperty()
     def items(self) -> Sequence[str]:
         """Get or set this widget's items as a sequence."""
@@ -210,6 +212,7 @@ class Combo(PyGuiWidget, MutableSequence[str]):
     no_arrow_button: bool = ConfigProperty()  #: Don't display the arrow button.
     no_preview: bool = ConfigProperty()  #: Don't display the preview box showing the selected item.
 
+    items: Sequence[str]
     @ConfigProperty()
     def items(self) -> Sequence[str]:
         """Get or set this widget's items as a sequence."""
@@ -219,16 +222,17 @@ class Combo(PyGuiWidget, MutableSequence[str]):
     def items(self, items: Sequence[str]):
         return {'items':list(items)}
 
+    height_mode: ComboHeightMode
     @ConfigProperty(key='height')
     def height_mode(self) -> ComboHeightMode:
         config = self.get_config()
-        if config.get('height_small', False):
+        if config.get('height_small'):
             return ComboHeightMode.Small
-        if config.get('height_regular', False):
+        if config.get('height_regular'):
             return ComboHeightMode.Regular
-        if config.get('height_large', False):
+        if config.get('height_large'):
             return ComboHeightMode.Large
-        if config.get('height_largest', False):
+        if config.get('height_largest'):
             return ComboHeightMode.Largest
         warn('could not determine height_mode')
         return ComboHeightMode.Regular # its supposedly the default?
@@ -280,6 +284,7 @@ class ListBox(PyGuiWidget, MutableSequence[str]):
     label: str = ConfigProperty()
     num_visible: int = ConfigProperty(key='num_items')  #: The number of items to show.
 
+    items: Sequence[str]
     @ConfigProperty()
     def items(self) -> Sequence[str]:
         """Get or set this widget's items as a sequence."""

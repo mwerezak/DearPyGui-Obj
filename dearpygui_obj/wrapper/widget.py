@@ -296,9 +296,10 @@ class PyGuiWidget(ABC):
 
     ## Data and Values
 
+    data_source: DataValue
     @ConfigProperty(key='source')
     def data_source(self) -> DataValue:
-        """Get the :class:`.GuiData` used as the data source, if any."""
+        """Get the :class:`.DataValue` used as the data source, if any."""
         source_id = self.get_config().get('source') or self.id
         return DataValue(source_id)
 
@@ -332,6 +333,7 @@ class PyGuiWidget(ABC):
     width: int = ConfigProperty()
     height: int = ConfigProperty()
 
+    size: Tuple[float, float]
     @ConfigProperty()
     def size(self) -> Tuple[float, float]:
         """The item's current size as ``(width, height)``."""
