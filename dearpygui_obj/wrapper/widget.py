@@ -92,8 +92,11 @@ class PyGuiWidget(ABC):
     """This is the abstract base class for all GUI item wrapper objects.
 
     Keyword arguments passed to ``__init__`` will be used to set the initial values of any
-    :class:`.ConfigProperty` descriptors added with :meth:`add_config_property`. Any left over
-    keywords will be passed to the :meth:`_setup_add_widget` method to be given to DPG.
+    config properties that belong to the class. Any left over keywords will be passed to the
+    :meth:`_setup_add_widget` method to be given to DPG.
+
+    You can find out what config properties there are using the
+    :meth:`get_config_properties` method.
 
     It's important that PyGuiWidget and subclasses can be instantiated with only the **name_id**
     argument being passed to ``__init__``. This allows :func:`.get_item_by_id` to work.
@@ -223,7 +226,7 @@ class PyGuiWidget(ABC):
     def callback_data(self, data: Any) -> None:
         dpgcore.set_item_callback_data(self.id, data)
 
-    def callback(self, *, data: Optional[Any] = None) -> Callable:
+    def callback(self, _cb: PyGuiCallback = None, *, data: Optional[Any] = None) -> Callable:
         """A decorator that sets the item's callback, and optionally, the callback data.
 
         For example:
@@ -233,13 +236,24 @@ class PyGuiWidget(ABC):
             with Window('Example Window'):
                 button = Button('Callback Button')
 
+                # don't need callback data!
+                @button.callback
+                def callback(sender):
+                    ...
+
+                # if data is a callable, it is invoked each time the callback fires
+                # and the result is supplied to the callback.
                 @button.callback(data='this could also be a callable')
                 def callback(sender, data):
                     ...
+
         """
         def decorator(callback: PyGuiCallback) -> PyGuiCallback:
             dpgcore.set_item_callback(self.id, wrap_callback(callback), callback_data=data)
             return callback
+
+        if _cb is not None:  # in case people forget the "()"
+            return decorator(_cb)
         return decorator
 
     ## Parent/Children
@@ -293,9 +307,16 @@ class PyGuiWidget(ABC):
 
     ## Data and Values
 
+    data_source: DataValue
     @ConfigProperty(key='source')
     def data_source(self) -> DataValue:
-        """Get the :class:`.GuiData` used as the data source, if any."""
+        """Get or set the data source.
+
+        When retrieved, a :class:`.DataValue` referencing the data source will be produced.
+
+        If a widget object or a :class:`.DataValue` is assigned as the data source, this widget will
+        become linked to the provided source. Otherwise, if ``None`` is assigned, this widget will
+        have its own value."""
         source_id = self.get_config().get('source') or self.id
         return DataValue(source_id)
 
@@ -304,15 +325,29 @@ class PyGuiWidget(ABC):
         # accept plain string in addition to GuiData
         return {'source' : str(source) if source is not None else ''}
 
+    value: None
     @property
     def value(self) -> Any:
-        # get_value(self.id) doesn't work if a data source has been set,
-        # so we have to go through data_source to get the widget's value
-        return self.data_source.value
+        """Get or set the widget's value.
+
+        The widget's value is determined by DearPyGui and depends on the widget's type.
+        Not all widgets have a value in which case assigning this property will do nothing and
+        always produce ``None``.
+
+        Widgets that **do** support a value should override the value type annotation to
+        indicate support for this property, even if the provided annotation is :data:`~typing.Any`."""
+        return self._get_value()
 
     @value.setter
-    def value(self, value: Any) -> None:
-        self.data_source.value = value
+    def value(self, v: Any) -> None:
+        self._set_value(v)
+
+    # these are here to make it easier for subclasses to override the value property.
+    def _get_value(self) -> Any:
+        return self.data_source.value
+
+    def _set_value(self, v: Any) -> None:
+        self.data_source.value = v
 
     ## Other properties and status
 
@@ -329,6 +364,7 @@ class PyGuiWidget(ABC):
     width: int = ConfigProperty()
     height: int = ConfigProperty()
 
+    size: Tuple[float, float]
     @ConfigProperty()
     def size(self) -> Tuple[float, float]:
         """The item's current size as ``(width, height)``."""

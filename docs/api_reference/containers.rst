@@ -13,17 +13,23 @@ Containers
 
     TreeNode
     TreeNodeHeader
+    TabBar
+    TabItem
+    TabButton
+    TabOrderMode
     Menu
     MenuItem
 
 
 Tree Nodes
-^^^^^^^^^^
+----------
 
 .. autoclass:: TreeNode
     :members:
     :undoc-members:
     :special-members: __exit__
+
+    .. autoattribute:: value
 
 
 .. autoclass:: TreeNodeHeader
@@ -31,9 +37,33 @@ Tree Nodes
     :undoc-members:
     :special-members: __exit__
 
+    .. autoattribute:: value
+
+
+Tabs
+----
+
+.. autoclass:: TabBar
+    :members:
+    :undoc-members:
+    :special-members: __exit__
+
+.. autoclass:: TabItem
+    :members:
+    :undoc-members:
+    :special-members: __exit__
+
+.. autoclass:: TabButton
+    :members:
+    :undoc-members:
+
+.. autoclass:: TabOrderMode
+    :members:
+    :undoc-members:
+
 
 Menus
-^^^^^
+-----
 
 .. autoclass:: Menu
     :members:

@@ -17,9 +17,9 @@ if TYPE_CHECKING:
 
 @_register_item_type('mvAppItemType::Text')
 class Text(PyGuiWidget):
-    """Just text. A basic element that displays some text."""
+    """A basic element that displays some text."""
 
-    value: str
+    value: str  #: The text to display.
 
     #: Wrap after this many characters. Set to -1 to disable.
     wrap: int = ConfigProperty()
@@ -38,9 +38,13 @@ class Text(PyGuiWidget):
 
 @_register_item_type('mvAppItemType::LabelText')
 class LabelText(PyGuiWidget):
-    """Adds text with a label. Useful for output values when used with a data_source."""
+    """Display text with a label.
 
-    value: str
+    Useful for output values when used with a :attr:`~.PyGuiWidget.data_source`.
+    The text is linked to the data source, while the label remains unchanged."""
+
+    value: str  #: The text to display (separate from the :attr:`label`).
+
     label: str = ConfigProperty()
     color: ColorRGBA = ConfigPropertyColorRGBA()
 
@@ -78,6 +82,7 @@ class Button(PyGuiWidget):
     #: If ``True``, makes the button a small button. Useful for embedding in text.
     small: bool = ConfigProperty()
 
+    arrow: Optional[ButtonArrow]
     @ConfigProperty()
     def arrow(self) -> Optional[ButtonArrow]:
         """Configure the button as an arrow button.
@@ -108,7 +113,7 @@ class Button(PyGuiWidget):
 class Checkbox(PyGuiWidget):
     """Simple checkbox widget."""
 
-    value: bool
+    value: bool  #: ``True`` if the checkbox is checked, otherwise ``False``.
 
     label: str = ConfigProperty()
 
@@ -122,7 +127,8 @@ class Checkbox(PyGuiWidget):
 class Selectable(PyGuiWidget):
     """Text that can be selected, functionally similar to a checkbox."""
 
-    value: bool
+    value: bool  #: ``True`` if the item is selected, otherwise ``False``.
+
     label: str = ConfigProperty()
     span_columns: bool = ConfigProperty()
 
@@ -139,14 +145,13 @@ class RadioButtons(PyGuiWidget, MutableSequence[str]):
     """A set of radio buttons.
 
     This widget can be used as a mutable sequence of labels. Changing the sequence will
-    change the radio buttons in the group and their labels.
+    change the radio buttons in the group and their labels."""
 
-    The index of the selected button is obtained from the :attr:`value` property.
-    """
-    value: int
+    value: int  #: The **index** of the selected item.
 
     horizontal: bool = ConfigProperty()
 
+    items: Sequence[str]
     @ConfigProperty()
     def items(self) -> Sequence[str]:
         """Get or set this widget's items as a sequence."""
@@ -198,18 +203,19 @@ class ComboHeightMode(Enum):
 class Combo(PyGuiWidget, MutableSequence[str]):
     """A combo box (drop down).
 
-    Unlike :class:`.RadioButtons`, the value of a Combo is one of the item strings,
+    Unlike :class:`.RadioButtons`, the :attr:`value` of a Combo is one of the item strings,
     not the index.
 
     Unless specified, none of the items are initially selected and :attr:`value` is an empty string.
     """
-    value: str
+    value: str  #: The string **value** of the selected item.
 
     label: str = ConfigProperty()
     popup_align_left: bool = ConfigProperty()
     no_arrow_button: bool = ConfigProperty()  #: Don't display the arrow button.
     no_preview: bool = ConfigProperty()  #: Don't display the preview box showing the selected item.
 
+    items: Sequence[str]
     @ConfigProperty()
     def items(self) -> Sequence[str]:
         """Get or set this widget's items as a sequence."""
@@ -219,16 +225,17 @@ class Combo(PyGuiWidget, MutableSequence[str]):
     def items(self, items: Sequence[str]):
         return {'items':list(items)}
 
+    height_mode: ComboHeightMode
     @ConfigProperty(key='height')
     def height_mode(self) -> ComboHeightMode:
         config = self.get_config()
-        if config.get('height_small', False):
+        if config.get('height_small'):
             return ComboHeightMode.Small
-        if config.get('height_regular', False):
+        if config.get('height_regular'):
             return ComboHeightMode.Regular
-        if config.get('height_large', False):
+        if config.get('height_large'):
             return ComboHeightMode.Large
-        if config.get('height_largest', False):
+        if config.get('height_largest'):
             return ComboHeightMode.Largest
         warn('could not determine height_mode')
         return ComboHeightMode.Regular # its supposedly the default?
@@ -271,15 +278,14 @@ class Combo(PyGuiWidget, MutableSequence[str]):
 
 @_register_item_type('mvAppItemType::Listbox')
 class ListBox(PyGuiWidget, MutableSequence[str]):
-    """A scrollable box containing a selection of items.
+    """A scrollable box containing a selection of items."""
 
-    The :attr:`value` property produces the index of the selected item."""
-
-    value: int
+    value: int  #: The **index** of the selected item.
 
     label: str = ConfigProperty()
     num_visible: int = ConfigProperty(key='num_items')  #: The number of items to show.
 
+    items: Sequence[str]
     @ConfigProperty()
     def items(self) -> Sequence[str]:
         """Get or set this widget's items as a sequence."""
@@ -322,10 +328,9 @@ class ListBox(PyGuiWidget, MutableSequence[str]):
 
 @_register_item_type('mvAppItemType::ProgressBar')
 class ProgressBar(PyGuiWidget):
-    """A progress bar.
-    Displays a value given between 0.0 and 1.0."""
+    """A progress bar."""
 
-    value: float
+    value: float  #: The progress to display, between ``0.0`` and ``1.0``.
 
     overlay_text: str = ConfigProperty(key='overlay') #: Overlayed text.
 

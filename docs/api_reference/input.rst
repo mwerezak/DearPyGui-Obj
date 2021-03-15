@@ -44,12 +44,17 @@ Text Input
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
+
 Number Input
 ^^^^^^^^^^^^
 
 .. autoclass:: NumberInput
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 Float Input
 ^^^^^^^^^^^
@@ -58,17 +63,25 @@ Float Input
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: InputFloat2
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 .. autoclass:: InputFloat3
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: InputFloat4
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 Integer Input
 ^^^^^^^^^^^^^
@@ -77,17 +90,25 @@ Integer Input
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: InputInt2
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 .. autoclass:: InputInt3
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: InputInt4
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 
 Sliders
@@ -97,6 +118,7 @@ Sliders
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
 
 Float Sliders
 ^^^^^^^^^^^^^
@@ -105,17 +127,25 @@ Float Sliders
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: SliderFloat2
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 .. autoclass:: SliderFloat3
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: SliderFloat4
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 Integer Sliders
 ^^^^^^^^^^^^^^^
@@ -124,17 +154,25 @@ Integer Sliders
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: SliderInt2
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 .. autoclass:: SliderInt3
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: SliderInt4
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
 
 
 Color Input
@@ -148,6 +186,10 @@ Color Input
     :members:
     :undoc-members:
 
+    .. autoattribute:: value
+
 .. autoclass:: ColorEdit
     :members:
     :undoc-members:
+
+    .. autoattribute:: value
