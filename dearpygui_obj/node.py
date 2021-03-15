@@ -59,10 +59,11 @@ class NodeEditor(PyGuiWidget):
 class Node(PyGuiWidget):
 	"""A NodeEditor node."""
 
+	label: str = ConfigProperty()
 	draggable: bool = ConfigProperty()
 
-	def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
-		super().__init__(size=size, name_id=name_id, **config)
+	def __init__(self, label: str = None, *, name_id: str = None, **config):
+		super().__init__(label=label, name_id=name_id, **config)
 
 	def _setup_add_widget(self, dpg_args) -> None:
 		dpgcore.add_node(self.id, **dpg_args)
