@@ -288,6 +288,8 @@ class ColorButton(PyGuiWidget):
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
 
+    value: ColorRGBA  #: The color to copy on drag-and-drop.
+
     no_border: bool = ConfigProperty()
     no_alpha: bool = ConfigProperty()  #: Don't include alpha channel.
     no_drag_drop: bool = ConfigProperty()
@@ -297,6 +299,12 @@ class ColorButton(PyGuiWidget):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_button(self.id, **dpg_args)
+
+    def _get_value(self) -> ColorRGBA:
+        return ColorRGBA.dpg_import(super()._get_value())
+
+    def _set_value(self, color: ColorRGBA) -> None:
+        super()._set_value(color.dpg_export())
 
 
 class ColorFormatMode(Enum):
@@ -309,6 +317,8 @@ class ColorEdit(PyGuiWidget):
     """A color editing widget.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
+
+    value: ColorRGBA  #: The inputted color.
 
     label: str = ConfigProperty()
     no_alpha: bool = ConfigProperty()  #: Don't include alpha channel.
@@ -350,6 +360,12 @@ class ColorEdit(PyGuiWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_edit4(self.id, **dpg_args)
 
+    def _get_value(self) -> ColorRGBA:
+        return ColorRGBA.dpg_import(super()._get_value())
+
+    def _set_value(self, color: ColorRGBA) -> None:
+        super()._set_value(color.dpg_export())
+
 
 @_register_item_type('mvAppItemType::ColorPicker4')
 class ColorPicker(PyGuiWidget):
@@ -357,6 +373,8 @@ class ColorPicker(PyGuiWidget):
 
     Clicking and draging the color square will copy the color to be applied on any other color widget.
     Right-click allows the style of the color picker to be changed."""
+
+    value: ColorRGBA  #: The picked color.
 
     label: str = ConfigProperty()
     no_alpha: bool = ConfigProperty()
@@ -397,6 +415,12 @@ class ColorPicker(PyGuiWidget):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_picker4(self.id, **dpg_args)
+
+    def _get_value(self) -> ColorRGBA:
+        return ColorRGBA.dpg_import(super()._get_value())
+
+    def _set_value(self, color: ColorRGBA) -> None:
+        super()._set_value(color.dpg_export())
 
 
 

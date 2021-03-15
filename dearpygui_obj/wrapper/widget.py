@@ -336,11 +336,18 @@ class PyGuiWidget(ABC):
 
         Widgets that **do** support a value should override the value type annotation to
         indicate support for this property, even if the provided annotation is :data:`~typing.Any`."""
-        return self.data_source.value
+        return self._get_value()
 
     @value.setter
-    def value(self, value: Any) -> None:
-        self.data_source.value = value
+    def value(self, v: Any) -> None:
+        self._set_value(v)
+
+    # these are here to make it easier for subclasses to override the value property.
+    def _get_value(self) -> Any:
+        return self.data_source.value
+
+    def _set_value(self, v: Any) -> None:
+        self.data_source.value = v
 
     ## Other properties and status
 
