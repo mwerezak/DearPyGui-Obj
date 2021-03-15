@@ -29,15 +29,19 @@ Tree Nodes
     :undoc-members:
     :special-members: __exit__
 
+    .. autoattribute:: value
+
 
 .. autoclass:: TreeNodeHeader
     :members:
     :undoc-members:
     :special-members: __exit__
 
+    .. autoattribute:: value
 
-Tab Bar
--------
+
+Tabs
+----
 
 .. autoclass:: TabBar
     :members:

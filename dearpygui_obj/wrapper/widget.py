@@ -324,10 +324,7 @@ class PyGuiWidget(ABC):
         always produce ``None``.
 
         Widgets that **do** support a value should override the value type annotation to
-        indicate support for this property, even if the provided annotation is ``Any``."""
-
-        # get_value(self.id) doesn't work if a data source has been set,
-        # so we have to go through data_source to get the widget's value
+        indicate support for this property, even if the provided annotation is :data:`~typing.Any`."""
         return self.data_source.value
 
     @value.setter

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class Text(PyGuiWidget):
     """A basic element that displays some text."""
 
-    value: str
+    value: str  #: The text to display.
 
     #: Wrap after this many characters. Set to -1 to disable.
     wrap: int = ConfigProperty()
@@ -43,7 +43,8 @@ class LabelText(PyGuiWidget):
     Useful for output values when used with a :attr:`~.PyGuiWidget.data_source`.
     The text is linked to the data source, while the label remains unchanged."""
 
-    value: str
+    value: str  #: The text to display (separate from the :attr:`label`).
+
     label: str = ConfigProperty()
     color: ColorRGBA = ConfigPropertyColorRGBA()
 
@@ -112,7 +113,7 @@ class Button(PyGuiWidget):
 class Checkbox(PyGuiWidget):
     """Simple checkbox widget."""
 
-    value: bool
+    value: bool  #: ``True`` if the checkbox is checked, otherwise ``False``.
 
     label: str = ConfigProperty()
 
@@ -126,7 +127,8 @@ class Checkbox(PyGuiWidget):
 class Selectable(PyGuiWidget):
     """Text that can be selected, functionally similar to a checkbox."""
 
-    value: bool
+    value: bool  #: ``True`` if the item is selected, otherwise ``False``.
+
     label: str = ConfigProperty()
     span_columns: bool = ConfigProperty()
 
@@ -143,11 +145,9 @@ class RadioButtons(PyGuiWidget, MutableSequence[str]):
     """A set of radio buttons.
 
     This widget can be used as a mutable sequence of labels. Changing the sequence will
-    change the radio buttons in the group and their labels.
+    change the radio buttons in the group and their labels."""
 
-    The index of the selected button is obtained from the :attr:`value` property.
-    """
-    value: int
+    value: int  #: The **index** of the selected item.
 
     horizontal: bool = ConfigProperty()
 
@@ -203,12 +203,12 @@ class ComboHeightMode(Enum):
 class Combo(PyGuiWidget, MutableSequence[str]):
     """A combo box (drop down).
 
-    Unlike :class:`.RadioButtons`, the value of a Combo is one of the item strings,
+    Unlike :class:`.RadioButtons`, the :attr:`value` of a Combo is one of the item strings,
     not the index.
 
     Unless specified, none of the items are initially selected and :attr:`value` is an empty string.
     """
-    value: str
+    value: str  #: The string **value** of the selected item.
 
     label: str = ConfigProperty()
     popup_align_left: bool = ConfigProperty()
@@ -278,11 +278,9 @@ class Combo(PyGuiWidget, MutableSequence[str]):
 
 @_register_item_type('mvAppItemType::Listbox')
 class ListBox(PyGuiWidget, MutableSequence[str]):
-    """A scrollable box containing a selection of items.
+    """A scrollable box containing a selection of items."""
 
-    The :attr:`value` property produces the index of the selected item."""
-
-    value: int
+    value: int  #: The **index** of the selected item.
 
     label: str = ConfigProperty()
     num_visible: int = ConfigProperty(key='num_items')  #: The number of items to show.
@@ -330,10 +328,9 @@ class ListBox(PyGuiWidget, MutableSequence[str]):
 
 @_register_item_type('mvAppItemType::ProgressBar')
 class ProgressBar(PyGuiWidget):
-    """A progress bar.
-    Displays a value given between 0.0 and 1.0."""
+    """A progress bar."""
 
-    value: float
+    value: float  #: The progress to display, between ``0.0`` and ``1.0``.
 
     overlay_text: str = ConfigProperty(key='overlay') #: Overlayed text.
 

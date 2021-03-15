@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class TreeNode(PyGuiWidget):
     """A collapsing container with a label."""
 
-    value: bool  #: ``True`` if the header is uncollapsed.
+    value: bool  #: ``True`` if the header is uncollapsed, otherwise ``False``.
 
     label: str = ConfigProperty()
     closable: bool = ConfigProperty()

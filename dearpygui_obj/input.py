@@ -19,6 +19,8 @@ if TYPE_CHECKING:
 class InputText(PyGuiWidget):
     """A text input box."""
 
+    value: str  #: The inputted text.
+
     hint: str = ConfigProperty()
     multiline: bool = ConfigProperty()
     no_spaces: bool = ConfigProperty()
@@ -42,7 +44,7 @@ _TInput = TypeVar('_TInput')
 
 class NumberInput(PyGuiWidget, Generic[_TInput]):
     """Base class for number input boxes."""
-    value: _TInput
+    value: _TInput  #: The inputted value.
     _default_value: _TInput
 
     format: str = ConfigProperty()
@@ -162,7 +164,7 @@ class InputInt4(NumberInput[int]):
 
 class SliderInput(PyGuiWidget, Generic[_TInput]):
     """Base class for slider types."""
-    value: _TInput
+    value: _TInput  #: The inputted value.
     _default_value: _TInput
 
     label: str = ConfigProperty()
