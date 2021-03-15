@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 @_register_item_type('mvAppItemType::Text')
 class Text(PyGuiWidget):
-    """Just text. A basic element that displays some text."""
+    """A basic element that displays some text."""
 
     value: str
 
@@ -38,7 +38,10 @@ class Text(PyGuiWidget):
 
 @_register_item_type('mvAppItemType::LabelText')
 class LabelText(PyGuiWidget):
-    """Adds text with a label. Useful for output values when used with a data_source."""
+    """Display text with a label.
+
+    Useful for output values when used with a :attr:`~.PyGuiWidget.data_source`.
+    The text is linked to the data source, while the label remains unchanged."""
 
     value: str
     label: str = ConfigProperty()

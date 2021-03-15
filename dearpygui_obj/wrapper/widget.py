@@ -299,7 +299,13 @@ class PyGuiWidget(ABC):
     data_source: DataValue
     @ConfigProperty(key='source')
     def data_source(self) -> DataValue:
-        """Get the :class:`.DataValue` used as the data source, if any."""
+        """Get or set the data source.
+
+        When retrieved, a :class:`.DataValue` referencing the data source will be produced.
+
+        If a widget object or a :class:`.DataValue` is assigned as the data source, this widget will
+        become linked to the provided source. Otherwise, if ``None`` is assigned, this widget will
+        have its own value."""
         source_id = self.get_config().get('source') or self.id
         return DataValue(source_id)
 
@@ -308,8 +314,18 @@ class PyGuiWidget(ABC):
         # accept plain string in addition to GuiData
         return {'source' : str(source) if source is not None else ''}
 
+    value: None
     @property
     def value(self) -> Any:
+        """Get or set the widget's value.
+
+        The widget's value is determined by DearPyGui and depends on the widget's type.
+        Not all widgets have a value in which case assigning this property will do nothing and
+        always produce ``None``.
+
+        Widgets that **do** support a value should override the value type annotation to
+        indicate support for this property, even if the provided annotation is ``Any``."""
+
         # get_value(self.id) doesn't work if a data source has been set,
         # so we have to go through data_source to get the widget's value
         return self.data_source.value
