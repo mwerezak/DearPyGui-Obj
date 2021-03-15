@@ -15,8 +15,8 @@ __all__ = [
 class NodeEditor(PyGuiWidget):
     """A canvas specific to graph node workflow."""
 
-    def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
-        super().__init__(size=size, name_id=name_id, **config)
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_node_editor(self.id, **dpg_args)
@@ -61,8 +61,8 @@ class Node(PyGuiWidget):
 
     draggable: bool = ConfigProperty()
 
-    def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
-        super().__init__(size=size, name_id=name_id, **config)
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_node(self.id, **dpg_args)
@@ -80,8 +80,8 @@ class NodeAttribute(PyGuiWidget):
     output: bool = ConfigProperty()
     static: bool = ConfigProperty()
 
-    def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
-        super().__init__(size=size, name_id=name_id, **config)
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_node_attribute(self.id, **dpg_args)
