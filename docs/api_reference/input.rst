@@ -182,8 +182,6 @@ Color Input
     :members:
     :undoc-members:
 
-    .. autoattribute:: value
-
 .. autoclass:: ColorPicker
     :members:
     :undoc-members:

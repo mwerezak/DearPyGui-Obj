@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, TypeVar, Generic
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.data import ColorRGBA
+from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA, dpg_import_color, dpg_export_color
 from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
@@ -288,24 +288,16 @@ class ColorButton(PyGuiWidget):
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
 
-    value: ColorRGBA  #: The color to copy on drag-and-drop.
-
+    color: ColorRGBA = ConfigPropertyColorRGBA(no_init=True)  #: The color to copy on drag-and-drop.
     no_border: bool = ConfigProperty()
     no_alpha: bool = ConfigProperty()  #: Don't include alpha channel.
     no_drag_drop: bool = ConfigProperty()
 
     def __init__(self, color: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(color=color.dpg_export(), name_id=name_id, **config)
+        super().__init__(color=dpg_export_color(color), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_button(self.id, **dpg_args)
-
-    def _get_value(self) -> ColorRGBA:
-        return ColorRGBA.dpg_import(super()._get_value())
-
-    def _set_value(self, color: ColorRGBA) -> None:
-        super()._set_value(color.dpg_export())
-
 
 class ColorFormatMode(Enum):
     """Specifies how color element values are formatted."""
@@ -355,16 +347,16 @@ class ColorEdit(PyGuiWidget):
         raise ValueError('invalid color format mode')
 
     def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
+        super().__init__(label=label, default_value=dpg_export_color(value), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_edit4(self.id, **dpg_args)
 
     def _get_value(self) -> ColorRGBA:
-        return ColorRGBA.dpg_import(super()._get_value())
+        return dpg_import_color(super()._get_value())
 
     def _set_value(self, color: ColorRGBA) -> None:
-        super()._set_value(color.dpg_export())
+        super()._set_value(dpg_export_color(color))
 
 
 @_register_item_type('mvAppItemType::ColorPicker4')
@@ -411,16 +403,16 @@ class ColorPicker(PyGuiWidget):
         raise ValueError('invalid color format mode')
 
     def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=value.dpg_export(), name_id=name_id, **config)
+        super().__init__(label=label, default_value=dpg_export_color(value), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_picker4(self.id, **dpg_args)
 
     def _get_value(self) -> ColorRGBA:
-        return ColorRGBA.dpg_import(super()._get_value())
+        return dpg_import_color(super()._get_value())
 
     def _set_value(self, color: ColorRGBA) -> None:
-        super()._set_value(color.dpg_export())
+        super()._set_value(dpg_export_color(color))
 
 
 
