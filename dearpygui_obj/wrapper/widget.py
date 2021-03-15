@@ -226,7 +226,7 @@ class PyGuiWidget(ABC):
     def callback_data(self, data: Any) -> None:
         dpgcore.set_item_callback_data(self.id, data)
 
-    def callback(self, *, data: Optional[Any] = None) -> Callable:
+    def callback(self, _cb: PyGuiCallback = None, *, data: Optional[Any] = None) -> Callable:
         """A decorator that sets the item's callback, and optionally, the callback data.
 
         For example:
@@ -236,13 +236,24 @@ class PyGuiWidget(ABC):
             with Window('Example Window'):
                 button = Button('Callback Button')
 
+                # don't need callback data!
+                @button.callback
+                def callback(sender):
+                    ...
+
+                # if data is a callable, it is invoked each time the callback fires
+                # and the result is supplied to the callback.
                 @button.callback(data='this could also be a callable')
                 def callback(sender, data):
                     ...
+
         """
         def decorator(callback: PyGuiCallback) -> PyGuiCallback:
             dpgcore.set_item_callback(self.id, wrap_callback(callback), callback_data=data)
             return callback
+
+        if _cb is not None:  # in case people forget the "()"
+            return decorator(_cb)
         return decorator
 
     ## Parent/Children
