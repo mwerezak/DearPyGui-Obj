@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Optional, Type
+from typing import TYPE_CHECKING
 
 from dearpygui import core as dpgcore
 
 from dearpygui_obj import _generate_id
 
 if TYPE_CHECKING:
-    from typing import Any, Callable, Mapping
+    from typing import Any, Optional, Type, Callable, Mapping
     from dearpygui_obj.drawing import DrawingCanvas
 
     DrawConfigData = Mapping[str, Any]
