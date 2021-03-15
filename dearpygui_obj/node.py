@@ -41,13 +41,13 @@ class NodeEditor(PyGuiWidget):
 		"""Gets all linkages for all nodes in the editor."""
 		return dpgcore.get_links(self.id)
 
-	def add_node_link(self, node1: Node, node2: Node) -> None:
+	def add_node_link(self, node1: NodeAttribute, node2: NodeAttribute) -> None:
 		"""Adds a node link between nodes."""
 		dpgcore.add_node_link(self.id, node1.id, node2.id)
 
-	def delete_node_link(self, link: Node) -> None:
+	def delete_node_link(self, node1: NodeAttribute, node2: NodeAttribute) -> None:
 		"""Deletes a node link if it exist."""
-		dpgcore.delete_node_link(self.id, link.id)
+		dpgcore.delete_node_link(self.id, node1.id, node2.id)
 
 	def __enter__(self):
 		return self
