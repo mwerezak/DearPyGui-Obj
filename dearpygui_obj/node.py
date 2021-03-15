@@ -3,7 +3,7 @@ from typing import Tuple, List
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import PyGuiWidget
+from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 
 __all__ = [
 	'NodeEditor',
@@ -41,15 +41,15 @@ class NodeEditor(PyGuiWidget):
 		"""Gets all linkages for all nodes in the editor."""
 		return dpgcore.get_links(self.id)
 
-	def add_node_link(self, node1: Node, node2: Node) -> None:
+	def add_node_link(self, node1: NodeAttribute, node2: NodeAttribute) -> None:
 		"""Adds a node link between nodes."""
 		dpgcore.add_node_link(self.id, node1.id, node2.id)
 
-	def delete_node_link(self, link: Node) -> None:
+	def delete_node_link(self, node1: NodeAttribute, node2: NodeAttribute) -> None:
 		"""Deletes a node link if it exist."""
-		dpgcore.delete_node_link(self.id, link.id)
+		dpgcore.delete_node_link(self.id, node1.id, node2.id)
 
-	def __enter__(self):
+	def __enter__(self) -> NodeEditor:
 		return self
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
@@ -58,13 +58,16 @@ class NodeEditor(PyGuiWidget):
 @_register_item_type('mvAppItemType::Node')
 class Node(PyGuiWidget):
 	"""A NodeEditor node."""
+
+	draggable: bool = ConfigProperty()
+
 	def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
 		super().__init__(size=size, name_id=name_id, **config)
 
 	def _setup_add_widget(self, dpg_args) -> None:
 		dpgcore.add_node(self.id, **dpg_args)
 
-	def __enter__(self):
+	def __enter__(self) -> Node:
 		return self
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
@@ -73,8 +76,18 @@ class Node(PyGuiWidget):
 @_register_item_type('mvAppItemType::NodeAttribute')
 class NodeAttribute(PyGuiWidget):
 	"""Arbitrary attribute."""
+
+	output: bool = ConfigProperty()
+	static: bool = ConfigProperty()
+
 	def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
 		super().__init__(size=size, name_id=name_id, **config)
 
 	def _setup_add_widget(self, dpg_args) -> None:
 		dpgcore.add_node_attribute(self.id, **dpg_args)
+
+	def __enter__(self) -> NodeAttribute:
+		return self
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		dpgcore.end()
