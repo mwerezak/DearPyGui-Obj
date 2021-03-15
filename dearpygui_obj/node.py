@@ -3,7 +3,7 @@ from typing import Tuple, List
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import PyGuiWidget
+from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 
 __all__ = [
 	'NodeEditor',
@@ -58,6 +58,9 @@ class NodeEditor(PyGuiWidget):
 @_register_item_type('mvAppItemType::Node')
 class Node(PyGuiWidget):
 	"""A NodeEditor node."""
+
+	draggable: bool = ConfigProperty()
+
 	def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
 		super().__init__(size=size, name_id=name_id, **config)
 
@@ -73,6 +76,10 @@ class Node(PyGuiWidget):
 @_register_item_type('mvAppItemType::NodeAttribute')
 class NodeAttribute(PyGuiWidget):
 	"""Arbitrary attribute."""
+
+	output: bool = ConfigProperty()
+	static: bool = ConfigProperty()
+
 	def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
 		super().__init__(size=size, name_id=name_id, **config)
 
