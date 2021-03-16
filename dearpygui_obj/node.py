@@ -195,3 +195,15 @@ class NodeAttribute(PyGuiWidget):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         dpgcore.end()
+
+    def is_input(self) -> bool:
+        """Shortcut for ``self.type == NodeAttributeType.Input``."""
+        return self.type == NodeAttributeType.Input
+
+    def is_output(self) -> bool:
+        """Shortcut for ``self.type == NodeAttributeType.Output``."""
+        return self.type == NodeAttributeType.Output
+
+    def is_static(self) -> bool:
+        """Shortcut for ``self.type == NodeAttributeType.Static``."""
+        return self.type == NodeAttributeType.Static
