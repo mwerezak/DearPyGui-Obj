@@ -52,7 +52,7 @@ class ConfigProperty:
             self.key = name
 
         if not self.__doc__:
-            self.__doc__ = f"Read or modify the '{self.key}' config field."
+            self.__doc__ = f"Read or modify the '{self.key}' config property."
 
     def __get__(self, instance: Optional[PyGuiWidget], owner: Type[PyGuiWidget]) -> Any:
         if instance is None:
