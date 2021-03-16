@@ -87,8 +87,9 @@ class NodeEditor(PyGuiWidget):
         Raises:
             NodeLinkError: if exactly 1 input node and 1 output node was not provided.
         """
+        link = NodeLink.from_endpoints(end1, end2)
         dpgcore.add_node_link(self.id, end1.id, end2.id)
-        return NodeLink.from_endpoints(end1, end2)
+        return link
 
     @overload
     def delete_link(self, link: NodeLink) -> None:
