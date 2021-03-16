@@ -13,7 +13,6 @@ Node Editor
 
     NodeEditor
     NodeLink
-    NodeLinkError
     Node
     input_attribute
     output_attribute
@@ -31,8 +30,6 @@ NodeEditor
 .. autoclass:: NodeLink
     :members:
     :undoc-members:
-
-.. autoexception:: NodeLinkError
 
 Node
 ----

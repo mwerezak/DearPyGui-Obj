@@ -14,9 +14,6 @@ if TYPE_CHECKING:
     from dearpygui_obj import PyGuiCallback
 
 
-class NodeLinkError(Exception):
-    """Raised when a link cannot be created."""
-
 class NodeLink(NamedTuple):
     """Holds info about a link between two :class:`.NodeAttribute` objects."""
     input: NodeAttribute   #: The input end of the link.
@@ -88,8 +85,9 @@ class NodeEditor(PyGuiWidget):
     def add_link(self, end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
         """Adds a link between two :class:`.NodeAttribute` objects.
 
-        Raises:
-            NodeLinkError: if exactly 1 input node and 1 output node was not provided.
+        Returns:
+            A :class:`.NodeLink` representing the link that was created, or ``None``
+            if the link was invalid.
         """
         dpgcore.add_node_link(self.id, end1.id, end2.id)
         return _get_link(end1, end2)
@@ -254,7 +252,6 @@ __all__ = [
     'Node',
     'NodeAttribute',
     'NodeLink',
-    'NodeLinkError',
     'NodeAttributeType',
     'input_attribute',
     'output_attribute',
