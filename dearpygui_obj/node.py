@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING, NamedTuple, overload
 
 from dearpygui import core as dpgcore
 
-from dearpygui_obj import _register_item_type, try_get_item_by_id
+from dearpygui_obj import _register_item_type, try_get_item_by_id, wrap_callback
 from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Optional, Iterable, List
+    from typing import Optional, Iterable, Callable
+    from dearpygui_obj import PyGuiCallback
 
 
 class NodeLink(NamedTuple):
@@ -17,17 +18,18 @@ class NodeLink(NamedTuple):
     input: NodeAttribute   #: The input end of the link.
     output: NodeAttribute  #: The output end of the link.
 
+
 def _get_link(end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
     """Creates a NodeLink from an input and an output node.
 
     If exactly 1 input node and exactly 1 output node was not provided, returns ``None``."""
     endpoints = end1, end2
 
-    inputs = [end for end in endpoints if end.link_behavior == NodeAttributeType.Input]
+    inputs = [ end for end in endpoints if end.is_input() ]
     if len(inputs) != 1:
         return None
 
-    outputs = [end for end in endpoints if end.link_behavior == NodeAttributeType.Output]
+    outputs = [ end for end in endpoints if end.is_output() ]
     if len(inputs) != 1:
         return None
 
@@ -41,6 +43,7 @@ def _get_link_from_ids(id1: str, id2: str) -> Optional[NodeLink]:
     # noinspection PyTypeChecker
     return _get_link(end1, end2)
 
+
 @_register_item_type('mvAppItemType::NodeEditor')
 class NodeEditor(PyGuiWidget):
     """A canvas specific to graph node workflow.
@@ -52,7 +55,17 @@ class NodeEditor(PyGuiWidget):
         super().__init__(name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
-        dpgcore.add_node_editor(self.id, **dpg_args)
+        dpgcore.add_node_editor(
+            self.id, link_callback=self._on_link, delink_callback=self._on_delink, **dpg_args,
+        )
+
+    def __enter__(self) -> NodeEditor:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        dpgcore.end()
+
+    ## Links
 
     def get_all_links(self) -> Iterable[NodeLink]:
         """Get all linkages between any :class:`.NodeAttribute` objects in the editor."""
@@ -104,11 +117,33 @@ class NodeEditor(PyGuiWidget):
         """Clears all nodes from being in the selection state."""
         dpgcore.clear_selected_nodes(self.id)
 
-    def __enter__(self) -> NodeEditor:
-        return self
+    ## Callbacks
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        dpgcore.end()
+    ## workaround for the fact that you can't set the link_callback or delink_callback properties in DPG
+    _on_link_callback: Optional[Callable] = None
+    _on_delink_callback: Optional[Callable] = None
+
+    def _on_link(self, sender, data) -> None:
+        if self._on_link_callback is not None:
+            self._on_link_callback(sender, data)
+
+    def _on_delink(self, sender, data) -> None:
+        if self._on_delink_callback is not None:
+            self._on_delink_callback(sender, data)
+
+    def link_callback(self, callback: Optional[PyGuiCallback]) -> Callable:
+        """Set the link callback, can be used as a decorator."""
+        if callback is not None:
+            callback = wrap_callback(callback)
+        self._on_link_callback = callback
+        return callback
+
+    def delink_callback(self, callback: Optional[PyGuiCallback]) -> Callable:
+        """Set the delink callback, can be used as a decorator."""
+        if callback is not None:
+            callback = wrap_callback(callback)
+        self._on_delink_callback = callback
+        return callback
 
 
 @_register_item_type('mvAppItemType::Node')

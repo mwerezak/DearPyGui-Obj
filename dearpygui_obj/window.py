@@ -121,8 +121,7 @@ class Window(PyGuiWidget):
         super().__init__(label=label, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
-        on_close = wrap_callback(self._on_close)
-        dpgcore.add_window(self.id, on_close=on_close, **dpg_args)
+        dpgcore.add_window(self.id, on_close=self._on_close, **dpg_args)
 
     def __enter__(self) -> Window:
         return self
@@ -131,13 +130,15 @@ class Window(PyGuiWidget):
         dpgcore.end()
 
     ## workaround for the fact that you can't set the on_close callback in DPG
-    _on_close_callback: Optional[PyGuiCallback] = None
+    _on_close_callback: Optional[Callable] = None
     def _on_close(self, sender, data) -> None:
         if self._on_close_callback is not None:
             self._on_close_callback(sender, data)
 
-    def on_close(self, callback: PyGuiCallback) -> Callable:
+    def on_close(self, callback: Optional[PyGuiCallback]) -> Callable:
         """Set on_close callback, can be used as a decorator."""
+        if callback is not None:
+            callback = wrap_callback(callback)
         self._on_close_callback = callback
         return callback
 
