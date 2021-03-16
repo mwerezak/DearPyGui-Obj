@@ -33,11 +33,11 @@ class NodeLink(NamedTuple):
 
         inputs = [ end for end in endpoints if end.is_input() ]
         if len(inputs) != 1:
-            raise NodeLinkError('exactly 1 input NodeAttribute must be provided')
+            raise NodeLinkError('did not provide exactly 1 input endpoint')
 
         outputs = [ end for end in endpoints if end.is_output() ]
-        if len(inputs) != 1:
-            raise NodeLinkError('exactly 1 output NodeAttribute must be provided')
+        if len(outputs) != 1:
+            raise NodeLinkError('did not provide exactly 1 output endpoint')
 
         return cls(input=inputs[0], output=outputs[0])
 
