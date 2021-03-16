@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from warnings import warn
 from typing import TYPE_CHECKING, NamedTuple, overload
 
 from dearpygui import core as dpgcore
@@ -13,35 +14,40 @@ if TYPE_CHECKING:
     from dearpygui_obj import PyGuiCallback
 
 
+class NodeLinkError(Exception):
+    """Raised when a link cannot be created."""
+
 class NodeLink(NamedTuple):
     """Holds info about a link between two :class:`.NodeAttribute` objects."""
     input: NodeAttribute   #: The input end of the link.
     output: NodeAttribute  #: The output end of the link.
 
+    @classmethod
+    def from_endpoints(cls, end1: NodeAttribute, end2: NodeAttribute) -> NodeLink:
+        """Creates a NodeLink from an input and an output node.
 
-def _get_link(end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
-    """Creates a NodeLink from an input and an output node.
+        Raises:
+            NodeLinkError: if exactly 1 input node and 1 output node was not provided.
+        """
+        endpoints = end1, end2
 
-    If exactly 1 input node and exactly 1 output node was not provided, returns ``None``."""
-    endpoints = end1, end2
+        inputs = [ end for end in endpoints if end.is_input() ]
+        if len(inputs) != 1:
+            raise NodeLinkError('exactly 1 input NodeAttribute must be provided')
 
-    inputs = [ end for end in endpoints if end.is_input() ]
-    if len(inputs) != 1:
-        return None
+        outputs = [ end for end in endpoints if end.is_output() ]
+        if len(inputs) != 1:
+            raise NodeLinkError('exactly 1 output NodeAttribute must be provided')
 
-    outputs = [ end for end in endpoints if end.is_output() ]
-    if len(inputs) != 1:
-        return None
+        return cls(input=inputs[0], output=outputs[0])
 
-    return NodeLink(input=inputs[0], output=outputs[0])
 
-def _get_link_from_ids(id1: str, id2: str) -> Optional[NodeLink]:
+def _get_link_from_ids(id1: str, id2: str) -> NodeLink:
     end1 = try_get_item_by_id(id1)
     end2 = try_get_item_by_id(id2)
-    if end1 is None or end2 is None:
-        return None
-    # noinspection PyTypeChecker
-    return _get_link(end1, end2)
+    if not isinstance(end1, NodeAttribute) or not isinstance(end2, NodeAttribute):
+        raise NodeLinkError('given id does not reference a NodeAttribute')
+    return NodeLink.from_endpoints(end1, end2)
 
 
 @_register_item_type('mvAppItemType::NodeEditor')
@@ -70,14 +76,19 @@ class NodeEditor(PyGuiWidget):
     def get_all_links(self) -> Iterable[NodeLink]:
         """Get all linkages between any :class:`.NodeAttribute` objects in the editor."""
         for id1, id2 in dpgcore.get_links(self.id):
-            link = _get_link_from_ids(id1, id2)
-            if link is not None:
-                yield link
+            try:
+                yield _get_link_from_ids(id1, id2)
+            except NodeLinkError:
+                warn('dearpygui.core.get_links() produced an invalid link, this is likely due to a bug in DPG')
 
-    def add_link(self, end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
-        """Adds a link between two :class:`.NodeAttribute` objects."""
+    def add_link(self, end1: NodeAttribute, end2: NodeAttribute) -> NodeLink:
+        """Adds a link between two :class:`.NodeAttribute` objects.
+
+        Raises:
+            NodeLinkError: if exactly 1 input node and 1 output node was not provided.
+        """
         dpgcore.add_node_link(self.id, end1.id, end2.id)
-        return _get_link(end1, end2)
+        return NodeLink.from_endpoints(end1, end2)
 
     @overload
     def delete_link(self, link: NodeLink) -> None:
@@ -98,9 +109,10 @@ class NodeEditor(PyGuiWidget):
     def get_selected_links(self) -> Iterable[NodeLink]:
         """Get all links in the selected state."""
         for id1, id2 in dpgcore.get_selected_links(self.id):
-            link = _get_link_from_ids(id1, id2)
-            if link is not None:
-                yield link
+            try:
+                yield _get_link_from_ids(id1, id2)
+            except NodeLinkError:
+                warn('dearpygui.core.get_selected_links() produced an invalid link, this is likely due to a bug in DPG')
 
     def clear_link_selection(self) -> None:
         """Clears all links from being in the selection state."""
