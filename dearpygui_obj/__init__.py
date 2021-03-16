@@ -52,6 +52,20 @@ def get_item_by_id(name: str) -> PyGuiWidget:
     item_type = dpgcore.get_item_type(name) ## WARNING: this will segfault if name does not exist
     return _create_item_wrapper(name, item_type)
 
+def try_get_item_by_id(name: str) -> Optional[PyGuiWidget]:
+    """Retrieve an item using its unique name or ``None``.
+
+    Similar to :func:`.get_item_by_id`, but returns ``None`` if the wrapper object could not be retrieved."""
+    if not dpgcore.does_item_exist(name):
+        return None
+
+    item = _ITEM_LOOKUP.get(name)
+    if item is not None:
+        return item
+
+    item_type = dpgcore.get_item_type(name) ## WARNING: this will segfault if name does not exist
+    return _create_item_wrapper(name, item_type)
+
 def _create_item_wrapper(name: str, item_type: str) -> PyGuiWidget:
     ctor = _ITEM_TYPES.get(item_type, _default_ctor)
     if ctor is None:
@@ -297,6 +311,7 @@ class CallbackWrapper:
 
 __all__ = [
     'get_item_by_id',
+    'try_get_item_by_id',
     'iter_all_items',
     'iter_all_windows',
     'get_active_window',

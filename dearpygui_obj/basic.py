@@ -229,14 +229,9 @@ class Combo(PyGuiWidget, MutableSequence[str]):
     @ConfigProperty(key='height')
     def height_mode(self) -> ComboHeightMode:
         config = self.get_config()
-        if config.get('height_small'):
-            return ComboHeightMode.Small
-        if config.get('height_regular'):
-            return ComboHeightMode.Regular
-        if config.get('height_large'):
-            return ComboHeightMode.Large
-        if config.get('height_largest'):
-            return ComboHeightMode.Largest
+        for mode in ComboHeightMode:
+            if config.get(mode.value):
+                return mode
         warn('could not determine height_mode')
         return ComboHeightMode.Regular # its supposedly the default?
 
