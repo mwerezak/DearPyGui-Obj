@@ -112,6 +112,12 @@ class DrawCommand(ABC):
     def _draw_internal(self, draw_args: Mapping[str, Any]) -> None:
         """This should execute the draw using DearPyGui's ``draw_*()`` functions."""
 
+    def __eq__(self, other: Any) -> bool:
+        """Two commands are equal if they share the same canvas and have the same tag."""
+        if isinstance(other, DrawCommand):
+            return self.canvas == other.canvas and self.id == other.id
+        return super().__eq__(other)
+
     @property
     def id(self) -> str:
         return self._tag_id

@@ -18,6 +18,7 @@ PyGuiWidget
 .. autoclass:: PyGuiWidget
     :members:
     :undoc-members:
+    :special-members: __eq__
 
     **Item Existence**
 

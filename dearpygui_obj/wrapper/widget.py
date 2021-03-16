@@ -167,6 +167,12 @@ class PyGuiWidget(ABC):
     def __str__(self) -> str:
         return self.id
 
+    def __eq__(self, other: Any) -> bool:
+        """Two wrapper objects are considered equal if their IDs are equal."""
+        if isinstance(other, PyGuiWidget):
+            return self.id == other.id
+        return super().__eq__(other)
+
     ## Overrides
 
     @abstractmethod
