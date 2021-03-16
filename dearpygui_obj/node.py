@@ -16,7 +16,7 @@ __all__ = [
     'Node',
     'NodeAttribute',
     'NodeLink',
-    'LinkBehavior',
+    'NodeAttributeType',
     'input_attribute',
     'output_attribute',
     'static_attribute',
@@ -34,11 +34,11 @@ def _get_link(end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
     If exactly 1 input node and exactly 1 output node was not provided, returns ``None``."""
     endpoints = end1, end2
 
-    inputs = [ end for end in endpoints if end.link_behavior == LinkBehavior.Input ]
+    inputs = [end for end in endpoints if end.link_behavior == NodeAttributeType.Input]
     if len(inputs) != 1:
         return None
 
-    outputs = [ end for end in endpoints if end.link_behavior == LinkBehavior.Output ]
+    outputs = [end for end in endpoints if end.link_behavior == NodeAttributeType.Output]
     if len(inputs) != 1:
         return None
 
@@ -145,8 +145,7 @@ class Node(PyGuiWidget):
     def __exit__(self, exc_type, exc_val, exc_tb):
         dpgcore.end()
 
-# TODO rename to LinkType
-class LinkBehavior(Enum):
+class NodeAttributeType(Enum):
     """Specifies how a :class:`.NodeAttribute` will link to other nodes."""
     Input  = None  #: Input nodes may only link to Output nodes.
     Output = 'output'  #: Output nodes may only link to Input nodes.
@@ -154,40 +153,39 @@ class LinkBehavior(Enum):
 
 
 def input_attribute(*, name_id: str = None) -> NodeAttribute:
-    """Shortcut for ``NodeAttribute(LinkBehavior.Input)``"""
-    return NodeAttribute(LinkBehavior.Input, name_id=name_id)
+    """Shortcut for ``NodeAttribute(NodeAttributeType.Input)``"""
+    return NodeAttribute(NodeAttributeType.Input, name_id=name_id)
 
 def output_attribute(*, name_id: str = None) -> NodeAttribute:
-    """Shortcut for ``NodeAttribute(LinkBehavior.Output)``"""
-    return NodeAttribute(LinkBehavior.Output, name_id=name_id)
+    """Shortcut for ``NodeAttribute(NodeAttributeType.Output)``"""
+    return NodeAttribute(NodeAttributeType.Output, name_id=name_id)
 
 def static_attribute(*, name_id: str = None) -> NodeAttribute:
-    """Shortcut for ``NodeAttribute(LinkBehavior.Static)``"""
-    return NodeAttribute(LinkBehavior.Static, name_id=name_id)
+    """Shortcut for ``NodeAttribute(NodeAttributeType.Static)``"""
+    return NodeAttribute(NodeAttributeType.Static, name_id=name_id)
 
 
 @_register_item_type('mvAppItemType::NodeAttribute')
 class NodeAttribute(PyGuiWidget):
     """An attachment point for a :class:`.Node`."""
 
-    link_behavior: LinkBehavior
-
+    type: NodeAttributeType
     @ConfigProperty()
-    def link_behavior(self) -> LinkBehavior:
+    def type(self) -> NodeAttributeType:
         config = self.get_config()
-        for mode in LinkBehavior:
+        for mode in NodeAttributeType:
             if mode.value is not None and config.get(mode.value):
                 return mode
-        return LinkBehavior.Input
+        return NodeAttributeType.Input
 
-    @link_behavior.getconfig
-    def link_behavior(self, value: LinkBehavior):
+    @type.getconfig
+    def link_behavior(self, value: NodeAttributeType):
         return {
-            mode.value : (mode == value)  for mode in LinkBehavior if mode.value is not None
+            mode.value : (mode == value)  for mode in NodeAttributeType if mode.value is not None
         }
 
-    def __init__(self, link_behavior: LinkBehavior = LinkBehavior.Input, *, name_id: str = None, **config):
-        super().__init__(link_behavior=link_behavior, name_id=name_id, **config)
+    def __init__(self, type: NodeAttributeType = NodeAttributeType.Input, *, name_id: str = None, **config):
+        super().__init__(type=type, name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_node_attribute(self.id, **dpg_args)
