@@ -249,6 +249,7 @@ __all__ = [
     'Node',
     'NodeAttribute',
     'NodeLink',
+    'NodeLinkError',
     'NodeAttributeType',
     'input_attribute',
     'output_attribute',
