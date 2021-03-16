@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import string
 from typing import TYPE_CHECKING, Tuple, NamedTuple
 
 from dearpygui_obj.wrapper.widget import ConfigProperty
@@ -24,15 +25,16 @@ def color_from_hex(color: str) -> ColorRGBA:
     - "[#]RGB[A]" (hex shorthand format)
     - "[#]RRGGBB[AA]"
     """
-    color = color.lstrip('#')
 
-    strlen = len(color)
-    if strlen == 3 or strlen == 4:
-        values = (c*2 for c in color)  # hex shorthand format
-    elif strlen == 6 or strlen == 8:
-        values = (color[i:i+2] for i in range(0, strlen, 2))
+    # strip all non-hex characters from input
+    hex = ''.join(c for c in color if c in string.hexdigits)
+    hexlen = len(hex)
+    if hexlen == 3 or hexlen == 4:
+        values = (c*2 for c in hex)  # hex shorthand format
+    elif hexlen == 6 or hexlen == 8:
+        values = (hex[i:i+2] for i in range(0, hexlen, 2))
     else:
-        raise ValueError("invalid hex string length")
+        raise ValueError("unsupported hex color format")
 
     return color_from_rgba8(*(int(value, 16) for value in values))
 
