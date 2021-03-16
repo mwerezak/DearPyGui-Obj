@@ -14,4 +14,5 @@ API Reference
    layout
    containers
    drawing
+   nodes
    devtools

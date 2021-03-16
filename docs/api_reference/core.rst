@@ -15,6 +15,7 @@ Core Functionality
     stop_gui
     is_running
     get_item_by_id
+    try_get_item_by_id
     get_active_window
     iter_all_items
     iter_all_windows
@@ -42,6 +43,8 @@ Get/Iterate Items
 -----------------
 
 .. autofunction:: get_item_by_id
+
+.. autofunction:: try_get_item_by_id
 
 .. autofunction:: get_active_window
 

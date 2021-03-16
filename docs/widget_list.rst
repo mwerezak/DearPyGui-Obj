@@ -70,6 +70,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.input.ColorEdit
     dearpygui_obj.input.ColorPicker
 
+
 .. rubric:: Layout
 
 .. autosummary:: 
@@ -84,6 +85,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.layout.ChildView
     dearpygui_obj.layout.Dummy
 
+
 .. rubric:: Containers
 
 .. autosummary:: 
@@ -97,12 +99,24 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.containers.Menu
     dearpygui_obj.containers.MenuItem
 
+
 .. rubric:: Drawing
 
 .. autosummary:: 
     :nosignatures:
 
     dearpygui_obj.drawing.DrawingCanvas
+
+
+.. rubric:: Node Editor
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.node.NodeEditor
+    dearpygui_obj.node.Node
+    dearpygui_obj.node.NodeAttribute
+
 
 .. rubric:: Developer Tool Windows
 

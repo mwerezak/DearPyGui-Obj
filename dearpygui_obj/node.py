@@ -11,22 +11,11 @@ from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
 if TYPE_CHECKING:
     from typing import Optional, Iterable, List
 
-__all__ = [
-    'NodeEditor',
-    'Node',
-    'NodeAttribute',
-    'NodeLink',
-    'NodeAttributeType',
-    'input_attribute',
-    'output_attribute',
-    'static_attribute',
-]
-
 
 class NodeLink(NamedTuple):
     """Holds info about a link between two :class:`.NodeAttribute` objects."""
-    input: NodeAttribute
-    output: NodeAttribute
+    input: NodeAttribute   #: The input end of the link.
+    output: NodeAttribute  #: The output end of the link.
 
 def _get_link(end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
     """Creates a NodeLink from an input and an output node.
@@ -78,13 +67,13 @@ class NodeEditor(PyGuiWidget):
         return _get_link(end1, end2)
 
     @overload
-    def delete_link(self, end1: NodeAttribute, end2: NodeAttribute) -> None:
-        ...
-    @overload
     def delete_link(self, link: NodeLink) -> None:
         ...
+    @overload
+    def delete_link(self, end1: NodeAttribute, end2: NodeAttribute) -> None:
+        ...
     def delete_link(self, end1, end2 = None) -> None:
-        """Deletes a link between two :class:`.NodeAttribute` objects if it exists."""
+        """Deletes a link between two :class:`.NodeAttribute` objects if a link exists."""
         if end2 is None:
             link = end1
             dpgcore.delete_node_link(self.id, link.input.id, link.output.id)
@@ -145,25 +134,24 @@ class Node(PyGuiWidget):
     def __exit__(self, exc_type, exc_val, exc_tb):
         dpgcore.end()
 
+
 class NodeAttributeType(Enum):
     """Specifies how a :class:`.NodeAttribute` will link to other nodes."""
     Input  = None  #: Input nodes may only link to Output nodes.
     Output = 'output'  #: Output nodes may only link to Input nodes.
     Static = 'static'  #: Static nodes do not link. They are still useful as containers to place widgets inside a node.
 
-
 def input_attribute(*, name_id: str = None) -> NodeAttribute:
-    """Shortcut for ``NodeAttribute(NodeAttributeType.Input)``"""
+    """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Input)``"""
     return NodeAttribute(NodeAttributeType.Input, name_id=name_id)
 
 def output_attribute(*, name_id: str = None) -> NodeAttribute:
-    """Shortcut for ``NodeAttribute(NodeAttributeType.Output)``"""
+    """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Output)``"""
     return NodeAttribute(NodeAttributeType.Output, name_id=name_id)
 
 def static_attribute(*, name_id: str = None) -> NodeAttribute:
-    """Shortcut for ``NodeAttribute(NodeAttributeType.Static)``"""
+    """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Static)``"""
     return NodeAttribute(NodeAttributeType.Static, name_id=name_id)
-
 
 @_register_item_type('mvAppItemType::NodeAttribute')
 class NodeAttribute(PyGuiWidget):
@@ -179,7 +167,7 @@ class NodeAttribute(PyGuiWidget):
         return NodeAttributeType.Input
 
     @type.getconfig
-    def link_behavior(self, value: NodeAttributeType):
+    def type(self, value: NodeAttributeType):
         return {
             mode.value : (mode == value)  for mode in NodeAttributeType if mode.value is not None
         }
@@ -207,3 +195,15 @@ class NodeAttribute(PyGuiWidget):
     def is_static(self) -> bool:
         """Shortcut for ``self.type == NodeAttributeType.Static``."""
         return self.type == NodeAttributeType.Static
+
+
+__all__ = [
+    'NodeEditor',
+    'Node',
+    'NodeAttribute',
+    'NodeLink',
+    'NodeAttributeType',
+    'input_attribute',
+    'output_attribute',
+    'static_attribute',
+]

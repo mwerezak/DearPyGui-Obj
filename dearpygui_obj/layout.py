@@ -38,7 +38,7 @@ class HAlignNext(PyGuiWidget):
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
 def group_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup:
-    """Shortcut for ``LayoutGroup(horizontal=True)``"""
+    """Shortcut constructor for ``LayoutGroup(horizontal=True)``"""
     return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id)
 
 @_register_item_type('mvAppItemType::Group')

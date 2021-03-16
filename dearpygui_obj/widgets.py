@@ -70,6 +70,17 @@ from dearpygui_obj.drawing import (
     DrawingCanvas,
 )
 
+from dearpygui_obj.node import (
+    NodeEditor,
+    Node,
+    NodeAttribute,
+    NodeLink,
+    NodeAttributeType,
+    input_attribute,
+    output_attribute,
+    static_attribute,
+)
+
 from dearpygui_obj.devtools import (
     DebugWindow,
     MetricsWindow,
@@ -140,6 +151,15 @@ __all__ = [
     'Dummy',
 
     'DrawingCanvas',
+
+    'NodeEditor',
+    'Node',
+    'NodeAttribute',
+    'NodeLink',
+    'NodeAttributeType',
+    'input_attribute',
+    'output_attribute',
+    'static_attribute',
 
     'DebugWindow',
     'MetricsWindow',
