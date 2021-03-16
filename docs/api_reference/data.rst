@@ -3,8 +3,8 @@ Data
 
 .. automodule:: dearpygui_obj.data
 
-.. .. contents:: Contents
-..     :local:
+.. contents:: Contents
+    :local:
 
 .. rubric:: Summary
 
@@ -35,8 +35,14 @@ Colors
     :undoc-members:
 
 
-Draw Coords
------------
+Predefined Colors
+^^^^^^^^^^^^^^^^^
+
+A selection of predefined color values are available from the :mod:`dearpygui_obj.colors` module.
+
+
+DrawPos
+-------
 
 .. autodata:: Pos2D
 
