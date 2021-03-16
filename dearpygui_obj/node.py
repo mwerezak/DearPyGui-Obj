@@ -19,6 +19,11 @@ class NodeLink(NamedTuple):
     input: NodeAttribute   #: The input end of the link.
     output: NodeAttribute  #: The output end of the link.
 
+
+## While I personally think it is better design to raise an exception here than return None,
+## (so that the user can expect they will always have a NodeLink after a successful call to add_link)
+## it doesn't seem appropriate to raise an exception for an operation that does not raise an exception
+## in DPG. So lets generate warnings instead so at least the user can tell what went wrong.
 def _get_link(end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
     endpoints = end1, end2
     input, output = None, None
@@ -46,7 +51,7 @@ def _get_link_from_ids(id1: str, id2: str) -> Optional[NodeLink]:
     end1 = try_get_item_by_id(id1)
     end2 = try_get_item_by_id(id2)
     if not isinstance(end1, NodeAttribute) or not isinstance(end2, NodeAttribute):
-        warn('id does not reference a node attribute')
+        warn('item ID does not reference a node attribute')
         return None
     return _get_link(end1, end2)
 
