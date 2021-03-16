@@ -25,7 +25,7 @@ class NodeLink(NamedTuple):
 def _get_link(end1: NodeAttribute, end2: NodeAttribute) -> Optional[NodeLink]:
     endpoints = end1, end2
     input, output = None, None
-    for i, end in enumerate(list(endpoints)):
+    for end in endpoints:
         if end.is_input():
             if input is not None:
                 warn('attempt to link two node inputs')
