@@ -1,5 +1,5 @@
-Wrapper Object System
-=====================
+Widget Objects
+==============
 
 .. automodule:: dearpygui_obj.wrapper.widget
 
@@ -20,7 +20,15 @@ PyGuiWidget
     :undoc-members:
     :special-members: __eq__
 
-    **Item Existence**
+    **Constructors**
+
+    .. autosummary::
+        :nosignatures:
+
+        add_to
+        add_before
+
+    **ID and Existence**
 
     .. autosummary::
         :nosignatures:
@@ -58,7 +66,6 @@ PyGuiWidget
         is_container
         iter_children
         add_child
-        create_child
 
     **Data and Values**
 
@@ -84,7 +91,6 @@ PyGuiWidget
         is_visible
         is_hovered
         is_focused
-
 
     .. automethod:: _setup_add_widget
     .. automethod:: _setup_preexisting

@@ -98,6 +98,11 @@ class PyGuiWidget(ABC):
     You can find out what config properties there are using the
     :meth:`get_config_properties` method.
 
+    When non-window widgets are created they are added to a container based on context. This allows
+    for easy declarative-style GUI creation. To create objects belonging to specific parent
+    containers in a more OOP-style manner, you can use the :meth:`add_to` and :meth:`add_before`
+    constructor methods.
+
     It's important that PyGuiWidget and subclasses can be instantiated with only the **name_id**
     argument being passed to ``__init__``. This allows :func:`.get_item_by_id` to work.
 
@@ -287,6 +292,24 @@ class PyGuiWidget(ABC):
         """Attempt to place the item before another item, re-parenting it if necessary."""
         dpgcore.move_item(self.id, parent=other.get_parent().id, before=other.id)
 
+    @classmethod
+    def add_to(cls, parent: PyGuiWidget, *args: Any, **kwargs: Any) -> Any:
+        """Create a widget and add it to the given *parent* instead of using context.
+
+        Returns:
+            the newly created widget.
+        """
+        return cls(*args, parent=parent.id, **kwargs)
+
+    @classmethod
+    def add_before(cls, sibling: PyGuiWidget, *args: Any, **kwargs: Any) -> Any:
+        """Create a widget and insert it before the given *sibling* widget.
+
+        Returns:
+            the newly created widget.
+        """
+        return cls(*args, parent=sibling.get_parent().id, before=sibling.id, **kwargs)
+
     ## Containers
 
     def is_container(self) -> bool:
@@ -304,12 +327,6 @@ class PyGuiWidget(ABC):
     def add_child(self, child: PyGuiWidget) -> None:
         """Alternative to :meth:`set_parent`."""
         dpgcore.move_item(child.id, parent=self.id)
-
-    def create_child(self, child_type: Type[PyGuiWidget], *args, **kwargs) -> PyGuiWidget:
-        """Add a child item after the container has already been setup.
-
-        Not all child types are supported. Which ones are is entirely up to DearPyGui."""
-        return child_type(*args, parent=self.id, **kwargs)
 
     ## Data and Values
 
