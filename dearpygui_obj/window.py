@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type, wrap_callback
@@ -146,6 +146,20 @@ class Window(PyGuiWidget):
         """Set resized callback, can be used as a decorator."""
         dpgcore.set_resize_callback(wrap_callback(callback), handler=self.id)
         return callback
+
+    ## Not sure how much I like this... perhaps a mixin class could be used instead?
+    @classmethod
+    def add_to(cls, parent: PyGuiWidget, *args: Any, **kwargs: Any) -> Any:
+        """Adding Windows to a container is not supported.
+        Invoking this method will always raise a :class:`TypeError`."""
+        raise TypeError('not supported.')
+
+    @classmethod
+    def add_before(cls, sibling: PyGuiWidget, *args: Any, **kwargs: Any) -> Any:
+        """Adding Windows to a container is not supported.
+        Invoking this method will always raise a :class:`TypeError`."""
+        raise TypeError('not supported.')
+
 
 ## Menu Bars and Menus
 
