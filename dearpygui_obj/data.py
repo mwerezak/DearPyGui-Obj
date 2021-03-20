@@ -8,7 +8,7 @@ from dearpygui_obj.wrapper.drawing import DrawProperty, DrawCommand
 
 if TYPE_CHECKING:
     from typing import Any, List, Iterable
-    from dearpygui_obj.wrapper.widget import PyGuiWidget, ItemConfigData
+    from dearpygui_obj.wrapper.widget import Widget, ItemConfigData
     from dearpygui_obj.wrapper.drawing import DrawConfigData
 
 ## Colors
@@ -58,15 +58,15 @@ class ColorRGBA(NamedTuple):
 
 
 class ConfigPropertyColorRGBA(ConfigProperty):
-    def get_value(self, instance: PyGuiWidget) -> Any:
+    def get_value(self, instance: Widget) -> Any:
         return dpg_import_color(instance.get_config()[self.key])
-    def get_config(self, instance: PyGuiWidget, value: ColorRGBA) -> ItemConfigData:
+    def get_config(self, instance: Widget, value: ColorRGBA) -> ItemConfigData:
         return {self.key : dpg_export_color(value)}
 
 class DrawPropertyColorRGBA(DrawProperty):
-    def get_value(self, instance: PyGuiWidget) -> Any:
+    def get_value(self, instance: Widget) -> Any:
         return dpg_import_color(instance.get_config()[self.key])
-    def get_config(self, instance: PyGuiWidget, value: ColorRGBA) -> DrawConfigData:
+    def get_config(self, instance: Widget, value: ColorRGBA) -> DrawConfigData:
         return {self.key : dpg_export_color(value)}
 
 

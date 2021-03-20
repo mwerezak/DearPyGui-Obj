@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ConfigProperty
 
 if TYPE_CHECKING:
     pass
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 ## Tree Nodes
 
 @_register_item_type('mvAppItemType::TreeNode')
-class TreeNode(PyGuiWidget):
+class TreeNode(Widget):
     """A collapsing container with a label."""
 
     value: bool  #: ``True`` if the header is uncollapsed, otherwise ``False``.
@@ -57,7 +57,7 @@ class TreeNodeHeader(TreeNode):
 ## Tab Container
 
 @_register_item_type('mvAppItemType::TabBar')
-class TabBar(PyGuiWidget):
+class TabBar(Widget):
     """A container that allows switching between different tabs.
 
     Note:
@@ -87,7 +87,7 @@ class TabOrderMode(Enum):
     Trailing    = 'trailing'    #: Enforce the tab position to the right of the tab bar (before the scrolling buttons)
 
 @_register_item_type('mvAppItemType::TabItem')
-class TabItem(PyGuiWidget):
+class TabItem(Widget):
     """A container whose contents will be displayed when selected in a :class:`.TabBar`.
 
     Note:
@@ -134,7 +134,7 @@ class TabItem(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::TabButton')
-class TabButton(PyGuiWidget):
+class TabButton(Widget):
     """A button that can be added to a :class:`TabBar`.
 
     Note:
@@ -177,7 +177,7 @@ class TabButton(PyGuiWidget):
 ## Menus and Menu Items
 
 @_register_item_type('mvAppItemType::Menu')
-class Menu(PyGuiWidget):
+class Menu(Widget):
     """A menu containing :class:`.MenuItem` objects.
 
     While they are often found inside a :class:`.MenuBar`, they are actually a general container
@@ -200,7 +200,7 @@ class Menu(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::MenuItem')
-class MenuItem(PyGuiWidget):
+class MenuItem(Widget):
     """An item for a :class:`.Menu`."""
 
     label: str = ConfigProperty()
@@ -218,6 +218,11 @@ class MenuItem(PyGuiWidget):
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_menu_item(self.id, **dpg_args)
+
+
+## Popups
+
+
 
 
 __all__ = [

@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Sequence
 
 @_register_item_type('mvAppItemType::Spacing')
-class VSpacing(PyGuiWidget):
+class VSpacing(Widget):
     """Adds vertical spacing."""
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
@@ -24,7 +24,7 @@ class VSpacing(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::SameLine')
-class HAlignNext(PyGuiWidget):
+class HAlignNext(Widget):
     """Places a widget on the same line as the previous widget.
     Can also be used for horizontal spacing."""
 
@@ -42,7 +42,7 @@ def group_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup
     return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id)
 
 @_register_item_type('mvAppItemType::Group')
-class LayoutGroup(PyGuiWidget):
+class LayoutGroup(Widget):
     """Grouped widgets behave as a single unit when acted on by other layout widgets.
 
     They can optionally have their contents flow horizontally instead of vertically.
@@ -64,7 +64,7 @@ class LayoutGroup(PyGuiWidget):
         dpgcore.end()
 
 @_register_item_type('mvAppItemType::Indent')
-class LayoutIndent(PyGuiWidget):
+class LayoutIndent(Widget):
     """Adds an indent to contained items."""
 
     offset: float = ConfigProperty()
@@ -83,7 +83,7 @@ class LayoutIndent(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::ManagedColumns')
-class LayoutColumns(PyGuiWidget):
+class LayoutColumns(Widget):
     """Places contents into columns.
 
     Each new widget added will be placed in the next column, wrapping around to the start."""
@@ -128,7 +128,7 @@ class LayoutColumns(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::Child')
-class ChildView(PyGuiWidget):
+class ChildView(Widget):
     """Adds an embedded child window with optional scollbars."""
 
     border: bool = ConfigProperty()
@@ -153,7 +153,7 @@ class ChildView(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::Dummy')
-class Dummy(PyGuiWidget):
+class Dummy(Widget):
     """Adds a spacer or 'dummy' widget."""
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)

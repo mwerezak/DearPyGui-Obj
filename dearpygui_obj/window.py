@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type, wrap_callback
-from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
@@ -76,7 +76,7 @@ class MainWindow:
 
 
 @_register_item_type('mvAppItemType::Window')
-class Window(PyGuiWidget):
+class Window(Widget):
     """Creates a new window."""
 
     label: str = ConfigProperty()
@@ -149,13 +149,13 @@ class Window(PyGuiWidget):
 
     ## Not sure how much I like this... perhaps a mixin class could be used instead?
     @classmethod
-    def add_to(cls, parent: PyGuiWidget, *args: Any, **kwargs: Any) -> Any:
+    def add_to(cls, parent: Widget, *args: Any, **kwargs: Any) -> Any:
         """Adding Windows to a container is not supported.
         Invoking this method will always raise a :class:`TypeError`."""
         raise TypeError('not supported.')
 
     @classmethod
-    def add_before(cls, sibling: PyGuiWidget, *args: Any, **kwargs: Any) -> Any:
+    def add_before(cls, sibling: Widget, *args: Any, **kwargs: Any) -> Any:
         """Adding Windows to a container is not supported.
         Invoking this method will always raise a :class:`TypeError`."""
         raise TypeError('not supported.')
@@ -164,7 +164,7 @@ class Window(PyGuiWidget):
 ## Menu Bars and Menus
 
 @_register_item_type('mvAppItemType::MenuBar')
-class MenuBar(PyGuiWidget):
+class MenuBar(Widget):
     """A menu bar that can be added to a :class:`.Window`."""
 
     def __init__(self, *, name_id: str = None, **config):

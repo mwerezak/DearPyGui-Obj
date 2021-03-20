@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, MutableSequence
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA
-from dearpygui_obj.wrapper.widget import PyGuiWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Iterable, Sequence, List
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 ## Basic Content
 
 @_register_item_type('mvAppItemType::Text')
-class Text(PyGuiWidget):
+class Text(Widget):
     """A basic element that displays some text."""
 
     value: str  #: The text to display.
@@ -37,10 +37,10 @@ class Text(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::LabelText')
-class LabelText(PyGuiWidget):
+class LabelText(Widget):
     """Display text with a label.
 
-    Useful for output values when used with a :attr:`~.PyGuiWidget.data_source`.
+    Useful for output values when used with a :attr:`~.Widget.data_source`.
     The text is linked to the data source, while the label remains unchanged."""
 
     value: str  #: The text to display (separate from the :attr:`label`).
@@ -56,7 +56,7 @@ class LabelText(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::Separator')
-class Separator(PyGuiWidget):
+class Separator(Widget):
     """Adds a horizontal line."""
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
@@ -74,7 +74,7 @@ class ButtonArrow(Enum):
     Down    = 3
 
 @_register_item_type('mvAppItemType::Button')
-class Button(PyGuiWidget):
+class Button(Widget):
     """A simple button."""
 
     label: str = ConfigProperty()
@@ -110,7 +110,7 @@ class Button(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::Checkbox')
-class Checkbox(PyGuiWidget):
+class Checkbox(Widget):
     """Simple checkbox widget."""
 
     value: bool  #: ``True`` if the checkbox is checked, otherwise ``False``.
@@ -124,7 +124,7 @@ class Checkbox(PyGuiWidget):
         dpgcore.add_checkbox(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::Selectable')
-class Selectable(PyGuiWidget):
+class Selectable(Widget):
     """Text that can be selected, functionally similar to a checkbox."""
 
     value: bool  #: ``True`` if the item is selected, otherwise ``False``.
@@ -141,7 +141,7 @@ class Selectable(PyGuiWidget):
 
 
 @_register_item_type('mvAppItemType::RadioButtons')
-class RadioButtons(PyGuiWidget, MutableSequence[str]):
+class RadioButtons(Widget, MutableSequence[str]):
     """A set of radio buttons.
 
     This widget can be used as a mutable sequence of labels. Changing the sequence will
@@ -200,7 +200,7 @@ class ComboHeightMode(Enum):
     Largest = 'height_largest' #: As many items visible as possible.
 
 @_register_item_type('mvAppItemType::Combo')
-class Combo(PyGuiWidget, MutableSequence[str]):
+class Combo(Widget, MutableSequence[str]):
     """A combo box (drop down).
 
     Unlike :class:`.RadioButtons`, the :attr:`value` of a Combo is one of the item strings,
@@ -272,7 +272,7 @@ class Combo(PyGuiWidget, MutableSequence[str]):
         self.set_config(items=items)
 
 @_register_item_type('mvAppItemType::Listbox')
-class ListBox(PyGuiWidget, MutableSequence[str]):
+class ListBox(Widget, MutableSequence[str]):
     """A scrollable box containing a selection of items."""
 
     value: int  #: The **index** of the selected item.
@@ -322,7 +322,7 @@ class ListBox(PyGuiWidget, MutableSequence[str]):
 
 
 @_register_item_type('mvAppItemType::ProgressBar')
-class ProgressBar(PyGuiWidget):
+class ProgressBar(Widget):
     """A progress bar."""
 
     value: float  #: The progress to display, between ``0.0`` and ``1.0``.

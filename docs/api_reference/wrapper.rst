@@ -8,14 +8,14 @@ Widget Objects
 .. autosummary:: 
     :nosignatures:
 
-    PyGuiWidget
+    Widget
     DefaultWidget
     ConfigProperty
 
-PyGuiWidget
+Widget
 -----------
 
-.. autoclass:: PyGuiWidget
+.. autoclass:: Widget
     :members:
     :undoc-members:
     :special-members: __eq__
