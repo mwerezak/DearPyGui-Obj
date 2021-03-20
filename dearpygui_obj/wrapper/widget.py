@@ -282,7 +282,10 @@ class Widget(ABC):
 
     ## Other properties and status
 
+    #: The content of the tooltip that is shown when the widget is hovered.
+    #: To remove the tooltip, assign an empty string.
     tooltip: str = ConfigProperty(key='tip')
+
     enabled: bool = ConfigProperty()  #: If not enabled, display greyed out text and disable interaction.
 
     @property
