@@ -28,7 +28,8 @@ class StatusFlags(LayoutGroup):
 
         self.update()
 
-    def _interpolate_colors(self, from_color, to_color, step):
+    @staticmethod
+    def _interpolate_colors(from_color, to_color, step):
         values = (
             (1.0 - step)*from_value + step*to_value
             for from_value, to_value in zip(from_color, to_color)
@@ -73,11 +74,11 @@ if __name__ == '__main__':
         slider_status = StatusFlags(slider)
 
     @win.on_close
-    def on_close(sender, data):
+    def on_close():
         stop_gui()
 
     @set_render_callback
-    def render(sender, data):
+    def render():
         btn_status.update()
         textbox_status.update()
         slider_status.update()

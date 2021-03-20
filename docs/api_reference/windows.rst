@@ -4,16 +4,16 @@ Windows
 .. automodule:: dearpygui_obj.window
 
 .. contents:: Contents
-    :local:
+	:local:
 
 .. rubric:: Summary
 
 .. autosummary:: 
-    :nosignatures:
+	:nosignatures:
 
-    MainWindow
-    Window
-    MenuBar
+	MainWindow
+	Window
+	MenuBar
 
 
 Main Window
@@ -28,12 +28,12 @@ Window
 ------
 
 .. autoclass:: Window
-    :members:
-    :undoc-members:
-    :special-members: __exit__
+	:members:
+	:undoc-members:
+	:special-members: __exit__
 
 
 .. autoclass:: MenuBar
-    :members:
-    :undoc-members:
-    :special-members: __exit__
+	:members:
+	:undoc-members:
+	:special-members: __exit__

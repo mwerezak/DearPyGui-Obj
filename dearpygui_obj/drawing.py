@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Tuple, Optional, Any
+from typing import TYPE_CHECKING
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import _register_item_type
@@ -8,6 +8,7 @@ from dearpygui_obj.wrapper.widget import Widget, ItemWidget
 from dearpygui_obj.wrapper.drawing import DrawCommand, DrawProperty
 
 if TYPE_CHECKING:
+    from typing import Any, Optional, Tuple, Sequence
     from dearpygui_obj.data import Pos2D, ColorRGBA
 
 
