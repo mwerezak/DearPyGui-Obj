@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import (
@@ -280,50 +280,6 @@ class Widget(ABC):
         """Alternative to :meth:`set_parent`."""
         dpgcore.move_item(child.id, parent=self.id)
 
-    ## Data and Values
-
-    data_source: DataValue
-    @ConfigProperty(key='source')
-    def data_source(self) -> DataValue:
-        """Get or set the data source.
-
-        When retrieved, a :class:`.DataValue` referencing the data source will be produced.
-
-        If a widget object or a :class:`.DataValue` is assigned as the data source, this widget will
-        become linked to the provided source. Otherwise, if ``None`` is assigned, this widget will
-        have its own value."""
-        source_id = self.get_config().get('source') or self.id
-        return DataValue(source_id)
-
-    @data_source.getconfig
-    def data_source(self, source: Optional[Any]):
-        # accept plain string in addition to GuiData
-        return {'source' : str(source) if source is not None else ''}
-
-    value: None
-    @property
-    def value(self) -> Any:
-        """Get or set the widget's value.
-
-        The widget's value is determined by DearPyGui and depends on the widget's type.
-        Not all widgets have a value in which case assigning this property will do nothing and
-        always produce ``None``.
-
-        Widgets that **do** support a value should override the value type annotation to
-        indicate support for this property, even if the provided annotation is :data:`~typing.Any`."""
-        return self._get_value()
-
-    @value.setter
-    def value(self, v: Any) -> None:
-        self._set_value(v)
-
-    # these are here to make it easier for subclasses to override the value property.
-    def _get_value(self) -> Any:
-        return self.data_source.value
-
-    def _set_value(self, v: Any) -> None:
-        self.data_source.value = v
-
     ## Other properties and status
 
     tooltip: str = ConfigProperty(key='tip')
@@ -461,6 +417,62 @@ class ItemWidget(ABC):
             the newly created widget.
         """
         return cls(*args, parent=sibling.get_parent().id, before=sibling.id, **kwargs)
+
+
+_TValue = TypeVar('_TValue')
+
+class ValueWidget(ABC, Generic[_TValue]):
+    """Mixin for all widgets that use the DPG value system.
+
+    The use of the :attr:`value` property depends on the specific kind of widget.
+
+    ValueWidgets can be linked together or to a :class:`.DataValue` by setting the
+    :attr:`data_source` config property.
+    """
+
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        ...
+
+    @abstractmethod
+    def get_config(self) -> ItemConfigData:
+        ...
+
+    data_source: DataValue
+    @ConfigProperty(key='source')
+    def data_source(self) -> DataValue:
+        """Get or set the data source.
+
+        When retrieved, a :class:`.DataValue` referencing the data source will be produced.
+
+        If a widget object or a :class:`.DataValue` is assigned as the data source, this widget will
+        become linked to the provided source. Otherwise, if ``None`` is assigned, this widget will
+        have its own value."""
+        source_id = self.get_config().get('source') or self.id
+        return DataValue(source_id)
+
+    @data_source.getconfig
+    def data_source(self, source: Optional[Any]):
+        # accept plain string in addition to GuiData
+        return {'source' : str(source) if source is not None else ''}
+
+    value: _TValue
+    @property
+    def value(self) -> _TValue:
+        """Get or set the widget's value."""
+        return self._get_value()
+
+    @value.setter
+    def value(self, v: _TValue) -> None:
+        self._set_value(v)
+
+    # these are here to make it easier for subclasses to override the value property.
+    def _get_value(self) -> _TValue:
+        return self.data_source.value
+
+    def _set_value(self, v: _TValue) -> None:
+        self.data_source.value = v
 
 
 class DefaultWidget(Widget, ItemWidget):

@@ -3,6 +3,9 @@ Widget Objects
 
 .. automodule:: dearpygui_obj.wrapper.widget
 
+.. contents:: Contents
+    :local:
+
 .. rubric:: Summary
 
 .. autosummary:: 
@@ -49,14 +52,6 @@ Widget
         iter_children
         add_child
 
-    **Data and Values**
-
-    .. autosummary::
-        :nosignatures:
-
-        data_source
-        value
-
     **Other Properties and Status**
 
     .. autosummary::
@@ -90,6 +85,13 @@ ItemWidget
     :members:
     :undoc-members:
 
+
+ValueWidget
+-----------
+
+.. autoclass:: ValueWidget
+    :members:
+    :undoc-members:
 
 ConfigProperty
 --------------

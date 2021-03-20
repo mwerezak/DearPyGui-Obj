@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, MutableSequence
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Iterable, Sequence, List
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 ## Basic Content
 
 @_register_item_type('mvAppItemType::Text')
-class Text(Widget, ItemWidget):
+class Text(Widget, ItemWidget, ValueWidget[str]):
     """A basic element that displays some text."""
 
     value: str  #: The text to display.
@@ -37,7 +37,7 @@ class Text(Widget, ItemWidget):
 
 
 @_register_item_type('mvAppItemType::LabelText')
-class LabelText(Widget, ItemWidget):
+class LabelText(Widget, ItemWidget, ValueWidget[str]):
     """Display text with a label.
 
     Useful for output values when used with a :attr:`~.Widget.data_source`.
@@ -110,7 +110,7 @@ class Button(Widget, ItemWidget):
 
 
 @_register_item_type('mvAppItemType::Checkbox')
-class Checkbox(Widget, ItemWidget):
+class Checkbox(Widget, ItemWidget, ValueWidget[bool]):
     """Simple checkbox widget."""
 
     value: bool  #: ``True`` if the checkbox is checked, otherwise ``False``.
@@ -124,7 +124,7 @@ class Checkbox(Widget, ItemWidget):
         dpgcore.add_checkbox(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::Selectable')
-class Selectable(Widget, ItemWidget):
+class Selectable(Widget, ItemWidget, ValueWidget[bool]):
     """Text that can be selected, functionally similar to a checkbox."""
 
     value: bool  #: ``True`` if the item is selected, otherwise ``False``.
@@ -141,7 +141,7 @@ class Selectable(Widget, ItemWidget):
 
 
 @_register_item_type('mvAppItemType::RadioButtons')
-class RadioButtons(Widget, ItemWidget, MutableSequence[str]):
+class RadioButtons(Widget, ItemWidget, ValueWidget[int], MutableSequence[str]):
     """A set of radio buttons.
 
     This widget can be used as a mutable sequence of labels. Changing the sequence will
@@ -200,7 +200,7 @@ class ComboHeightMode(Enum):
     Largest = 'height_largest' #: As many items visible as possible.
 
 @_register_item_type('mvAppItemType::Combo')
-class Combo(Widget, ItemWidget, MutableSequence[str]):
+class Combo(Widget, ItemWidget, ValueWidget[str], MutableSequence[str]):
     """A combo box (drop down).
 
     Unlike :class:`.RadioButtons`, the :attr:`value` of a Combo is one of the item strings,
@@ -272,7 +272,7 @@ class Combo(Widget, ItemWidget, MutableSequence[str]):
         self.set_config(items=items)
 
 @_register_item_type('mvAppItemType::Listbox')
-class ListBox(Widget, ItemWidget, MutableSequence[str]):
+class ListBox(Widget, ItemWidget, ValueWidget[int], MutableSequence[str]):
     """A scrollable box containing a selection of items."""
 
     value: int  #: The **index** of the selected item.
@@ -322,7 +322,7 @@ class ListBox(Widget, ItemWidget, MutableSequence[str]):
 
 
 @_register_item_type('mvAppItemType::ProgressBar')
-class ProgressBar(Widget, ItemWidget):
+class ProgressBar(Widget, ItemWidget, ValueWidget[float]):
     """A progress bar."""
 
     value: float  #: The progress to display, between ``0.0`` and ``1.0``.

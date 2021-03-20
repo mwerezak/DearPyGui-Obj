@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget, ConfigProperty
 
 if TYPE_CHECKING:
     pass
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 ## Tree Nodes
 
 @_register_item_type('mvAppItemType::TreeNode')
-class TreeNode(Widget, ItemWidget):
+class TreeNode(Widget, ItemWidget, ValueWidget[bool]):
     """A collapsing container with a label."""
 
     value: bool  #: ``True`` if the header is uncollapsed, otherwise ``False``.
