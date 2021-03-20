@@ -222,7 +222,57 @@ class MenuItem(Widget, ItemWidget):
 
 ## Popups
 
+class PopupInteraction(Enum):
+    """Specifies the trigger for a :class:`.Popup`."""
+    MouseLeft   = 0
+    MouseRight  = 1
+    MouseMiddle = 2
+    MouseX1     = 3
+    MouseX2     = 4
 
+@_register_item_type('mvAppItemType::Popup')
+class Popup(Widget):
+    """A container that appears when a :class:`.ItemWidget` is interacted with."""
+
+    trigger: PopupInteraction  #: The interaction that will trigger the popup.
+    @ConfigProperty(key='mousebutton')
+    def trigger(self) -> PopupInteraction:
+        config = self.get_config()
+        return PopupInteraction(config['mousebutton'])
+
+    @trigger.getconfig
+    def trigger(self, trigger: PopupInteraction):
+        return {'mousebutton' : trigger.value}
+
+    #: Prevent the user from interacting with other windows until the popup is closed.
+    modal: bool = ConfigProperty()
+
+    def __init__(self, parent: ItemWidget, *, name_id: str = None, **config):
+        self._popup_parent = parent
+        super().__init__(name_id=name_id, **config)
+
+    def __enter__(self) -> Popup:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        dpgcore.end()
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_popup(self._popup_parent.id, self.id, **dpg_args)
+
+    parent: ItemWidget
+    @property
+    def parent(self) -> ItemWidget:
+        """The :class:`.ItemWidget` that the popup is attached to. Cannot be changed."""
+        return self._popup_parent
+
+    def close(self) -> None:
+        """Closes the popup.
+
+        Node:
+            Modal popups cannot be closed except by using this method.
+        """
+        dpgcore.close_popup(self.id)
 
 
 __all__ = [

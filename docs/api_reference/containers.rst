@@ -19,6 +19,8 @@ Containers
     TabOrderMode
     Menu
     MenuItem
+    Popup
+    PopupInteraction
 
 
 Tree Nodes
@@ -71,5 +73,19 @@ Menus
     :special-members: __exit__
 
 .. autoclass:: MenuItem
+    :members:
+    :undoc-members:
+
+
+Popups
+------
+
+.. autoclass:: Popup
+    :members:
+    :undoc-members:
+    :special-members: __exit__
+
+
+.. autoclass:: PopupInteraction
     :members:
     :undoc-members:
