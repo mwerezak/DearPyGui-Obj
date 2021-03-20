@@ -9,24 +9,17 @@ Widget Objects
     :nosignatures:
 
     Widget
+    ItemWidget
     DefaultWidget
     ConfigProperty
 
 Widget
------------
+------
 
 .. autoclass:: Widget
     :members:
     :undoc-members:
     :special-members: __eq__
-
-    **Constructors**
-
-    .. autosummary::
-        :nosignatures:
-
-        add_to
-        add_before
 
     **ID and Existence**
 
@@ -46,17 +39,6 @@ Widget
         get_callback
         set_callback
         callback_data
-
-    **Parent/Children**
-
-    .. autosummary::
-        :nosignatures:
-
-        get_parent
-        set_parent
-        move_up
-        move_down
-        move_item_before
 
     **Containers**
 
@@ -97,6 +79,14 @@ Widget
 
 
 .. autoclass:: DefaultWidget
+    :members:
+    :undoc-members:
+
+
+ItemWidget
+----------
+
+.. autoclass:: ItemWidget
     :members:
     :undoc-members:
 

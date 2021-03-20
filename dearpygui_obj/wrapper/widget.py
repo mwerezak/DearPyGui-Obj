@@ -98,12 +98,7 @@ class Widget(ABC):
     You can find out what config properties there are using the
     :meth:`get_config_properties` method.
 
-    When non-window widgets are created they are added to a container based on context. This allows
-    for easy declarative-style GUI creation. To create objects belonging to specific parent
-    containers in a more OOP-style manner, you can use the :meth:`add_to` and :meth:`add_before`
-    constructor methods.
-
-    It's important that Widget and subclasses can be instantiated with only the **name_id**
+    It's important that any subclasses can be instantiated with only the **name_id**
     argument being passed to ``__init__``. This allows :func:`.get_item_by_id` to work.
 
     Parameters:
@@ -267,56 +262,13 @@ class Widget(ABC):
             return decorator(_cb)
         return decorator
 
-    ## Parent/Children
-
-    def get_parent(self) -> Optional[Widget]:
-        """Get this item's parent."""
-        parent_id = dpgcore.get_item_parent(self.id)
-        if not parent_id:
-            return None
-        return get_item_by_id(parent_id)
-
-    def set_parent(self, parent: Widget) -> None:
-        """Re-parent the item, moving it."""
-        dpgcore.move_item(self.id, parent=parent.id)
-
-    def move_up(self) -> None:
-        """Move the item up within its parent, if possible."""
-        dpgcore.move_item_up(self.id)
-
-    def move_down(self) -> None:
-        """Move the item down within its parent, if possible."""
-        dpgcore.move_item_down(self.id)
-
-    def move_item_before(self, other: Widget) -> None:
-        """Attempt to place the item before another item, re-parenting it if necessary."""
-        dpgcore.move_item(self.id, parent=other.get_parent().id, before=other.id)
-
-    @classmethod
-    def add_to(cls, parent: Widget, *args: Any, **kwargs: Any) -> Any:
-        """Create a widget and add it to the given *parent* instead of using context.
-
-        Returns:
-            the newly created widget.
-        """
-        return cls(*args, parent=parent.id, **kwargs)
-
-    @classmethod
-    def add_before(cls, sibling: Widget, *args: Any, **kwargs: Any) -> Any:
-        """Create a widget and insert it before the given *sibling* widget.
-
-        Returns:
-            the newly created widget.
-        """
-        return cls(*args, parent=sibling.get_parent().id, before=sibling.id, **kwargs)
-
     ## Containers
 
     def is_container(self) -> bool:
         """Checks if DPG considers this item to be a container."""
         return dpgcore.is_item_container(self.id)
 
-    def iter_children(self) -> Iterable[Widget]:
+    def iter_children(self) -> Iterable[ItemWidget]:
         """Iterates all of the item's children."""
         children = dpgcore.get_item_children(self.id)
         if not children:
@@ -324,7 +276,7 @@ class Widget(ABC):
         for child in children:
             yield get_item_by_id(child)
 
-    def add_child(self, child: Widget) -> None:
+    def add_child(self, child: ItemWidget) -> None:
         """Alternative to :meth:`set_parent`."""
         dpgcore.move_item(child.id, parent=self.id)
 
@@ -443,7 +395,75 @@ class Widget(ABC):
         return dpgcore.is_item_deactivated_after_edit(self.id)
 
 
-class DefaultWidget(Widget):
+# noinspection PyAbstractClass
+class ItemWidget(ABC):
+    """Mixin class for all widgets that can belong to containers.
+
+    This mixin class is used to mark :class:`.Widget` subtypes that can belong to a container
+    (currently this includes all DPG widgets except for :class:`.Window`).
+    It provides its subtypes with methods to move widgets between different containers (re-parent)
+    or within their own container.
+
+    Typically when widgets are instantiated they are added to a container based on context.
+    This behavior is a result of DPG's container stack and it makes it simple to create
+    declarative-style GUIs.
+
+    If you need to add a new widget directly to a specific parent container, or just prefer a more
+    OOP-style of specifying a widget's parent, you can use the :meth:`add_to` and :meth:`add_before`
+    constructor methods."""
+
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        ...
+
+    @abstractmethod
+    def __init__(self, *args, parent: str, **kwargs):
+        ...
+
+    def get_parent(self) -> Optional[Widget]:
+        """Get this item's parent."""
+        parent_id = dpgcore.get_item_parent(self.id)
+        if not parent_id:
+            return None
+        return get_item_by_id(parent_id)
+
+    def set_parent(self, parent: Widget) -> None:
+        """Re-parent the item, moving it."""
+        dpgcore.move_item(self.id, parent=parent.id)
+
+    def move_up(self) -> None:
+        """Move the item up within its parent, if possible."""
+        dpgcore.move_item_up(self.id)
+
+    def move_down(self) -> None:
+        """Move the item down within its parent, if possible."""
+        dpgcore.move_item_down(self.id)
+
+    def move_item_before(self, other: ItemWidget) -> None:
+        """Attempt to place the item before another item, re-parenting it if necessary."""
+        dpgcore.move_item(self.id, parent=other.get_parent().id, before=other.id)
+
+    @classmethod
+    def add_to(cls, parent: Widget, *args: Any, **kwargs: Any) -> Any:
+        """Create a widget and add it to the given *parent* instead of using context.
+
+        Returns:
+            the newly created widget.
+        """
+        return cls(*args, parent=parent.id, **kwargs)
+
+    @classmethod
+    def add_before(cls, sibling: ItemWidget, *args: Any, **kwargs: Any) -> Any:
+        """Create a widget and insert it before the given *sibling* widget.
+
+        Returns:
+            the newly created widget.
+        """
+        return cls(*args, parent=sibling.get_parent().id, before=sibling.id, **kwargs)
+
+
+class DefaultWidget(Widget, ItemWidget):
     """Fallback type used when getting a widget that does not have a wrapper class.
 
     When :func:`.get_item_by_id` is called to retrieve an item whose widget type does not

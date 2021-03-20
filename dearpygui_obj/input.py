@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, TypeVar, Generic
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA, dpg_import_color, dpg_export_color
-from dearpygui_obj.wrapper.widget import Widget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 ## Input Boxes
 
 @_register_item_type('mvAppItemType::InputText')
-class InputText(Widget):
+class InputText(Widget, ItemWidget):
     """A text input box."""
 
     value: str  #: The inputted text.
@@ -42,7 +42,9 @@ class InputText(Widget):
 
 _TInput = TypeVar('_TInput')
 
-class NumberInput(Widget, Generic[_TInput]):
+
+# noinspection PyAbstractClass
+class NumberInput(Widget, ItemWidget, Generic[_TInput]):
     """Base class for number input boxes."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -162,7 +164,8 @@ class InputInt4(NumberInput[int]):
 
 ## Sliders
 
-class SliderInput(Widget, Generic[_TInput]):
+# noinspection PyAbstractClass
+class SliderInput(Widget, ItemWidget, Generic[_TInput]):
     """Base class for slider types."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -283,7 +286,7 @@ class SliderInt4(SliderInput[int]):
 ## Color
 
 @_register_item_type('mvAppItemType::ColorButton')
-class ColorButton(Widget):
+class ColorButton(Widget, ItemWidget):
     """A button that displays and enables copying of color data.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
@@ -305,7 +308,7 @@ class ColorFormatMode(Enum):
     Float = 1  #: Format as 0.0-1.0
 
 @_register_item_type('mvAppItemType::ColorEdit4')
-class ColorEdit(Widget):
+class ColorEdit(Widget, ItemWidget):
     """A color editing widget.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
@@ -360,7 +363,7 @@ class ColorEdit(Widget):
 
 
 @_register_item_type('mvAppItemType::ColorPicker4')
-class ColorPicker(Widget):
+class ColorPicker(Widget, ItemWidget):
     """A color picking widget.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget.

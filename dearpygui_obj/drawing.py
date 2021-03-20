@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Tuple, Optional, Any
 from dearpygui import core as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.data import DrawPos, DrawPropertyPos, DrawPropertyColorRGBA
-from dearpygui_obj.wrapper.widget import Widget
+from dearpygui_obj.wrapper.widget import Widget, ItemWidget
 from dearpygui_obj.wrapper.drawing import DrawCommand, DrawProperty
 
 if TYPE_CHECKING:
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @_register_item_type('mvAppItemType::Drawing')
-class DrawingCanvas(Widget):
+class DrawingCanvas(Widget, ItemWidget):
     """A widget that displays the result of drawing commands."""
 
     def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
