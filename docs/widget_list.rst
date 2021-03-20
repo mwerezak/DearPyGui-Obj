@@ -101,6 +101,14 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.containers.Popup
 
 
+.. rubric:: Plots
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.plots.SimplePlot
+
+
 .. rubric:: Drawing
 
 .. autosummary:: 

@@ -68,6 +68,10 @@ from dearpygui_obj.layout import (
     Dummy,
 )
 
+from dearpygui_obj.plots import (
+    SimplePlot,
+)
+
 from dearpygui_obj.drawing import (
     DrawingCanvas,
 )
@@ -93,7 +97,6 @@ from dearpygui_obj.devtools import (
 
 if TYPE_CHECKING:
     pass
-
 __all__ = [
     'MainWindow',
     'Window',
@@ -154,6 +157,8 @@ __all__ = [
     'ChildView',
     'Dummy',
 
+    'SimplePlot',
+
     'DrawingCanvas',
 
     'NodeEditor',
@@ -171,3 +176,4 @@ __all__ = [
     'DocumentationWindow',
     'AboutWindow',
 ]
+
