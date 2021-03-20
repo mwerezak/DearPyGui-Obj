@@ -170,7 +170,7 @@ class SliderInput(Widget, ItemWidget, ValueWidget[_TInput], Generic[_TElem, _TIn
     label: str = ConfigProperty()
     min_value: _TElem = ConfigProperty()
     max_value: _TElem = ConfigProperty()
-    format: str = ConfigProperty()
+    format: str = ConfigProperty()  #: number format
     vertical: bool = ConfigProperty()
 
     #: Control whether a value can be manually entered using CTRL+Click

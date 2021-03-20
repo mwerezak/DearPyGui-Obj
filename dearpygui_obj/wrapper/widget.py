@@ -57,10 +57,10 @@ class ConfigProperty:
     def __get__(self, instance: Optional[Widget], owner: Type[Widget]) -> Any:
         if instance is None:
             return self
-        return self.get_value(instance)
+        return self.fvalue(instance)
 
     def __set__(self, instance: Widget, value: Any) -> None:
-        config = self.get_config(instance, value)
+        config = self.fconfig(instance, value)
         dpgcore.configure_item(instance.id, **config)
 
     def __call__(self, get_value: GetValueFunc):
@@ -68,22 +68,22 @@ class ConfigProperty:
         return self.getvalue(get_value)
 
     def getvalue(self, get_value: GetValueFunc):
-        self.get_value = get_value
+        self.fvalue = get_value
         self.__doc__ = get_value.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
     def getconfig(self, get_config: GetConfigFunc):
-        self.get_config = get_config
+        self.fconfig = get_config
         return self
 
     ## default implementations
-    get_value: GetValueFunc
-    get_config: GetConfigFunc
+    fvalue: GetValueFunc
+    fconfig: GetConfigFunc
 
-    def get_value(self, instance: Widget) -> Any:
+    def fvalue(self, instance: Widget) -> Any:
         return dpgcore.get_item_configuration(instance.id)[self.key]
 
-    def get_config(self, instance: Widget, value: Any) -> ItemConfigData:
+    def fconfig(self, instance: Widget, value: Any) -> ItemConfigData:
         return {self.key : value}
 
 
@@ -155,7 +155,7 @@ class Widget(ABC):
 
             config_data = {}
             for prop, value in config_args.items():
-                config_data.update(prop.get_config(self, value))
+                config_data.update(prop.fconfig(self, value))
 
             dpgcore.configure_item(self.id, **config_data)
 

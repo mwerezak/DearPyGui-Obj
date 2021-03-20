@@ -58,15 +58,15 @@ class ColorRGBA(NamedTuple):
 
 
 class ConfigPropertyColorRGBA(ConfigProperty):
-    def get_value(self, instance: Widget) -> Any:
+    def fvalue(self, instance: Widget) -> Any:
         return dpg_import_color(instance.get_config()[self.key])
-    def get_config(self, instance: Widget, value: ColorRGBA) -> ItemConfigData:
+    def fconfig(self, instance: Widget, value: ColorRGBA) -> ItemConfigData:
         return {self.key : dpg_export_color(value)}
 
 class DrawPropertyColorRGBA(DrawProperty):
-    def get_value(self, instance: Widget) -> Any:
+    def fvalue(self, instance: Widget) -> Any:
         return dpg_import_color(instance.get_config()[self.key])
-    def get_config(self, instance: Widget, value: ColorRGBA) -> DrawConfigData:
+    def fconfig(self, instance: Widget, value: ColorRGBA) -> DrawConfigData:
         return {self.key : dpg_export_color(value)}
 
 
@@ -78,9 +78,9 @@ class DrawPos(NamedTuple):
     y: float  #: y coordinate
 
 class DrawPropertyPos(DrawProperty):
-    def get_value(self, instance: DrawCommand) -> DrawPos:
+    def fvalue(self, instance: DrawCommand) -> DrawPos:
         return DrawPos(*instance.get_config()[self.key])
-    def get_config(self, instance: DrawCommand, value: Pos2D) -> DrawConfigData:
+    def fconfig(self, instance: DrawCommand, value: Pos2D) -> DrawConfigData:
         return {self.key : list(value)}
 
 

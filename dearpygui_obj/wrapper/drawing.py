@@ -44,10 +44,10 @@ class DrawProperty:
     def __get__(self, instance: Optional[DrawCommand], owner: Type[DrawCommand]) -> Any:
         if instance is None:
             return self
-        return self.get_value(instance)
+        return self.fvalue(instance)
 
     def __set__(self, instance: DrawCommand, value: Any) -> None:
-        config = self.get_config(instance, value)
+        config = self.fconfig(instance, value)
         dpgcore.modify_draw_command(instance.canvas.id, instance.id, **config)
 
     def __call__(self, get_value: GetDrawValueFunc):
@@ -55,22 +55,22 @@ class DrawProperty:
         return self.getvalue(get_value)
 
     def getvalue(self, get_value: GetDrawValueFunc):
-        self.get_value = get_value
+        self.fvalue = get_value
         self.__doc__ = get_value.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
     def getconfig(self, get_config: GetDrawConfigFunc):
-        self.get_config = get_config
+        self.fconfig = get_config
         return self
 
     ## default implementations
-    get_value: GetDrawValueFunc
-    get_config: GetDrawConfigFunc
+    fvalue: GetDrawValueFunc
+    fconfig: GetDrawConfigFunc
 
-    def get_value(self, instance: DrawCommand) -> Any:
+    def fvalue(self, instance: DrawCommand) -> Any:
         return dpgcore.get_draw_command(instance.canvas.id, instance.id)[self.key]
 
-    def get_config(self, instance: DrawCommand, value: Any) -> DrawConfigData:
+    def fconfig(self, instance: DrawCommand, value: Any) -> DrawConfigData:
         return {self.key : value}
 
 
@@ -99,12 +99,12 @@ class DrawCommand(ABC):
         props = self._draw_properties()
         draw_data = {}
         for prop, value in zip(props.values(), args):
-            draw_data.update(prop.get_config(self, value))
+            draw_data.update(prop.fconfig(self, value))
 
         for name, value in kwargs.items():
             prop = props.get(name)
             if prop is not None:
-                draw_data.update(prop.get_config(self, value))
+                draw_data.update(prop.fconfig(self, value))
 
         self._draw_internal(draw_data)
 
