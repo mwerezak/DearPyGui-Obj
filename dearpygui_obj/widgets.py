@@ -53,6 +53,8 @@ from dearpygui_obj.containers import (
     TabOrderMode,
     Menu,
     MenuItem,
+    Popup,
+    PopupInteraction,
 )
 
 from dearpygui_obj.layout import (
@@ -140,6 +142,8 @@ __all__ = [
     'TabOrderMode',
     'Menu',
     'MenuItem',
+    'Popup',
+    'PopupInteraction',
 
     'VSpacing',
     'HAlignNext',

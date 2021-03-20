@@ -284,4 +284,6 @@ __all__ = [
     'TabOrderMode',
     'Menu',
     'MenuItem',
+    'Popup',
+    'PopupInteraction',
 ]
