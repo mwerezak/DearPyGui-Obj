@@ -6,20 +6,6 @@ Plots
 .. contents:: Contents
     :local:
 
-.. rubric:: Summary
-
-.. autosummary:: 
-    :nosignatures:
-
-    SimplePlot
-    Plot
-    PlotAxisConfig
-    PlotXAxisConfig
-    PlotYAxisConfig
-    PlotOptYAxisConfig
-    ~dataseries.DataSeries
-    ~dataseries.DataSeriesProperty
-
 Simple Plots
 ------------
 
@@ -29,6 +15,19 @@ Simple Plots
 
 Rich Plots
 ----------
+
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+
+    Plot
+    PlotAxisConfig
+    PlotXAxisConfig
+    PlotYAxisConfig
+    PlotOptYAxisConfig
+    ~dataseries.DataSeries
+    ~dataseries.DataSeriesProperty
 
 .. autoclass:: Plot
     :members:
