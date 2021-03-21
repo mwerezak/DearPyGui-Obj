@@ -78,7 +78,7 @@ class DrawCommand(ABC):
     """Base class for drawing commands."""
 
     @classmethod
-    def _draw_properties(cls) -> Mapping[str, DrawProperty]:
+    def _get_draw_properties(cls) -> Mapping[str, DrawProperty]:
         draw_properties = cls.__dict__.get('_draw_properties')
         if draw_properties is None:
             draw_properties = {}
@@ -96,7 +96,7 @@ class DrawCommand(ABC):
         else:
             self._tag_id = _generate_id(self)
 
-        props = self._draw_properties()
+        props = self._get_draw_properties()
         draw_data = {}
         for prop, value in zip(props.values(), args):
             draw_data.update(prop.fconfig(self, value))
