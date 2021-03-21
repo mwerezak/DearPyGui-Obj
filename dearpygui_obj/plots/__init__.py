@@ -119,10 +119,10 @@ class Plot(Widget, ItemWidget):
 
     ## Plot Axes
 
-    xaxis: PlotXAxisConfig  = PlotXAxis()
-    yaxis: PlotYAxisConfig  = PlotYAxis(0)
-    y2axis: PlotOptYAxisConfig = PlotYAxis(1, 'yaxis2')
-    y3axis: PlotOptYAxisConfig = PlotYAxis(2, 'yaxis3')
+    xaxis: PlotXAxisConfig  = PlotXAxis()  #: The X-axis
+    yaxis: PlotYAxisConfig  = PlotYAxis(0)  #: The Y-axis
+    y2axis: PlotOptYAxisConfig = PlotYAxis(1, 'yaxis2')  #: Optional Y-axis 2
+    y3axis: PlotOptYAxisConfig = PlotYAxis(2, 'yaxis3')  #: Optional Y-axis 3
 
     ## Config Properties
 
