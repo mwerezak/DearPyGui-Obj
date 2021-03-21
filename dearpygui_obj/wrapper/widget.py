@@ -63,17 +63,17 @@ class ConfigProperty:
         config = self.fconfig(instance, value)
         dpgcore.configure_item(instance.id, **config)
 
-    def __call__(self, get_value: GetValueFunc):
+    def __call__(self, fvalue: GetValueFunc):
         """Allows the ConfigProperty itself to be used as a decorator equivalent to :attr:`getvalue`."""
-        return self.getvalue(get_value)
+        return self.getvalue(fvalue)
 
-    def getvalue(self, get_value: GetValueFunc):
-        self.fvalue = get_value
-        self.__doc__ = get_value.__doc__ # use the docstring of the getter, the same way property() works
+    def getvalue(self, fvalue: GetValueFunc):
+        self.fvalue = fvalue
+        self.__doc__ = fvalue.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
-    def getconfig(self, get_config: GetConfigFunc):
-        self.fconfig = get_config
+    def getconfig(self, fconfig: GetConfigFunc):
+        self.fconfig = fconfig
         return self
 
     ## default implementations

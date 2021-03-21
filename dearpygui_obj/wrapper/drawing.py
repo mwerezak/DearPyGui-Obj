@@ -50,17 +50,17 @@ class DrawProperty:
         config = self.fconfig(instance, value)
         dpgcore.modify_draw_command(instance.canvas.id, instance.id, **config)
 
-    def __call__(self, get_value: GetDrawValueFunc):
+    def __call__(self, fvalue: GetDrawValueFunc):
         """Allows the ConfigProperty itself to be used as a decorator equivalent to :attr:`getvalue`."""
-        return self.getvalue(get_value)
+        return self.getvalue(fvalue)
 
-    def getvalue(self, get_value: GetDrawValueFunc):
-        self.fvalue = get_value
-        self.__doc__ = get_value.__doc__ # use the docstring of the getter, the same way property() works
+    def getvalue(self, fvalue: GetDrawValueFunc):
+        self.fvalue = fvalue
+        self.__doc__ = fvalue.__doc__ # use the docstring of the getter, the same way property() works
         return self
 
-    def getconfig(self, get_config: GetDrawConfigFunc):
-        self.fconfig = get_config
+    def getconfig(self, fconfig: GetDrawConfigFunc):
+        self.fconfig = fconfig
         return self
 
     ## default implementations
