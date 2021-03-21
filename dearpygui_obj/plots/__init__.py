@@ -49,6 +49,10 @@ class PlotAxisConfigProperty:
         config.plot.set_config(**{config_key : value})
 
 class PlotAxisConfig:
+    """Container for axis configuration properties.
+
+    This class can be used to modify the configuration of a single axis of a :class:`.Plot`.
+    """
     no_gridlines: bool = PlotAxisConfigProperty()
     no_tick_marks: bool = PlotAxisConfigProperty()
     no_tick_labels: bool = PlotAxisConfigProperty()
@@ -62,18 +66,26 @@ class PlotAxisConfig:
         self.axis = axis
 
 class PlotXAxisConfig(PlotAxisConfig):
+    """Configuration container for plot X-axis."""
     axis: PlotXAxis
 
     time: bool = PlotAxisConfigProperty()
 
 class PlotYAxisConfig(PlotAxisConfig):
+    """Configuration container for plot Y-axis."""
     axis: PlotYAxis
 
-class PlotOptAxisConfig(PlotYAxisConfig):
+class PlotOptYAxisConfig(PlotYAxisConfig):
+    """Configuration container for optional Y-axes.
+
+    This class is similar to :class:`.PlotYAxisConfig`. It provides the :attr:`enabled` property
+    which can be used to enable or disable the optional Y-axes.
+    """
     axis: PlotYAxis
 
     @property
     def enabled(self) -> bool:
+        """Enable or disable the optional Y-axis."""
         # noinspection PyUnresolvedReferences
         return self.plot.get_config()[self.axis.optkey]
 
@@ -109,8 +121,8 @@ class Plot(Widget, ItemWidget):
 
     xaxis: PlotXAxisConfig  = PlotXAxis()
     yaxis: PlotYAxisConfig  = PlotYAxis(0)
-    y2axis: PlotYAxisConfig = PlotYAxis(1, 'yaxis2')
-    y3axis: PlotYAxisConfig = PlotYAxis(2, 'yaxis3')
+    y2axis: PlotOptYAxisConfig = PlotYAxis(1, 'yaxis2')
+    y3axis: PlotOptYAxisConfig = PlotYAxis(2, 'yaxis3')
 
     ## Config Properties
 
@@ -143,8 +155,8 @@ class Plot(Widget, ItemWidget):
         # not super happy that we have to resort to typing.cast() here, but it works
         self._xaxis_config = PlotXAxisConfig(self, cast(PlotXAxis, Plot.xaxis))
         self._yaxis_config = PlotYAxisConfig(self, cast(PlotYAxis, Plot.yaxis))
-        self._y2axis_config = PlotOptAxisConfig(self, cast(PlotYAxis, Plot.y2axis))
-        self._y3axis_config = PlotOptAxisConfig(self, cast(PlotYAxis, Plot.y3axis))
+        self._y2axis_config = PlotOptYAxisConfig(self, cast(PlotYAxis, Plot.y2axis))
+        self._y3axis_config = PlotOptYAxisConfig(self, cast(PlotYAxis, Plot.y3axis))
 
         super().__init__(name_id=name_id, **config)
 

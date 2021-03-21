@@ -16,6 +16,7 @@ Plots
     PlotAxisConfig
     PlotXAxisConfig
     PlotYAxisConfig
+    PlotOptYAxisConfig
     ~dataseries.DataSeries
     ~dataseries.DataSeriesProperty
 
@@ -33,6 +34,9 @@ Rich Plots
     :members:
     :undoc-members:
 
+Axis Configuration
+^^^^^^^^^^^^^^^^^^
+
 .. autoclass:: PlotAxisConfig
     :members:
     :undoc-members:
@@ -40,10 +44,17 @@ Rich Plots
 .. autoclass:: PlotXAxisConfig
     :members:
     :undoc-members:
+..    :inherited-members:
 
 .. autoclass:: PlotYAxisConfig
     :members:
     :undoc-members:
+..    :inherited-members:
+
+.. autoclass:: PlotOptYAxisConfig
+    :members:
+    :undoc-members:
+..    :inherited-members:
 
 DataSeries
 ^^^^^^^^^^
@@ -53,6 +64,9 @@ DataSeries
 .. autoclass:: DataSeries
     :members:
     :undoc-members:
+
+DataSeriesProperty
+^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: DataSeriesProperty
     :members:
@@ -66,8 +80,8 @@ DataSeries
     :members:
     :undoc-members:
 
-Data Series Classes
--------------------
+Data Series
+-----------
 
 .. automodule:: dearpygui_obj.plots.dataseries
 

@@ -104,17 +104,13 @@ class DataSeries(ABC):
             setattr(cls, '_config_properties', config_properties)
         return config_properties
 
-    def __init__(self, *, axis: YAxis = Plot.yaxis, name_id: Optional[str] = None, **config: Any):
+    def __init__(self, label: str, *, axis: YAxis = Plot.yaxis, name_id: Optional[str] = None, **config: Any):
         if name_id is not None:
-            self._name_id = name_id
+            self._name_id = label + '##' + name_id
         else:
-            self._name_id = _generate_id(self)
+            self._name_id = label + '##' +  _generate_id(self)
 
-        if hasattr(axis, 'axis'):
-            self._axis = axis.axis
-        else:
-            self._axis = axis
-
+        self.axis = axis
         self._config = {}
 
         props = self._get_config_properties()
@@ -130,7 +126,15 @@ class DataSeries(ABC):
 
     @property
     def axis(self) -> PlotYAxis:
+        """Set the Y-axis used to display the data series."""
         return self._axis
+
+    @axis.setter
+    def axis(self, axis: YAxis) -> None:
+        if hasattr(axis, 'axis'):
+            self._axis = axis.axis
+        else:
+            self._axis = axis
 
     def __getitem__(self, key: str) -> Any:
         return self._config[key]
@@ -161,8 +165,8 @@ class ScatterSeries(DataSeries):
     x: Sequence[float] = DataSeriesProperty()
     y: Sequence[float] = DataSeriesProperty()
 
-    def __init__(self, x: Sequence[float], y: Sequence[float], **config: Any):
-        super().__init__(x=x, y=y, **config)
+    def __init__(self, label: str, x: Sequence[float], y: Sequence[float], **config: Any):
+        super().__init__(label, x=x, y=y, **config)
 
     marker: PlotMarker = DataSeriesPropertyMarker()
     size: float = DataSeriesProperty()
@@ -179,8 +183,12 @@ class LineSeries(DataSeries):
     x: Sequence[float] = DataSeriesProperty()
     y: Sequence[float] = DataSeriesProperty()
 
+    def __init__(self, label: str, x: Sequence[float], y: Sequence[float], **config: Any):
+        super().__init__(label, x=x, y=y, **config)
+
     color: ColorRGBA = DataSeriesPropertyColorRGBA()
     weight: float = DataSeriesProperty()
+
 
 
 __all__ = [
