@@ -9,6 +9,7 @@ from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget, Config
 
 if TYPE_CHECKING:
     from typing import Any, Optional, Union, Type
+    from dearpygui_obj.plots.dataseries import DataSeries
 
 
 @_register_item_type('mvAppItemType::SimplePlot')
@@ -150,7 +151,17 @@ class Plot(Widget, ItemWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_plot(self.id, **dpg_args)
 
+    def add_dataseries(self, series: DataSeries, *, update_bounds: bool = True) -> None:
+        """Add a :class:`.DataSeries` to this plot (or update it).
+
+        Updates the data series if it has already been added."""
+        series.update_plot(self, update_bounds)
+
+    def remove_series(self, series: DataSeries) -> None:
+        """Remove a :class:`.DataSeries` from this plot if it has been added."""
+        dpgcore.delete_series(self.id, series.id)
 
 __all__ = [
     'SimplePlot',
+    'Plot',
 ]

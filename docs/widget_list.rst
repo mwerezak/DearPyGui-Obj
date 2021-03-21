@@ -107,6 +107,9 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     :nosignatures:
 
     dearpygui_obj.plots.SimplePlot
+    dearpygui_obj.plots.Plot
+    dearpygui_obj.plots.dataseries.LineSeries
+    dearpygui_obj.plots.dataseries.ScatterSeries
 
 
 .. rubric:: Drawing
