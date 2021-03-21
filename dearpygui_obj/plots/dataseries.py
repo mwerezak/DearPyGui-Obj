@@ -35,6 +35,8 @@ class PlotMarker(Enum):
 
 
 class DataSeriesProperty:
+    """Descriptor used to implement data series properties."""
+
     def __init__(self, key: str = None):
         self.key = key
 
@@ -87,6 +89,8 @@ class DataSeriesPropertyMarker(DataSeriesProperty):
 
 
 class DataSeries(ABC):
+    """Abstract base class for plot data series."""
+
     @property
     @abstractmethod
     def _update_func(self) -> Callable:
