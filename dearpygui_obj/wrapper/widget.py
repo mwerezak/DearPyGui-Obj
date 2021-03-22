@@ -413,7 +413,7 @@ class ItemWidget(ABC):
         return cls(*args, parent=parent.id, **kwargs)
 
     @classmethod
-    def add_before(cls, sibling: ItemWidget, *args: Any, **kwargs: Any) -> Any:
+    def insert_before(cls, sibling: ItemWidget, *args: Any, **kwargs: Any) -> Any:
         """Create a widget and insert it before the given *sibling* widget.
 
         Returns:
