@@ -11,7 +11,7 @@ from dearpygui_obj.data import dpg_import_color, dpg_export_color
 from dearpygui_obj.plots import Plot
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Union, Type, Callable, Mapping, Sequence
+    from typing import Any, Optional, Union, Type, Callable, Tuple, Mapping, Sequence
     from dearpygui_obj.data import ColorRGBA
     from dearpygui_obj.plots import PlotYAxis, PlotYAxisConfig
 
@@ -108,13 +108,9 @@ class DataSeries(ABC):
             setattr(cls, '_config_properties', config_properties)
         return config_properties
 
-    def __init__(self, label: str, *, axis: YAxis = Plot.yaxis, name_id: Optional[str] = None, **config: Any):
-        if name_id is not None:
-            self._name_id = label + '##' + name_id
-        else:
-            self._name_id = label + '##' +  _generate_id(self)
-
+    def __init__(self, label: str, *, axis: YAxis = Plot.yaxis, **config: Any):
         self.axis = axis
+        self._name_id = label + '##' +  _generate_id(self)
         self._config = {}
 
         props = self._get_config_properties()
@@ -160,25 +156,128 @@ class DataSeries(ABC):
         self._update_func(plot.id, self.id, axis=self._axis.index, update_bounds=update_bounds, **self._config)
 
 
-## Data Series Types
+## Data Series
 
-class ScatterSeries(DataSeries):
-    """Adds a scatter series to a plot."""
-    _update_func = dpgcore.add_scatter_series
+class AreaSeries(DataSeries):
+    """Adds an area series to a plot."""
+    _update_func = dpgcore.add_area_series
 
     x: Sequence[float] = DataSeriesProperty()
     y: Sequence[float] = DataSeriesProperty()
 
+    color: ColorRGBA = DataSeriesPropertyColorRGBA()
+    fill: ColorRGBA = DataSeriesPropertyColorRGBA()
+
+    weight: float = DataSeriesProperty()
+
+    def __init__(self, label: str, x: Sequence[float], y: Sequence[float], color: ColorRGBA, fill: ColorRGBA, **config: Any):
+        super().__init__(label, x=x, y=y, color=color, fill=fill, **config)
+
+
+class BarSeries(DataSeries):
+    """Adds a bar series to a plot."""
+    _update_func = dpgcore.add_bar_series
+
+    x: Sequence[float] = DataSeriesProperty()
+    y: Sequence[float] = DataSeriesProperty()
+
+    weight: float = DataSeriesProperty()
+    horizontal: bool = DataSeriesProperty()
+
     def __init__(self, label: str, x: Sequence[float], y: Sequence[float], **config: Any):
         super().__init__(label, x=x, y=y, **config)
 
-    marker: PlotMarker = DataSeriesPropertyMarker()
-    size: float = DataSeriesProperty()
-    weight: float = DataSeriesProperty()
-    outline: ColorRGBA = DataSeriesPropertyColorRGBA()
-    fill: ColorRGBA = DataSeriesPropertyColorRGBA()
-    xy_data_format: bool = DataSeriesProperty()
 
+class CandleSeries(DataSeries):
+    """Adds a candle series to a plot."""
+    _update_func = dpgcore.add_candle_series
+
+    date: Sequence[float] = DataSeriesProperty() #: POSIX timestamps
+    opens: Sequence[float] = DataSeriesProperty()
+    highs: Sequence[float] = DataSeriesProperty()
+    lows: Sequence[float] = DataSeriesProperty()
+    closes: Sequence[float] = DataSeriesProperty()
+
+    tooltip: bool = DataSeriesProperty()
+    bull_color: ColorRGBA = DataSeriesPropertyColorRGBA()
+    bear_color: ColorRGBA = DataSeriesPropertyColorRGBA()
+    weight: float = DataSeriesProperty()
+
+    def __init__(self, label: str,
+                 date: Sequence[float],
+                 opens: Sequence[float],
+                 highs: Sequence[float],
+                 lows: Sequence[float],
+                 closes: Sequence[float],
+                 **config: Any):
+
+        super().__init__(label, date=date, opens=opens, highs=highs, lows=lows, closes=closes, **config)
+
+
+class ErrorSeries(DataSeries):
+    """Adds an error series to a plot."""
+    _update_func = dpgcore.add_error_series
+
+    x: Sequence[float] = DataSeriesProperty()
+    y: Sequence[float] = DataSeriesProperty()
+    negative: Sequence[float] = DataSeriesProperty()
+    positive: Sequence[float] = DataSeriesProperty()
+
+    horizontal: bool = DataSeriesProperty()
+
+    def __init__(self, label: str,
+                 x: Sequence[float], y: Sequence[float],
+                 negative: Sequence[float], positive: Sequence[float],
+                 **config: Any):
+        super().__init__(label, x=x, y=y, negative=negative, positive=positive, **config)
+
+
+class HeatSeries(DataSeries):
+    """Adds a heat series to a plot."""
+    _update_func = dpgcore.add_heat_series
+
+    values: Sequence[float] = DataSeriesProperty()
+    rows: int = DataSeriesProperty()
+    columns: int = DataSeriesProperty()
+    scale_min: float = DataSeriesProperty()
+    scale_max: float = DataSeriesProperty()
+
+    format: str = DataSeriesProperty()
+    bounds_min: Tuple[float, float]
+    bounds_max: Tuple[float, float]
+
+    @DataSeriesProperty(key='bounds_min')
+    def bounds_min(self, config) -> Tuple[float, float]:
+        return tuple(config)
+
+    @DataSeriesProperty(key='bounds_max')
+    def bounds_max(self, config) -> Tuple[float, float]:
+        return tuple(config)
+
+    def __init__(self, label: str,
+                values: Sequence[float],
+                rows: int, columns: int,
+                scale_min: float, scale_max: float,
+                 **config: Any):
+        super().__init__(label, values=values, rows=rows, columns=columns, scale_min=scale_min, scale_max=scale_max, **config)
+
+
+class HLineSeries(DataSeries):
+    """Adds an infinite horizontal line series to a plot."""
+    _update_func = dpgcore.add_hline_series
+
+    x: Sequence[float] = DataSeriesProperty()
+
+    color: ColorRGBA = DataSeriesPropertyColorRGBA()
+    weight: float = DataSeriesProperty()
+
+    def __init__(self, label: str, x: Sequence[float], **config: Any):
+        super().__init__(label, x=x, **config)
+
+
+# TODO
+# class ImageSeries(DataSeries):
+#     """Adds an image series to a plot."""
 
 class LineSeries(DataSeries):
     """Adds a line series to a plot."""
@@ -187,11 +286,54 @@ class LineSeries(DataSeries):
     x: Sequence[float] = DataSeriesProperty()
     y: Sequence[float] = DataSeriesProperty()
 
+    color: ColorRGBA = DataSeriesPropertyColorRGBA()
+    weight: float = DataSeriesProperty()
+
     def __init__(self, label: str, x: Sequence[float], y: Sequence[float], **config: Any):
         super().__init__(label, x=x, y=y, **config)
 
-    color: ColorRGBA = DataSeriesPropertyColorRGBA()
+
+class PieSeries(DataSeries):
+    """Adds a pie chart to a plot."""
+
+    pass
+
+"""
+    values : List[float]
+
+    labels : List[str]
+
+    x : float
+
+    y : float
+
+    radius : float
+
+    Keyword Only Arguments
+
+    normalize : bool = False
+
+    angle : float = 90.0
+
+    format : str = '%0.2f'
+"""
+
+class ScatterSeries(DataSeries):
+    """Adds a scatter series to a plot."""
+    _update_func = dpgcore.add_scatter_series
+
+    x: Sequence[float] = DataSeriesProperty()
+    y: Sequence[float] = DataSeriesProperty()
+
+    marker: PlotMarker = DataSeriesPropertyMarker()
+    size: float = DataSeriesProperty()
     weight: float = DataSeriesProperty()
+    outline: ColorRGBA = DataSeriesPropertyColorRGBA()
+    fill: ColorRGBA = DataSeriesPropertyColorRGBA()
+    xy_data_format: bool = DataSeriesProperty()
+
+    def __init__(self, label: str, x: Sequence[float], y: Sequence[float], **config: Any):
+        super().__init__(label, x=x, y=y, **config)
 
 
 
