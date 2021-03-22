@@ -5,15 +5,14 @@ An object-oriented interface for [Dear PyGui](https://github.com/hoffstadt/DearP
 
 This project aims to implement a pure-Python interface to Dear PyGui that takes full advantage of the Python language to provide a concise and ergonomic API.
 
-DearPyGui-Obj aims to be *fully compatible* with Dear PyGui. This means that you can freely mix modules and code that use DearPyGui and DearPyGui-Obj without issues. Wherever possible, widget classes are designed to draw all of their state from DPG so that there is no possibility of invalidation. You can even create instances for widgets that were created from outside of DearPyGui-Obj. 
-
-You'll find that there's a strong correspondence between DearPyGui-Obj and DearPyGui for the most part.
 ## Documentation
 Documentation (on ReadTheDocs) can be found [here](https://dearpygui-obj.readthedocs.io/en/latest/index.html).
 
 ## Features
 DearPyGui-Obj makes using DPG more concise and intuitive by allowing you to get and set widget properties using attributes. Setting the callback for a
 widget is easy using the `callback` decorator.
+
+#### Widget Objects
 
 ``` python
 import dearpygui_obj
@@ -39,6 +38,8 @@ def callback():
 dearpygui_obj.start_gui()
 ```
 
+#### Ergonomic API Improvements
+
 DearPyGui aims to provide an easy to use and ergonomic API.
 ``` python
 import dearpygui_obj
@@ -51,7 +52,7 @@ with Window('Example') as win:
 
     ## There are many small ergonomic improvements to the API of various widgets
     ## For example, setting arrow buttons is just an Enum instead of 
-    ## two separate properties.
+    ## two separate properties
     btn = Button(arrow=ButtonArrow.Right)
 
     @btn.callback
@@ -64,28 +65,25 @@ with Window('Example') as win:
     red = Text('This text is red.', color=colors.red) # preset HTML colors
     green = Text('This text is green.', color=colors.from_hex('#00FF00'))
 
-    ## Radio buttons, combo boxes, and list widgets can be edited 
-    ## as a MutableSequence
+    ## Radio buttons, combo boxes, and list widgets are mutable sequences
     radio = RadioButtons(['Apple', 'Orange'])
     radio[0] = 'Banana'
     radio.remove('Orange')
     radio.extend(['Pear', 'Grape'])
     del radio[-1]
 
-## Adding widgets after creating the GUI is now a method instead of a keyword.
-add_text = Button.add_to(win, 'Add Label')
+## Adding widgets after creating the GUI uses methods instead of keywords
+add_text = Button.add_to(win, 'Add Label')  # add to the end of a container
 
 @add_text.callback
 def callback():
     Text.insert_before(add_text, 'Insert before.')  # insert before a widget
 
-## Can set window on close callback after the fact (not possible in DPG 0.6.x)
-@win.on_close
-def callback():
-    dearpygui_obj.stop_gui()
-
 dearpygui_obj.start_gui()
 ```
+
+#### Using DearPyGui-Obj With Existing Dear PyGui Code
+DearPyGui-Obj aims to be *fully compatible* with Dear PyGui. This means that you can freely mix modules and code that use DearPyGui and DearPyGui-Obj without issues. Wherever possible, widget classes are designed to draw all of their state from DPG so that there is no possibility of invalidation. You can even create instances for widgets that were created from outside of DearPyGui-Obj. 
 
 ## Installation
 This project is currently in the early implementation stage, and a lot of features still need to be implemented. Even the current name for the project is provisional and may change.
