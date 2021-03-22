@@ -37,9 +37,9 @@ class HAlignNext(Widget, ItemWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
-def group_horizontal(spacing: float = -1, *, name_id: str = None) -> LayoutGroup:
+def group_horizontal(spacing: float = -1, *, name_id: str = None, **config: Any) -> LayoutGroup:
     """Shortcut constructor for ``LayoutGroup(horizontal=True)``"""
-    return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id)
+    return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id, **config)
 
 @_register_item_type('mvAppItemType::Group')
 class LayoutGroup(Widget, ItemWidget):
