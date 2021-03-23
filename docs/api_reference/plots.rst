@@ -27,7 +27,7 @@ Rich Plots
     PlotYAxisConfig
     PlotOptYAxisConfig
     ~dataseries.DataSeries
-    ~dataseries.DataSeriesProperty
+    ~dataseries.DataSeriesConfig
 
 .. autoclass:: Plot
     :members:
@@ -64,18 +64,18 @@ DataSeries
     :members:
     :undoc-members:
 
-DataSeriesProperty
+DataSeriesConfig
 ^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: DataSeriesProperty
+.. autoclass:: DataSeriesConfig
     :members:
     :undoc-members:
 
-.. autoclass:: DataSeriesPropertyColorRGBA
+.. autoclass:: DataSeriesConfigColorRGBA
     :members:
     :undoc-members:
 
-.. autoclass:: DataSeriesPropertyMarker
+.. autoclass:: DataSeriesConfigMarker
     :members:
     :undoc-members:
 
@@ -89,11 +89,57 @@ Data Series
 .. autosummary:: 
     :nosignatures:
 
+    AreaSeries
+    BarSeries
+    CandleSeries
+    ErrorSeries
+    HeatSeries
+    HLineSeries
     LineSeries
+    PieSeries
     ScatterSeries
-    PlotMarker
+
+.. autoclass:: AreaSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: BarSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: CandleSeriesData
+    :members:
+    :undoc-members:
+
+.. autoclass:: CandleSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: ErrorSeriesData
+    :members:
+    :undoc-members:
+
+.. autoclass:: ErrorSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: HeatSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: HLineSeries
+    :members:
+    :undoc-members:
 
 .. autoclass:: LineSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: PieSeriesData
+    :members:
+    :undoc-members:
+
+.. autoclass:: PieSeries
     :members:
     :undoc-members:
 
@@ -101,6 +147,6 @@ Data Series
     :members:
     :undoc-members:
 
-.. autoclass:: PlotMarker
+.. autoclass:: XYData
     :members:
     :undoc-members:

@@ -78,21 +78,18 @@ Selection List
 .. autoclass:: RadioButtons
     :members:
     :undoc-members:
-    :special-members: __len__, __getitem__, __setitem__, __delitem__
 
     .. autoattribute:: value
 
 .. autoclass:: ListBox
     :members:
     :undoc-members:
-    :special-members: __len__, __getitem__, __setitem__, __delitem__
 
     .. autoattribute:: value
 
 .. autoclass:: Combo
     :members:
     :undoc-members:
-    :special-members: __len__, __getitem__, __setitem__, __delitem__
 
     .. autoattribute:: value
 

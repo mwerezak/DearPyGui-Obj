@@ -9,7 +9,7 @@ from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget, Config
 
 if TYPE_CHECKING:
     from typing import Any, Optional, Union, Type
-    from dearpygui_obj.plots.series import DataSeries
+    from dearpygui_obj.plots.dataseries import DataSeries
 
 
 @_register_item_type('mvAppItemType::SimplePlot')
