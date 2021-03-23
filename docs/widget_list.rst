@@ -30,6 +30,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.basic.RadioButtons
     dearpygui_obj.basic.ListBox
     dearpygui_obj.basic.Combo
+    dearpygui_obj.basic.SimplePlot
 
 .. rubric:: Input Boxes
 
@@ -101,12 +102,11 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.containers.Popup
 
 
-.. rubric:: Plots
+.. rubric:: Rich Plots
 
 .. autosummary:: 
     :nosignatures:
 
-    dearpygui_obj.plots.SimplePlot
     dearpygui_obj.plots.Plot
     dearpygui_obj.plots.dataseries.AreaSeries
     dearpygui_obj.plots.dataseries.BarSeries

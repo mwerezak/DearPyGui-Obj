@@ -6,16 +6,6 @@ Plots
 .. contents:: Contents
     :local:
 
-Simple Plots
-------------
-
-.. autoclass:: SimplePlot
-    :members:
-    :undoc-members:
-
-Rich Plots
-----------
-
 .. rubric:: Summary
 
 .. autosummary:: 
@@ -28,6 +18,9 @@ Rich Plots
     PlotOptYAxisConfig
     ~dataseries.DataSeries
     ~dataseries.DataSeriesConfig
+
+Plot
+----
 
 .. autoclass:: Plot
     :members:
@@ -43,17 +36,14 @@ Axis Configuration
 .. autoclass:: PlotXAxisConfig
     :members:
     :undoc-members:
-..    :inherited-members:
 
 .. autoclass:: PlotYAxisConfig
     :members:
     :undoc-members:
-..    :inherited-members:
 
 .. autoclass:: PlotOptYAxisConfig
     :members:
     :undoc-members:
-..    :inherited-members:
 
 DataSeries
 ^^^^^^^^^^

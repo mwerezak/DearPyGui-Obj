@@ -23,6 +23,7 @@ Basic Widgets
     ListBox
     Combo
     ComboHeightMode
+    SimplePlot
 
 Basic Content
 -------------
@@ -97,3 +98,9 @@ Selection List
     :members:
     :undoc-members:
 
+Simple Plots
+------------
+
+.. autoclass:: SimplePlot
+    :members:
+    :undoc-members:
