@@ -82,7 +82,8 @@ class DrawCommand(ABC):
         draw_properties = cls.__dict__.get('_draw_properties')
         if draw_properties is None:
             draw_properties = {}
-            for name in dir(cls):
+            # must match order in annotations
+            for name in cls.__annotations__:
                 value = getattr(cls, name)
                 if isinstance(value, DrawProperty):
                     draw_properties[name] = value
