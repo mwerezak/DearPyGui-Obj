@@ -38,9 +38,7 @@ def callback():
 dearpygui_obj.start_gui()
 ```
 
-#### Ergonomic API Improvements
-
-DearPyGui aims to provide an easy to use and ergonomic API.
+#### Ergonomic API
 ``` python
 import dearpygui_obj
 from dearpygui_obj import colors
@@ -50,9 +48,9 @@ with Window('Example') as win:
     ## See what config properties a widget has in the REPL
     Button.get_config_properties() # Returns ['arrow', 'enabled', 'height', ...]
 
-    ## There are many small ergonomic improvements to the API of various widgets
-    ## For example, setting arrow buttons is just an Enum instead of 
-    ## two separate properties
+    ## There are small ergonomic improvements to the API of various widgets
+    ## For example, setting arrow buttons is just an Enum instead of two
+    ## separate properties
     btn = Button(arrow=ButtonArrow.Right)
 
     @btn.callback
@@ -72,7 +70,7 @@ with Window('Example') as win:
     radio.extend(['Pear', 'Grape'])
     del radio[-1]
 
-## Adding widgets after creating the GUI uses methods instead of keywords
+## You can add widgets after creating the GUI using methods instead of keywords
 add_text = Button.add_to(win, 'Add Label')  # add to the end of a container
 
 @add_text.callback
@@ -90,9 +88,7 @@ from dearpygui_obj.widgets import *
 from dearpygui_obj.plots.dataseries import *
 
 with Window('Example') as win:
-    data = [
-        (-1, -9), (1, -4), (3, 11), (4, 5), (9, 7),
-    ]
+    data = [ (-1, -9), (1, -4), (3, 11), (4, 5), (9, 7) ]
     lineseries = LineSeries('example', data)
 
     ## plot data series are mutable sequences!
@@ -105,7 +101,7 @@ with Window('Example') as win:
     print(lineseries.y[0])  # prints -9
     lineseries.y[2] += 1
     lineseries.y[3:5] = (7, 5)
-    lineseries.x = [1, 2, 3, 4, 5, 6]
+    lineseries.x = [1, 2, 3, 4, 5, 6]  # even supports assignment
     #lineseries.x = [1, 2, 3]  # TypeError: cannot change length of individual DataSeries field
 
     plot = Plot()
@@ -116,7 +112,7 @@ dearpygui_obj.start_gui()
 
 #### Drawing API
 This is the same dynamic drawing example given in the DPG Wiki. You can compare 
-this with the [original code](https://github.com/hoffstadt/DearPyGui/wiki/Drawing-API#modification).
+it with the [original code](https://github.com/hoffstadt/DearPyGui/wiki/Drawing-API#modification).
 
 ``` python
 import dearpygui_obj
@@ -154,7 +150,7 @@ dearpygui_obj.start_gui()
 ```
 
 #### Using DearPyGui-Obj With Existing Dear PyGui Code
-DearPyGui-Obj aims to be *fully compatible* with Dear PyGui. This means that you can freely mix modules and code that use DearPyGui and DearPyGui-Obj without issues. Wherever possible, widget classes are designed to draw all of their state from DPG so that there is no possibility of invalidation. You can even create instances for widgets that were created from outside of DearPyGui-Obj. 
+DearPyGui-Obj aims to be fully *backwards compatible* with Dear PyGui. This means that you can freely mix code that uses both DearPyGui and DearPyGui-Obj without issues. Wherever possible, widget classes are designed to draw all of their state from DPG so that there is no possibility of invalidation. You can even create object instances for existing widgets that were created in vanilla DearPyGui.
 
 ## Installation
 This project is currently in the early implementation stage, and a lot of features still need to be implemented. Even the current name for the project is provisional and may change.
