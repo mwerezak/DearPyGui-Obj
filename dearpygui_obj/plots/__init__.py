@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple, cast
+from typing import TYPE_CHECKING, cast
 
 import dearpygui.core as dpgcore
 
@@ -8,14 +8,11 @@ from dearpygui_obj import _register_item_type
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Union, Type
+    from typing import Any, Optional, Union, Type, Tuple, Iterable
     from dearpygui_obj.plots.dataseries import DataSeries
 
-
-
-
-
-## Rich Plots
+    TickLabel = Tuple[str, float]
+    PlotLimits = Tuple[float, float]
 
 ## Plot Axis Configuration
 
@@ -101,16 +98,6 @@ class PlotYAxis(PlotAxis):
         self.index = index
         self.optkey = optkey
 
-## X- and Y-Ticks
-
-class TickLabel(NamedTuple):
-    label: str
-    pos: float
-
-class PlotAxisTicks:
-    pass
-
-
 ## Plot Class
 
 @_register_item_type('mvAppItemType::Plot')
@@ -169,9 +156,40 @@ class Plot(Widget, ItemWidget):
         Updates the data series if it has already been added."""
         series.update_plot(self, update_bounds)
 
-    def remove_series(self, series: DataSeries) -> None:
+    def remove_dataseries(self, series: DataSeries) -> None:
         """Remove a :class:`.DataSeries` from this plot if it has been added."""
         dpgcore.delete_series(self.id, series.id)
+
+    def clear(self) -> None:
+        dpgcore.clear_plot(self.id)
+
+    def set_xlimits(self, limits: Optional[PlotLimits]) -> None:
+        """Set the ``(min, max)`` limits for the x-axis, or pass ``None`` to use automatic limits."""
+        if limits is None:
+            dpgcore.set_plot_xlimits_auto(self.id)
+        else:
+            dpgcore.set_plot_xlimits(self.id, *limits)
+
+    def set_ylimits(self, limits: Optional[PlotLimits]) -> None:
+        """Set the ``(min, max)`` limits for the y-axis, or pass ``None`` to use automatic limits."""
+        if limits is None:
+            dpgcore.set_plot_ylimits_auto(self.id)
+        else:
+            dpgcore.set_plot_ylimits(self.id, *limits)
+
+    def set_xticks(self, ticks: Optional[Iterable[TickLabel]]) -> None:
+        """Set the tick labels for the x-axis, or pass ``None`` to use automatic ticks."""
+        if ticks is None:
+            dpgcore.reset_xticks(self.id)
+        else:
+            dpgcore.set_xticks(self.id, ticks)
+
+    def set_yticks(self, ticks: Optional[Iterable[TickLabel]]) -> None:
+        """Set the tick labels for the y-axis, or pass ``None`` to use automatic ticks."""
+        if ticks is None:
+            dpgcore.reset_yticks(self.id)
+        else:
+            dpgcore.set_yticks(self.id, ticks)
 
 
 __all__ = [

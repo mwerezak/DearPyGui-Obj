@@ -56,8 +56,8 @@ class DataSeriesConfig:
 
 
 TValue = TypeVar('TValue')
-class DataSeriesAccessor(MutableSequence[TValue]):
-    """Mutable sequence type that allows set/get of individual data fields of a data series.
+class DataSeriesCollection(MutableSequence[TValue]):
+    """Collection type that allows set/get of individual data fields of a data series.
 
     Individual data fields are read-write. Appending, inserting, or deleting individual fields
     is not permitted however. Any operations that change the length of the sequence will raise a
@@ -155,7 +155,7 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         ## create data fields from record type
         for index, name in enumerate(self._get_data_keywords()):
             self._data.append([])
-            field = DataSeriesAccessor(self, index)
+            field = DataSeriesCollection(self, index)
             setattr(self, f'_{name}_accessor', field)
 
         ## non-data config properties
