@@ -116,8 +116,23 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         """The DPG function used to add/update the data series."""
         ...
 
-    _record_type: Type[NamedTuple]
-    _data_keywords: Sequence[str] = None
+    @staticmethod
+    def _create_record(*values: Any) -> TRecord:
+        """Factory function used to create records when retrieving individual data points."""
+        return tuple(values)
+
+    #: The keywords used to give the data to the DPG ``add_*_series()`` function.
+    #: The order of keywords is used when creating records using :meth:`_create_record`.
+    _data_keywords: Sequence[str]
+
+    @classmethod
+    def _get_data_keywords(cls) -> Iterable[str]:
+        if cls._data_keywords is None:
+            # noinspection PyUnresolvedReferences
+            return cls._record_type._fields
+        if isinstance(cls._data_keywords, str):
+            cls._data_keywords = cls._data_keywords.split()
+        return cls._data_keywords
 
     @classmethod
     def _get_config_properties(cls) -> Mapping[str, DataSeriesConfig]:
@@ -130,16 +145,6 @@ class DataSeries(ABC, MutableSequence[TRecord]):
                     config_properties[name] = value
             setattr(cls, '_config_properties', config_properties)
         return config_properties
-
-    @classmethod
-    def _get_data_keywords(cls) -> Iterable[str]:
-        if cls._data_keywords is None:
-            # noinspection PyUnresolvedReferences
-            return cls._record_type._fields
-        if isinstance(cls._data_keywords, str):
-            cls._data_keywords = cls._data_keywords.split()
-        return cls._data_keywords
-
 
     def __init__(self, label: str, data: Iterable, *, axis: YAxis = Plot.yaxis, **config: Any):
         self.axis = axis
@@ -210,10 +215,10 @@ class DataSeries(ABC, MutableSequence[TRecord]):
 
     def __iter__(self) -> Iterable[TRecord]:
         for values in zip(*self._data):
-            yield self._record_type(*values)
+            yield self._create_record(*values)
 
     def __getitem__(self, index: int) -> TRecord:
-        return self._record_type(*(seq[index] for seq in self._data))
+        return self._create_record(*(seq[index] for seq in self._data))
 
     def __setitem__(self, index: int, item: Any) -> None:
         for field_idx, value in enumerate(item):
@@ -236,21 +241,16 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         for field_idx, values in enumerate(zip(*items)):
             self._data[field_idx].extend(values)
 
+    # these work because tuples typically have value semantics
     def index(self, item: Any, start: int = None, stop: int = None) -> int:
-        # this wont be fast no matter what we do, but we can improve on the
-        # default implementation by zipping everything up front
-        start = start or 0
-        stop = stop or len(self)
+        # improve on the naive default implementation by zipping everything up front
         data = (s[start:stop] for s in self._data)
-
         for idx, row in enumerate(zip(*data)):
             if row == item:
                 return idx
-        raise ValueError(f'{item!r} is not in {self.__class__.__name__}')
+        raise ValueError(f'{item} is not in {self.__class__.__name__}')
 
     def remove(self, item: Any) -> None:
-        # this wont be fast no matter what we do, but we can improve on the
-        # default implementation by zipping everything up front
         for idx, row in enumerate(zip(*self._data)):
             if row == item:
                 del self[idx]
