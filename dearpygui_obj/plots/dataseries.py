@@ -8,7 +8,7 @@ from dearpygui_obj.data import dpg_import_color, dpg_export_color
 from dearpygui_obj.wrapper.dataseries import DataSeries, DataSeriesConfig, DataSeriesField
 
 if TYPE_CHECKING:
-    from typing import Any, Tuple, Iterable, Sequence
+    from typing import Any, Tuple, Iterable, MutableSequence
     from dearpygui_obj.data import ColorRGBA
 
 
@@ -51,9 +51,10 @@ class AreaSeries(DataSeries[XYData]):
     """Adds an area series to a plot."""
     _update_func = dpgcore.add_area_series
     _record_type = XYData
+    _data_keywords = 'x y'
 
-    x: DataSeriesField[float]
-    y: DataSeriesField[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     fill: ColorRGBA = DataSeriesConfigColorRGBA()
@@ -68,9 +69,10 @@ class BarSeries(DataSeries[XYData]):
     """Adds a bar series to a plot."""
     _update_func = dpgcore.add_bar_series
     _record_type = XYData
+    _data_keywords = 'x y'
 
-    x: DataSeriesField[float]
-    y: DataSeriesField[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     weight: float = DataSeriesConfig()
     horizontal: bool = DataSeriesConfig()
@@ -91,11 +93,11 @@ class CandleSeries(DataSeries[CandleSeriesData]):
     _record_type = CandleSeriesData
     _data_keywords = 'date opens highs lows closes'
 
-    date: DataSeriesField[float]
-    opens: DataSeriesField[float]
-    highs: DataSeriesField[float]
-    lows: DataSeriesField[float]
-    closes: DataSeriesField[float]
+    date: MutableSequence[float] = DataSeriesField()
+    opens: MutableSequence[float] = DataSeriesField()
+    highs: MutableSequence[float] = DataSeriesField()
+    lows: MutableSequence[float] = DataSeriesField()
+    closes: MutableSequence[float] = DataSeriesField()
 
     tooltip: bool = DataSeriesConfig()
     bull_color: ColorRGBA = DataSeriesConfigColorRGBA()
@@ -116,11 +118,13 @@ class ErrorSeries(DataSeries[ErrorSeriesData]):
     """Adds an error series to a plot."""
     _update_func = dpgcore.add_error_series
     _record_type = ErrorSeriesData
+    _data_keywords = 'x y negative positive'
 
-    x: DataSeriesField[float]
-    y: DataSeriesField[float]
-    negative: DataSeriesField[float]
-    positive: DataSeriesField[float]
+
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
+    negative: MutableSequence[float] = DataSeriesField()
+    positive: MutableSequence[float] = DataSeriesField()
 
     horizontal: bool = DataSeriesConfig()
 
@@ -134,7 +138,7 @@ class HeatSeries(DataSeries[tuple]):
     _record_type = tuple
     _data_keywords = 'values'
 
-    values: DataSeriesField[float]
+    values: MutableSequence[float] = DataSeriesField()
 
     rows: int = DataSeriesConfig()
     columns: int = DataSeriesConfig()
@@ -168,7 +172,7 @@ class HLineSeries(DataSeries[tuple]):
     _record_type = tuple
     _data_keywords = 'x'
 
-    x: DataSeriesField[float]
+    x: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     weight: float = DataSeriesConfig()
@@ -185,9 +189,10 @@ class LineSeries(DataSeries[XYData]):
     """Adds a line series to a plot."""
     _update_func = dpgcore.add_line_series
     _record_type = XYData
+    _data_keywords = 'x y'
 
-    x: DataSeriesField[float]
-    y: DataSeriesField[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     weight: float = DataSeriesConfig()
@@ -205,8 +210,8 @@ class PieSeries(DataSeries[PieSeriesData]):
     _record_type = PieSeriesData
     _data_keywords = 'values labels'
 
-    values: DataSeriesField[float]
-    labels: DataSeriesField[str]
+    values: MutableSequence[float] = DataSeriesField()
+    labels: MutableSequence[str] = DataSeriesField()
 
     x: float = DataSeriesConfig()
     y: float = DataSeriesConfig()
@@ -225,9 +230,10 @@ class ScatterSeries(DataSeries[XYData]):
     """Adds a scatter series to a plot."""
     _update_func = dpgcore.add_scatter_series
     _record_type = XYData
+    _data_keywords = 'x y'
 
-    x: DataSeriesField[float]
-    y: DataSeriesField[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     marker: PlotMarker = DataSeriesConfigMarker()
     size: float = DataSeriesConfig()

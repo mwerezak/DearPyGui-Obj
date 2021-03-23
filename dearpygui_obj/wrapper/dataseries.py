@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, NamedTuple, Generic, TypeVar, MutableSequence
+from typing import TYPE_CHECKING, NamedTuple, TypeVar, MutableSequence
 
 from dearpygui_obj import _generate_id
 from dearpygui_obj.plots import Plot
@@ -56,25 +56,55 @@ class DataSeriesConfig:
 
 
 TValue = TypeVar('TValue')
-class DataSeriesField(Generic[TValue]):
-    """Accessor that allows set/get of individual data fields of a data series.
+class DataSeriesAccessor(MutableSequence[TValue]):
+    """Mutable sequence type that allows set/get of individual data fields of a data series.
 
     Individual data fields are read-write. Appending, inserting, or deleting individual fields
-    is not permitted however. This helper class exposes just the allowed operations."""
+    is not permitted however. Any operations that change the length of the sequence will raise a
+    :class:`TypeError`."""
 
     def __init__(self, series: DataSeries, key: int):
         self.series = series
         self.key = key
 
+    # raises a TypeError if the slice will change the length of the sequence
+    def _set_slice(self, s: slice, value: Iterable) -> None:
+        if not hasattr(value, '__len__'):
+            value = list(value)
+        if len(range(*s.indices(len(self)))) != len(value):
+            raise TypeError('cannot change length of individual DataSeries field')
+        self.series._data[self.key][s] = value
+
     def __len__(self) -> int:
-        return len(self.series)
+        return len(self.series._data[self.key])
 
     def __getitem__(self, index: int) -> TValue:
         return self.series._data[self.key][index]
 
     def __setitem__(self, index: int, value: TValue) -> None:
-        self.series._data[self.key][index] = value
+        if isinstance(index, slice):
+            self._set_slice(index, value)
+        else:
+            self.series._data[self.key][index] = value
 
+    def __delitem__(self, index: int) -> None:
+        raise TypeError('cannot change length of individual DataSeries field')
+
+    def insert(self, index: int, value: TValue) -> None:
+        raise TypeError('cannot change length of individual DataSeries field')
+
+class DataSeriesField:
+    """Supports assignment to a DataSeries' data field attributes."""
+    def __set_name__(self, owner: Type[DataSeries], name: str):
+        self.name = f'_{name}_accessor'
+
+    def __get__(self, instance: DataSeries, owner: Type[DataSeries]) -> DataSeriesField:
+        if instance is None:
+            return self
+        return getattr(instance, self.name)
+
+    def __set__(self, instance: DataSeries, value: Iterable[Any]) -> None:
+        getattr(instance, self.name)[:] = value
 
 TRecord = TypeVar('TRecord')
 class DataSeries(ABC, MutableSequence[TRecord]):
@@ -120,8 +150,8 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         ## create data fields from record type
         for index, name in enumerate(self._get_data_keywords()):
             self._data.append([])
-            field = DataSeriesField(self, index)
-            setattr(self, name, field)
+            field = DataSeriesAccessor(self, index)
+            setattr(self, f'_{name}_accessor', field)
 
         ## non-data config properties
         props = self._get_config_properties()
@@ -173,8 +203,14 @@ class DataSeries(ABC, MutableSequence[TRecord]):
             **self._config, **dict(zip(self._get_data_keywords(), self._data))
         )
 
+    ## Mutable Sequence Implementation
+
     def __len__(self) -> int:
         return len(self._data[0])  # they should all be the same length
+
+    def __iter__(self) -> Iterable[TRecord]:
+        for values in zip(*self._data):
+            yield self._record_type(*values)
 
     def __getitem__(self, index: int) -> TRecord:
         return self._record_type(*(seq[index] for seq in self._data))
@@ -190,6 +226,10 @@ class DataSeries(ABC, MutableSequence[TRecord]):
     def insert(self, index: int, item: Any) -> None:
         for field_idx, value in enumerate(item):
             self._data[field_idx].insert(index, value)
+
+    def append(self, item: Any) -> None:
+        for field_idx, value in enumerate(item):
+            self._data[field_idx].append(value)
 
     def extend(self, items: Iterable[Any]) -> None:
         # unzip into 1D sequences for each field
@@ -215,3 +255,7 @@ class DataSeries(ABC, MutableSequence[TRecord]):
             if row == item:
                 del self[idx]
                 return
+
+    def clear(self) -> None:
+        for seq in self._data:
+            seq.clear()

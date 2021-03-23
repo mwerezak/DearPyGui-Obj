@@ -70,6 +70,7 @@ from dearpygui_obj.layout import (
 
 from dearpygui_obj.plots import (
     SimplePlot,
+    Plot,
 )
 
 from dearpygui_obj.drawing import (
@@ -158,6 +159,7 @@ __all__ = [
     'Dummy',
 
     'SimplePlot',
+    'Plot',
 
     'DrawingCanvas',
 
