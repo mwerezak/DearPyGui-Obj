@@ -55,7 +55,7 @@ DataSeries
     :undoc-members:
 
 DataSeriesConfig
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 .. autoclass:: DataSeriesConfig
     :members:
@@ -85,9 +85,14 @@ Data Series
     ErrorSeries
     HeatSeries
     HLineSeries
+    VLineSeries
     LineSeries
     PieSeries
     ScatterSeries
+    SingleShadeSeries
+    DoubleShadeSeries
+    StairSeries
+    StemSeries
 
 .. autoclass:: AreaSeries
     :members:
@@ -121,6 +126,10 @@ Data Series
     :members:
     :undoc-members:
 
+.. autoclass:: VLineSeries
+    :members:
+    :undoc-members:
+
 .. autoclass:: LineSeries
     :members:
     :undoc-members:
@@ -134,6 +143,26 @@ Data Series
     :undoc-members:
 
 .. autoclass:: ScatterSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: SingleShadeSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: DoubleShadeSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: ShadeRangeData
+    :members:
+    :undoc-members:
+
+.. autoclass:: StairSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: StemSeries
     :members:
     :undoc-members:
 

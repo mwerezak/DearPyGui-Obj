@@ -179,6 +179,20 @@ class HLineSeries(DataSeries[tuple]):
         super().__init__(label, ((v,) for v in x), **config)
 
 
+class VLineSeries(DataSeries[tuple]):
+    """Adds an infinite vertical line series to a plot."""
+    _update_func = dpgcore.add_vline_series
+    _data_keywords = 'x'
+
+    x: MutableSequence[float] = DataSeriesField()
+
+    color: ColorRGBA = DataSeriesConfigColorRGBA()
+    weight: float = DataSeriesConfig()
+
+    def __init__(self, label: str, x: Iterable[float], **config: Any):
+        super().__init__(label, ((v,) for v in x), **config)
+
+
 # TODO
 # class ImageSeries(DataSeries):
 #     """Adds an image series to a plot."""
@@ -244,6 +258,80 @@ class ScatterSeries(DataSeries[XYData]):
         super().__init__(label, data, **config)
 
 
+class SingleShadeSeries(DataSeries[XYData]):
+    """Adds a single-sided shade series to a plot."""
+    _update_func = dpgcore.add_scatter_series
+    _create_record = XYData
+    _data_keywords = 'x y1'
+
+    x: MutableSequence[float] = DataSeriesField()
+    y1: MutableSequence[float] = DataSeriesField()
+
+    color: ColorRGBA = DataSeriesConfigColorRGBA()
+    fill: ColorRGBA = DataSeriesConfigColorRGBA()
+    weight: float = DataSeriesConfig()
+
+    def __init__(self, label: str, data: Iterable[Any], **config: Any):
+        super().__init__(label, data, **config)
+
+
+class ShadeRangeData(NamedTuple):
+    x: float
+    y1: float
+    y2: float
+
+class DoubleShadeSeries(DataSeries[ShadeRangeData]):
+    """Adds a single-sided shade series to a plot."""
+    _update_func = dpgcore.add_scatter_series
+    _create_record = ShadeRangeData
+    _data_keywords = 'x y1 y2'
+
+    x: MutableSequence[float] = DataSeriesField()
+    y1: MutableSequence[float] = DataSeriesField()
+    y2: MutableSequence[float] = DataSeriesField()
+
+    color: ColorRGBA = DataSeriesConfigColorRGBA()
+    fill: ColorRGBA = DataSeriesConfigColorRGBA()
+    weight: float = DataSeriesConfig()
+
+    def __init__(self, label: str, data: Iterable[Any], **config: Any):
+        super().__init__(label, data, **config)
+
+
+class StairSeries(DataSeries[XYData]):
+    """Add a stair series to a plot."""
+    _update_func = dpgcore.add_stair_series
+    _create_record = XYData
+    _data_keywords = 'x y'
+
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
+
+    color: ColorRGBA = DataSeriesConfigColorRGBA()
+    weight: float = DataSeriesConfig()
+
+    def __init__(self, label: str, data: Iterable[Any], **config: Any):
+        super().__init__(label, data, **config)
+
+
+class StemSeries(DataSeries[XYData]):
+    """Add a stem series to a plot."""
+    _update_func = dpgcore.add_stem_series
+    _create_record = XYData
+    _data_keywords = 'x y'
+
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
+
+    marker: PlotMarker = DataSeriesConfigMarker()
+    size: float = DataSeriesConfig()
+    weight: float = DataSeriesConfig()
+    outline: ColorRGBA = DataSeriesConfigColorRGBA()
+    fill: ColorRGBA = DataSeriesConfigColorRGBA()
+
+    def __init__(self, label: str, data: Iterable[Any], **config: Any):
+        super().__init__(label, data, **config)
+
 
 __all__ = [
     'AreaSeries',
@@ -258,6 +346,11 @@ __all__ = [
     'PieSeriesData',
     'LineSeries',
     'ScatterSeries',
+    'SingleShadeSeries',
+    'DoubleShadeSeries',
+    'ShadeRangeData',
+    'StairSeries',
+    'StemSeries',
     'XYData',
     'PlotMarker',
 ]
