@@ -114,6 +114,45 @@ with Window('Example') as win:
 dearpygui_obj.start_gui()
 ```
 
+#### Drawing API
+This is the same dynamic drawing example given in the DPG Wiki. You can compare 
+this with the [original code](https://github.com/hoffstadt/DearPyGui/wiki/Drawing-API#modification).
+
+``` python
+import dearpygui_obj
+from dearpygui_obj import colors
+from dearpygui_obj.widgets import *
+
+counter = 0
+modifier = 2
+
+with Window("Tutorial", size=(800, 800)):
+    canvas = DrawingCanvas(size=(700, 700))
+    circle = canvas.draw_circle((0, 0), 5, colors.from_rgba8(255, 255, 255))
+
+@dearpygui_obj.set_render_callback
+def on_render():
+    global counter, modifier
+
+    counter += 1
+    if counter < 300:
+        modifier += 1
+    elif counter < 600:
+        modifier -= 1
+    else:
+        counter = 0
+        modifier = 2
+
+    circle.center = (15 + modifier*1.25, 15 + modifier*1.25)
+    circle.color = colors.from_rgba8(
+        255 - modifier*.8, 255 - modifier*.8, 255 - modifier*.3,
+    )
+    circle.radius = 15 + modifier/2
+    circle.segments = round(35-modifier/10)
+
+dearpygui_obj.start_gui()
+```
+
 #### Using DearPyGui-Obj With Existing Dear PyGui Code
 DearPyGui-Obj aims to be *fully compatible* with Dear PyGui. This means that you can freely mix modules and code that use DearPyGui and DearPyGui-Obj without issues. Wherever possible, widget classes are designed to draw all of their state from DPG so that there is no possibility of invalidation. You can even create instances for widgets that were created from outside of DearPyGui-Obj. 
 
