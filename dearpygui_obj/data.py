@@ -7,15 +7,36 @@ from dearpygui_obj.wrapper.widget import ConfigProperty
 from dearpygui_obj.wrapper.drawing import DrawProperty, DrawCommand
 
 if TYPE_CHECKING:
-    from typing import Any, List, Iterable
+    from typing import Any, List, Iterable, Union
     from dearpygui_obj.wrapper.widget import Widget, ItemConfigData
     from dearpygui_obj.wrapper.drawing import DrawConfigData
 
+    number = Union[int, float]
+
 ## Colors
 
-def color_from_rgba8(r: float, g: float, b: float, a: float = 255.0) -> ColorRGBA:
+class ColorRGBA(NamedTuple):
+    """RGBA color data.
+
+    Values should be expressed in the range between 0 and 255 (since that's what DPG uses).
+    The alpha value is optional.
+
+    Using the :func:`.color_from_float`, :func:`.color_from_rgba8`, and :func:`.color_from_hex`
+    constructor functions should be preferred over instantiating ColorRGBA tuples directly, as
+    the internal representation may be subject to change."""
+    r: number  #: red channel
+    g: number  #: green channel
+    b: number  #: blue channel
+    a: number = 255  #: alpha channel
+
+def color_from_float(r: float, g: float, b: float, a: float = 1.0) -> ColorRGBA:
+    # noinspection PyArgumentList
+    return ColorRGBA(r*255.0, g*255.0, b*255.0, a*255.0)
+
+def color_from_rgba8(r: number, g: number, b: number, a: number = 255) -> ColorRGBA:
     """Create a :class:`.ColorRGBA` from 0-255 channel values."""
-    return ColorRGBA(r/255.0, g/255.0, b/255.0, a/255.0)
+    # noinspection PyArgumentList
+    return ColorRGBA(r, g, b, a)
 
 def color_from_hex(color: str) -> ColorRGBA:
     """Create a :class:`.ColorRGBA` from a hex color string.
@@ -38,23 +59,14 @@ def color_from_hex(color: str) -> ColorRGBA:
 
     return color_from_rgba8(*(int(value, 16) for value in values))
 
-def dpg_import_color(colorlist: List[float]) -> ColorRGBA:
+def dpg_import_color(colorlist: List[number]) -> ColorRGBA:
     """Create a ColorRGBA from DPG color data."""
-    return ColorRGBA(*(min(max(0.0, value / 255.0), 1.0) for value in colorlist))
+    return ColorRGBA(*(min(max(0, value), 255) for value in colorlist))
 
-def dpg_export_color(color: Iterable[float]) -> List[float]:
+def dpg_export_color(color: Iterable[number]) -> List[number]:
     """Convert a :class:`ColorRGBA`-like iterable into DPG color data (list of floats 0-255)"""
-    return [min(max(0.0, 255.0 * value), 255.0) for value in color]
+    return [min(max(0, value), 255) for value in color]
 
-class ColorRGBA(NamedTuple):
-    """RGBA color data.
-
-    Values should be expressed in the range between 0.0 and 1.0. The alpha value is optional.
-    """
-    r: float  #: red channel
-    g: float  #: green channel
-    b: float  #: blue channel
-    a: float = 1.0  #: alpha channel
 
 
 class ConfigPropertyColorRGBA(ConfigProperty):
@@ -96,14 +108,15 @@ class DrawPropertyPos(DrawProperty):
 #     RGB_FLOAT  = 2
 #     RGB_INT    = 3
 #
-
-
 __all__ = [
+    'ColorRGBA',
+    'color_from_float',
     'color_from_rgba8',
     'color_from_hex',
-    'ColorRGBA',
     'ConfigPropertyColorRGBA',
     'DrawPropertyColorRGBA',
     'DrawPos',
     'DrawPropertyPos',
 ]
+
+

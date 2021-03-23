@@ -10,8 +10,9 @@ if TYPE_CHECKING:
     pass
 
 from dearpygui_obj.data import (
-    color_from_hex as from_hex,
+    color_from_float as from_float,
     color_from_rgba8 as from_rgba8,
+    color_from_hex as from_hex,
 )
 
 ## Red Colors
@@ -178,6 +179,7 @@ gainsboro           = from_hex('#DCDCDC')
 
 
 __all__ = [
+    'from_float',
     'from_rgba8',
     'from_hex',
 
