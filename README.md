@@ -82,6 +82,38 @@ def callback():
 dearpygui_obj.start_gui()
 ```
 
+#### Plots and Data Series
+
+``` python
+import dearpygui_obj
+from dearpygui_obj.widgets import *
+from dearpygui_obj.plots.dataseries import *
+
+with Window('Example') as win:
+    data = [
+        (-1, -9), (1, -4), (3, 11), (4, 5), (9, 7),
+    ]
+    lineseries = LineSeries('example', data)
+
+    ## plot data series are mutable sequences!
+    last = lineseries[-1]
+    print(last.x, last.y)      # elements are named tuples
+    lineseries.append((10, 2)) # but methods will accept any compatible sequence
+
+    ## can also access and modify data as individual 1D sequences,
+    ## as long as the length does not change
+    print(lineseries.y[0])  # prints -9
+    lineseries.y[2] += 1
+    lineseries.y[3:5] = (7, 5)
+    lineseries.x = [1, 2, 3, 4, 5, 6]
+    #lineseries.x = [1, 2, 3]  # TypeError: cannot change length of individual DataSeries field
+
+    plot = Plot()
+    plot.add_dataseries(lineseries)
+
+dearpygui_obj.start_gui()
+```
+
 #### Using DearPyGui-Obj With Existing Dear PyGui Code
 DearPyGui-Obj aims to be *fully compatible* with Dear PyGui. This means that you can freely mix modules and code that use DearPyGui and DearPyGui-Obj without issues. Wherever possible, widget classes are designed to draw all of their state from DPG so that there is no possibility of invalidation. You can even create instances for widgets that were created from outside of DearPyGui-Obj. 
 
