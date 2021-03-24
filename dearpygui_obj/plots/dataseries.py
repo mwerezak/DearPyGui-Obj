@@ -81,6 +81,7 @@ class BarSeries(DataSeries[XYData]):
         super().__init__(label, data, **config)
 
 class CandleSeriesData(NamedTuple):
+    """Data record type for :class:`.CandleSeries`."""
     date: float  #: POSIX timestamp
     open: float
     high: float
@@ -109,6 +110,7 @@ class CandleSeries(DataSeries[CandleSeriesData]):
 
 
 class ErrorSeriesData(NamedTuple):
+    """Data record type for :class:`.ErrorSeries`."""
     x: float
     y: float
     negative: float
@@ -213,6 +215,7 @@ class LineSeries(DataSeries[XYData]):
         super().__init__(label, data, **config)
 
 class PieSeriesData(NamedTuple):
+    """Data record type for :class:`.PieSeries`."""
     value: float
     label: str
 
@@ -258,7 +261,7 @@ class ScatterSeries(DataSeries[XYData]):
         super().__init__(label, data, **config)
 
 
-class SingleShadeSeries(DataSeries[XYData]):
+class ShadeSeries(DataSeries[XYData]):
     """Adds a single-sided shade series to a plot."""
     _update_func = dpgcore.add_scatter_series
     _create_record = XYData
@@ -276,11 +279,12 @@ class SingleShadeSeries(DataSeries[XYData]):
 
 
 class ShadeRangeData(NamedTuple):
+    """Data record type for :class:`.ShadeRangeSeries`."""
     x: float
     y1: float
     y2: float
 
-class DoubleShadeSeries(DataSeries[ShadeRangeData]):
+class ShadeRangeSeries(DataSeries[ShadeRangeData]):
     """Adds a single-sided shade series to a plot."""
     _update_func = dpgcore.add_scatter_series
     _create_record = ShadeRangeData
@@ -346,8 +350,8 @@ __all__ = [
     'PieSeriesData',
     'LineSeries',
     'ScatterSeries',
-    'SingleShadeSeries',
-    'DoubleShadeSeries',
+    'ShadeSeries',
+    'ShadeRangeSeries',
     'ShadeRangeData',
     'StairSeries',
     'StemSeries',

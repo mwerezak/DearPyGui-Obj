@@ -117,9 +117,8 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.plots.dataseries.LineSeries
     dearpygui_obj.plots.dataseries.PieSeries
     dearpygui_obj.plots.dataseries.ScatterSeries
-    dearpygui_obj.plots.dataseries.SingleShadeSeries
-    dearpygui_obj.plots.dataseries.DoubleShadeSeries
-    dearpygui_obj.plots.dataseries.ShadeRangeData
+    dearpygui_obj.plots.dataseries.ShadeSeries
+    dearpygui_obj.plots.dataseries.ShadeRangeSeries
     dearpygui_obj.plots.dataseries.StairSeries
     dearpygui_obj.plots.dataseries.StemSeries
 

@@ -89,16 +89,38 @@ Data Series
     LineSeries
     PieSeries
     ScatterSeries
-    SingleShadeSeries
-    DoubleShadeSeries
+    ShadeSeries
+    ShadeRangeSeries
     StairSeries
     StemSeries
+
+XYData
+^^^^^^
+
+.. autoclass:: XYData
+    :members:
+    :undoc-members:
+
+Area Series
+^^^^^^^^^^^
 
 .. autoclass:: AreaSeries
     :members:
     :undoc-members:
 
+
+Bar Series
+^^^^^^^^^^
+
 .. autoclass:: BarSeries
+    :members:
+    :undoc-members:
+
+
+Candle Series
+^^^^^^^^^^^^^
+
+.. autoclass:: CandleSeries
     :members:
     :undoc-members:
 
@@ -106,7 +128,10 @@ Data Series
     :members:
     :undoc-members:
 
-.. autoclass:: CandleSeries
+Error Series
+^^^^^^^^^^^^
+
+.. autoclass:: ErrorSeries
     :members:
     :undoc-members:
 
@@ -114,13 +139,15 @@ Data Series
     :members:
     :undoc-members:
 
-.. autoclass:: ErrorSeries
-    :members:
-    :undoc-members:
+Heat Series
+^^^^^^^^^^^
 
 .. autoclass:: HeatSeries
     :members:
     :undoc-members:
+
+Infinite Line Series
+^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: HLineSeries
     :members:
@@ -130,9 +157,15 @@ Data Series
     :members:
     :undoc-members:
 
+Line Series
+^^^^^^^^^^^
+
 .. autoclass:: LineSeries
     :members:
     :undoc-members:
+
+Pie Series
+^^^^^^^^^^
 
 .. autoclass:: PieSeriesData
     :members:
@@ -142,15 +175,21 @@ Data Series
     :members:
     :undoc-members:
 
+Scatter Series
+^^^^^^^^^^^^^^
+
 .. autoclass:: ScatterSeries
     :members:
     :undoc-members:
 
-.. autoclass:: SingleShadeSeries
+Shade Series
+^^^^^^^^^^^^
+
+.. autoclass:: ShadeSeries
     :members:
     :undoc-members:
 
-.. autoclass:: DoubleShadeSeries
+.. autoclass:: ShadeRangeSeries
     :members:
     :undoc-members:
 
@@ -158,14 +197,17 @@ Data Series
     :members:
     :undoc-members:
 
+Stair Series
+^^^^^^^^^^^^
+
 .. autoclass:: StairSeries
     :members:
     :undoc-members:
+
+Stem Series
+^^^^^^^^^^^
 
 .. autoclass:: StemSeries
     :members:
     :undoc-members:
 
-.. autoclass:: XYData
-    :members:
-    :undoc-members:
