@@ -101,7 +101,7 @@ with Window('Example') as win:
     print(lineseries.y[0])  # prints -9
     lineseries.y[2] += 1
     lineseries.y[3:5] = (7, 5)
-    lineseries.x = [1, 2, 3, 4, 5, 6]  # even supports assignment
+    lineseries.x[:] = [1, 2, 3, 4, 5, 6]
     #lineseries.x = [1, 2, 3]  # TypeError: cannot change length of individual DataSeries field
 
     plot = Plot()
