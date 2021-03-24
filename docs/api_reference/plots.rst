@@ -94,6 +94,10 @@ Data Series
     StairSeries
     StemSeries
 
+.. autoclass:: XYData
+    :members:
+    :undoc-members:
+
 .. autoclass:: AreaSeries
     :members:
     :undoc-members:
@@ -166,6 +170,3 @@ Data Series
     :members:
     :undoc-members:
 
-.. autoclass:: XYData
-    :members:
-    :undoc-members:
