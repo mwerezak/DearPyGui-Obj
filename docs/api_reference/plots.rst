@@ -89,8 +89,8 @@ Data Series
     LineSeries
     PieSeries
     ScatterSeries
-    SingleShadeSeries
-    DoubleShadeSeries
+    ShadeSeries
+    ShadeRangeSeries
     StairSeries
     StemSeries
 
@@ -150,11 +150,11 @@ Data Series
     :members:
     :undoc-members:
 
-.. autoclass:: SingleShadeSeries
+.. autoclass:: ShadeSeries
     :members:
     :undoc-members:
 
-.. autoclass:: DoubleShadeSeries
+.. autoclass:: ShadeRangeSeries
     :members:
     :undoc-members:
 
