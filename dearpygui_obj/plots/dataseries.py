@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, NamedTuple
 
 import dearpygui.core as dpgcore
 from dearpygui_obj.data import dpg_import_color, dpg_export_color
-from dearpygui_obj.wrapper.dataseries import DataSeries, DataSeriesConfig
+from dearpygui_obj.wrapper.dataseries import DataSeries, DataSeriesConfig, DataSeriesField
 
 if TYPE_CHECKING:
     from typing import Any, Tuple, Iterable, MutableSequence
@@ -53,8 +53,8 @@ class AreaSeries(DataSeries[XYData]):
     _create_record = XYData
     _data_keywords = 'x y'
 
-    x: MutableSequence[float]
-    y: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     fill: ColorRGBA = DataSeriesConfigColorRGBA()
@@ -71,8 +71,8 @@ class BarSeries(DataSeries[XYData]):
     _create_record = XYData
     _data_keywords = 'x y'
 
-    x: MutableSequence[float]
-    y: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     weight: float = DataSeriesConfig()
     horizontal: bool = DataSeriesConfig()
@@ -94,11 +94,11 @@ class CandleSeries(DataSeries[CandleSeriesData]):
     _create_record = CandleSeriesData
     _data_keywords = 'date opens highs lows closes'
 
-    date: MutableSequence[float]
-    opens: MutableSequence[float]
-    highs: MutableSequence[float]
-    lows: MutableSequence[float]
-    closes: MutableSequence[float]
+    date: MutableSequence[float] = DataSeriesField()
+    opens: MutableSequence[float] = DataSeriesField()
+    highs: MutableSequence[float] = DataSeriesField()
+    lows: MutableSequence[float] = DataSeriesField()
+    closes: MutableSequence[float] = DataSeriesField()
 
     tooltip: bool = DataSeriesConfig()
     bull_color: ColorRGBA = DataSeriesConfigColorRGBA()
@@ -123,10 +123,10 @@ class ErrorSeries(DataSeries[ErrorSeriesData]):
     _data_keywords = 'x y negative positive'
 
 
-    x: MutableSequence[float]
-    y: MutableSequence[float]
-    negative: MutableSequence[float]
-    positive: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
+    negative: MutableSequence[float] = DataSeriesField()
+    positive: MutableSequence[float] = DataSeriesField()
 
     horizontal: bool = DataSeriesConfig()
 
@@ -139,7 +139,7 @@ class HeatSeries(DataSeries[tuple]):
     _update_func = dpgcore.add_heat_series
     _data_keywords = 'values'
 
-    values: MutableSequence[float]
+    values: MutableSequence[float] = DataSeriesField()
 
     rows: int = DataSeriesConfig()
     columns: int = DataSeriesConfig()
@@ -172,7 +172,7 @@ class HLineSeries(DataSeries[tuple]):
     _update_func = dpgcore.add_hline_series
     _data_keywords = 'x'
 
-    x: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     weight: float = DataSeriesConfig()
@@ -186,7 +186,7 @@ class VLineSeries(DataSeries[tuple]):
     _update_func = dpgcore.add_vline_series
     _data_keywords = 'x'
 
-    x: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     weight: float = DataSeriesConfig()
@@ -205,8 +205,8 @@ class LineSeries(DataSeries[XYData]):
     _create_record = XYData
     _data_keywords = 'x y'
 
-    x: MutableSequence[float]
-    y: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     weight: float = DataSeriesConfig()
@@ -225,8 +225,8 @@ class PieSeries(DataSeries[PieSeriesData]):
     _create_record = PieSeriesData
     _data_keywords = 'values labels'
 
-    values: MutableSequence[float]
-    labels: MutableSequence[str]
+    values: MutableSequence[float] = DataSeriesField()
+    labels: MutableSequence[str] = DataSeriesField()
 
     x: float = DataSeriesConfig()
     y: float = DataSeriesConfig()
@@ -247,8 +247,8 @@ class ScatterSeries(DataSeries[XYData]):
     _create_record = XYData
     _data_keywords = 'x y'
 
-    x: MutableSequence[float]
-    y: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     marker: PlotMarker = DataSeriesConfigMarker()
     size: float = DataSeriesConfig()
@@ -267,8 +267,8 @@ class ShadeSeries(DataSeries[XYData]):
     _create_record = XYData
     _data_keywords = 'x y1'
 
-    x: MutableSequence[float]
-    y1: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y1: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     fill: ColorRGBA = DataSeriesConfigColorRGBA()
@@ -290,9 +290,9 @@ class ShadeRangeSeries(DataSeries[ShadeRangeData]):
     _create_record = ShadeRangeData
     _data_keywords = 'x y1 y2'
 
-    x: MutableSequence[float]
-    y1: MutableSequence[float]
-    y2: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y1: MutableSequence[float] = DataSeriesField()
+    y2: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     fill: ColorRGBA = DataSeriesConfigColorRGBA()
@@ -308,8 +308,8 @@ class StairSeries(DataSeries[XYData]):
     _create_record = XYData
     _data_keywords = 'x y'
 
-    x: MutableSequence[float]
-    y: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     color: ColorRGBA = DataSeriesConfigColorRGBA()
     weight: float = DataSeriesConfig()
@@ -324,8 +324,8 @@ class StemSeries(DataSeries[XYData]):
     _create_record = XYData
     _data_keywords = 'x y'
 
-    x: MutableSequence[float]
-    y: MutableSequence[float]
+    x: MutableSequence[float] = DataSeriesField()
+    y: MutableSequence[float] = DataSeriesField()
 
     marker: PlotMarker = DataSeriesConfigMarker()
     size: float = DataSeriesConfig()

@@ -67,6 +67,14 @@ class DataSeriesCollection(MutableSequence[TValue]):
         self.series = series
         self.key = key
 
+    # raises a TypeError if the slice will change the length of the sequence
+    def _set_slice(self, s: slice, value: Iterable) -> None:
+        if not hasattr(value, '__len__'):
+            value = list(value)
+        if len(range(*s.indices(len(self)))) != len(value):
+            raise TypeError('cannot change length of individual DataSeries field')
+        self.series._data[self.key][s] = value
+
     def __len__(self) -> int:
         return len(self.series._data[self.key])
 
@@ -85,14 +93,15 @@ class DataSeriesCollection(MutableSequence[TValue]):
     def insert(self, index: int, value: TValue) -> None:
         raise TypeError('cannot change length of individual DataSeries field')
 
-    # raises a TypeError if the slice will change the length of the sequence
-    def _set_slice(self, s: slice, value: Iterable) -> None:
-        if not hasattr(value, '__len__'):
-            value = list(value)
-        if len(range(*s.indices(len(self)))) != len(value):
-            raise TypeError('cannot change length of individual DataSeries field')
-        self.series._data[self.key][s] = value
+class DataSeriesField(property):
+    """Supports assignment to a DataSeries' data field attributes."""
+    def __set_name__(self, owner: Type[DataSeries], name: str):
+        self.name = '_' + name
 
+    def __get__(self, instance: DataSeries, owner: Type[DataSeries] = None) -> Any:
+        if instance is None:
+            return self
+        return getattr(instance, self.name)
 
 TRecord = TypeVar('TRecord')
 class DataSeries(ABC, MutableSequence[TRecord]):
@@ -144,7 +153,7 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         for index, name in enumerate(self._get_data_keywords()):
             self._data.append([])
             field = DataSeriesCollection(self, index)
-            setattr(self, name, field)
+            setattr(self, '_' + name, field)
 
         ## non-data config properties
         props = self._get_config_properties()
