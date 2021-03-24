@@ -93,7 +93,7 @@ class DataSeriesCollection(MutableSequence[TValue]):
     def insert(self, index: int, value: TValue) -> None:
         raise TypeError('cannot change length of individual DataSeries field')
 
-class DataSeriesField(property):
+class DataSeriesField:
     """Supports assignment to a DataSeries' data field attributes."""
     def __set_name__(self, owner: Type[DataSeries], name: str):
         self.name = '_' + name
@@ -102,6 +102,9 @@ class DataSeriesField(property):
         if instance is None:
             return self
         return getattr(instance, self.name)
+
+    def __set__(self, instance: DataSeries, value: Any) -> None:
+        raise AttributeError('can\'t set attribute')
 
 TRecord = TypeVar('TRecord')
 class DataSeries(ABC, MutableSequence[TRecord]):
