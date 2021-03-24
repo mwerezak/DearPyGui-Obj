@@ -94,15 +94,33 @@ Data Series
     StairSeries
     StemSeries
 
+XYData
+^^^^^^
+
 .. autoclass:: XYData
     :members:
     :undoc-members:
+
+Area Series
+^^^^^^^^^^^
 
 .. autoclass:: AreaSeries
     :members:
     :undoc-members:
 
+
+Bar Series
+^^^^^^^^^^
+
 .. autoclass:: BarSeries
+    :members:
+    :undoc-members:
+
+
+Candle Series
+^^^^^^^^^^^^^
+
+.. autoclass:: CandleSeries
     :members:
     :undoc-members:
 
@@ -110,7 +128,10 @@ Data Series
     :members:
     :undoc-members:
 
-.. autoclass:: CandleSeries
+Error Series
+^^^^^^^^^^^^
+
+.. autoclass:: ErrorSeries
     :members:
     :undoc-members:
 
@@ -118,13 +139,15 @@ Data Series
     :members:
     :undoc-members:
 
-.. autoclass:: ErrorSeries
-    :members:
-    :undoc-members:
+Heat Series
+^^^^^^^^^^^
 
 .. autoclass:: HeatSeries
     :members:
     :undoc-members:
+
+Infinite Line Series
+^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: HLineSeries
     :members:
@@ -134,9 +157,15 @@ Data Series
     :members:
     :undoc-members:
 
+Line Series
+^^^^^^^^^^^
+
 .. autoclass:: LineSeries
     :members:
     :undoc-members:
+
+Pie Series
+^^^^^^^^^^
 
 .. autoclass:: PieSeriesData
     :members:
@@ -146,9 +175,15 @@ Data Series
     :members:
     :undoc-members:
 
+Scatter Series
+^^^^^^^^^^^^^^
+
 .. autoclass:: ScatterSeries
     :members:
     :undoc-members:
+
+Shade Series
+^^^^^^^^^^^^
 
 .. autoclass:: ShadeSeries
     :members:
@@ -162,9 +197,15 @@ Data Series
     :members:
     :undoc-members:
 
+Stair Series
+^^^^^^^^^^^^
+
 .. autoclass:: StairSeries
     :members:
     :undoc-members:
+
+Stem Series
+^^^^^^^^^^^
 
 .. autoclass:: StemSeries
     :members:
