@@ -97,6 +97,7 @@ class DataSeriesField:
     """Supports assignment to a DataSeries' data field attributes."""
     def __set_name__(self, owner: Type[DataSeries], name: str):
         self.name = '_' + name
+        self.__doc__ = f"Access '{name}' data as a linear sequence."
 
     def __get__(self, instance: DataSeries, owner: Type[DataSeries] = None) -> Any:
         if instance is None:
