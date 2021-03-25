@@ -74,7 +74,7 @@ def _create_item_wrapper(name: str, item_type: str) -> Widget:
     return ctor(name_id = name)
 
 def iter_all_items() -> Iterable[Widget]:
-    """Iterate all items (*NOT* windows) and yield their wrapper objects."""
+    """Iterate all items and yield their wrapper objects."""
     for name in dpgcore.get_all_items():
         yield get_item_by_id(name)
 
