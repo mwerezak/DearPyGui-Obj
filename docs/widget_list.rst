@@ -129,7 +129,16 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     :nosignatures:
 
     dearpygui_obj.drawing.DrawingCanvas
-
+    dearpygui_obj.drawing.DrawLine
+    dearpygui_obj.drawing.DrawRectangle
+    dearpygui_obj.drawing.DrawCircle
+    dearpygui_obj.drawing.DrawText
+    dearpygui_obj.drawing.DrawArrow
+    dearpygui_obj.drawing.DrawPolyLine
+    dearpygui_obj.drawing.DrawTriangle
+    dearpygui_obj.drawing.DrawQuad
+    dearpygui_obj.drawing.DrawPolygon
+    dearpygui_obj.drawing.DrawBezierCurve
 
 .. rubric:: Node Editor
 
