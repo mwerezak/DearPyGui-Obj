@@ -41,8 +41,8 @@ class DataSeriesConfigMarker(DataSeriesConfig):
 
 class XYData(NamedTuple):
     """Common 2D data point used by many data series types."""
-    x: float
-    y: float
+    x: float #: X-axis data.
+    y: float #: Y-axis data.
 
 
 ## Data Series

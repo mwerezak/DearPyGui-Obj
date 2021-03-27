@@ -51,10 +51,15 @@ Plot Markup
     PlotAnnotation
     PlotText
 
+PlotAnnotation
+^^^^^^^^^^^^^^
+
 .. autoclass:: PlotAnnotation
     :members:
     :undoc-members:
 
+PlotText
+^^^^^^^^
 
 .. autoclass:: PlotText
     :members:
@@ -63,7 +68,6 @@ Plot Markup
 
 Data Series
 -----------
-
 .. automodule:: dearpygui_obj.plots.dataseries
 
 .. rubric:: Summary
@@ -71,6 +75,8 @@ Data Series
 .. autosummary:: 
     :nosignatures:
 
+    ~dearpygui_obj.wrapper.dataseries.DataSeries
+    ~dearpygui_obj.wrapper.dataseries.DataSeriesConfig
     AreaSeries
     BarSeries
     CandleSeries
@@ -85,6 +91,18 @@ Data Series
     ShadeRangeSeries
     StairSeries
     StemSeries
+
+Base Class
+^^^^^^^^^^
+
+.. autoclass:: dearpygui_obj.wrapper.dataseries.DataSeries
+    :members:
+    :undoc-members:
+
+.. autoclass:: dearpygui_obj.wrapper.dataseries.DataSeriesConfig
+    :members:
+    :undoc-members:
+
 
 XYData
 ^^^^^^
@@ -200,30 +218,5 @@ Stem Series
 ^^^^^^^^^^^
 
 .. autoclass:: StemSeries
-    :members:
-    :undoc-members:
-
-
-DataSeries Base Class
----------------------
-
-.. automodule:: dearpygui_obj.wrapper.dataseries
-
-.. rubric:: Summary
-
-.. autosummary:: 
-    :nosignatures:
-
-    DataSeries
-    DataSeriesConfig
-
-.. autoclass:: DataSeries
-    :members:
-    :undoc-members:
-
-DataSeriesConfig
-^^^^^^^^^^^^^^^^
-
-.. autoclass:: DataSeriesConfig
     :members:
     :undoc-members:
