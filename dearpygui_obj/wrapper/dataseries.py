@@ -192,7 +192,7 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         """Set a config value."""
         self._config[key] = value
 
-    def update_plot(self, plot: Plot, update_bounds: bool = True) -> None:
+    def update(self, plot: Plot, update_bounds: bool = True) -> None:
         """Updates a plot with this DataSeries.
 
         If this DataSeries has not been added to the plot before, this method will add it.

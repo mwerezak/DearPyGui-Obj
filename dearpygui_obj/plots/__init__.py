@@ -157,7 +157,7 @@ class Plot(Widget, ItemWidget):
         """Add a :class:`.DataSeries` to this plot (or update it).
 
         Updates the data series if it has already been added."""
-        series.update_plot(self, update_bounds)
+        series.update(self, update_bounds)
 
     def remove_dataseries(self, series: DataSeries) -> None:
         """Remove a :class:`.DataSeries` from this plot if it has been added."""
@@ -332,7 +332,7 @@ class PlotText:
         else:
             self._axis = axis
 
-    def update_plot(self, plot: Plot, update_bounds: bool = True) -> None:
+    def update(self, plot: Plot, update_bounds: bool = True) -> None:
         x, y = self.pos
         xoff, yoff = self.offset
         dpgcore.add_text_point(
