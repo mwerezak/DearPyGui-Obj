@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
     TickLabel = Tuple[str, float]
     PlotLimits = Tuple[float, float]
+    YAxis = Union['PlotYAxis', 'PlotYAxisConfig']
 
 ## Plot Axis Configuration
 
@@ -201,7 +202,7 @@ class Plot(Widget, ItemWidget):
 
 
 class PlotAnnotation:
-    """A plot annotation.
+    """Adds a plot annotation.
 
     Note:
         DPG does not support modifying existing plot annoations (other than to delete).
@@ -295,6 +296,52 @@ class PlotAnnotation:
         self._delete_annotation()
         self._create_annotation()
 
+class PlotText:
+    """Adds a point with text on a plot.
+
+    Due to the limitations of DPG the each PlotText instance must
+    have a unique label within each plot that it is added to.
+    """
+
+    def __init__(self,
+                 label: str,
+                 pos: Tuple[float, float], *,
+                 vertical: bool = False,
+                 offset: Tuple[int, int] = (0, 0),
+                 axis: YAxis = Plot.yaxis):
+
+        self.axis = axis
+        self._name_id = label
+        self.pos = pos
+        self.offset = offset
+        self.vertical = vertical
+
+    @property
+    def id(self) -> str:
+        return self._name_id
+
+    @property
+    def axis(self) -> PlotYAxis:
+        """Set the Y-axis used to display the data series."""
+        return self._axis
+
+    @axis.setter
+    def axis(self, axis: YAxis) -> None:
+        if hasattr(axis, 'axis'):
+            self._axis = axis.axis
+        else:
+            self._axis = axis
+
+    def update_plot(self, plot: Plot, update_bounds: bool = True) -> None:
+        x, y = self.pos
+        xoff, yoff = self.offset
+        dpgcore.add_text_point(
+            plot.id, self._name_id, x, y,
+            vertical=self.vertical,
+            xoffset=xoff, yoffset=yoff,
+            update_bounds=update_bounds,
+            axis=self.axis.index
+        )
 
 __all__ = [
     'Plot',

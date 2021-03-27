@@ -1,10 +1,13 @@
 Plots
 =====
 
-.. automodule:: dearpygui_obj.plots
-
 .. contents:: Contents
     :local:
+
+Plots
+-----
+
+.. automodule:: dearpygui_obj.plots
 
 .. rubric:: Summary
 
@@ -13,13 +16,6 @@ Plots
 
     Plot
     PlotAxisConfig
-    PlotXAxisConfig
-    PlotYAxisConfig
-    PlotOptYAxisConfig
-    PlotAnnotation
-
-Plot
-----
 
 .. autoclass:: Plot
     :members:
@@ -44,10 +40,23 @@ Axis Configuration
     :members:
     :undoc-members:
 
-Annotations
-^^^^^^^^^^^
+Plot Markup
+-----------
+
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+
+    PlotAnnotation
+    PlotText
 
 .. autoclass:: PlotAnnotation
+    :members:
+    :undoc-members:
+
+
+.. autoclass:: PlotText
     :members:
     :undoc-members:
 

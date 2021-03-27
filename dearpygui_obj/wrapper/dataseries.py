@@ -7,9 +7,8 @@ from dearpygui_obj import _generate_id
 from dearpygui_obj.plots import Plot
 if TYPE_CHECKING:
     from typing import Any, Optional, Union, Type, Callable, Mapping, Iterable, Sequence
-    from dearpygui_obj.plots import PlotYAxis, PlotYAxisConfig
+    from dearpygui_obj.plots import PlotYAxis, PlotYAxisConfig, YAxis
 
-    YAxis = Union[PlotYAxis, PlotYAxisConfig]
     ConvertFunc = Callable[[Any], Any]
 
 
