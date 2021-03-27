@@ -73,6 +73,13 @@ Draw Commands
     :members:
     :undoc-members:
 
+Pos2D
+^^^^^
+
+.. autoclass:: Pos2D
+    :members:
+    :undoc-members:
+
 Draw Wrapper
 ------------
 

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import string
-from typing import TYPE_CHECKING, Tuple, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from dearpygui_obj.wrapper.widget import ConfigProperty
-from dearpygui_obj.wrapper.drawing import DrawProperty, DrawCommand
 
 if TYPE_CHECKING:
     from typing import Any, List, Iterable, Union
     from dearpygui_obj.wrapper.widget import Widget, ItemConfigData
-    from dearpygui_obj.wrapper.drawing import DrawConfigData
+
 
     number = Union[int, float]
 
@@ -67,33 +66,13 @@ def dpg_export_color(color: Iterable[number]) -> List[number]:
     """Convert a :class:`ColorRGBA`-like iterable into DPG color data (list of floats 0-255)"""
     return [min(max(0, value), 255) for value in color]
 
-
-
 class ConfigPropertyColorRGBA(ConfigProperty):
     def fvalue(self, instance: Widget) -> Any:
         return dpg_import_color(instance.get_config()[self.key])
     def fconfig(self, instance: Widget, value: ColorRGBA) -> ItemConfigData:
         return {self.key : dpg_export_color(value)}
 
-class DrawPropertyColorRGBA(DrawProperty):
-    def fvalue(self, instance: Widget) -> Any:
-        return dpg_import_color(instance.get_config()[self.key])
-    def fconfig(self, instance: Widget, value: ColorRGBA) -> DrawConfigData:
-        return {self.key : dpg_export_color(value)}
 
-
-Pos2D = Tuple[float, float]  #: Type alias for 2D position data
-
-class DrawPos(NamedTuple):
-    """2D position data used for drawing."""
-    x: float  #: x coordinate
-    y: float  #: y coordinate
-
-class DrawPropertyPos(DrawProperty):
-    def fvalue(self, instance: DrawCommand) -> DrawPos:
-        return DrawPos(*instance.get_config()[self.key])
-    def fconfig(self, instance: DrawCommand, value: Pos2D) -> DrawConfigData:
-        return {self.key : list(value)}
 
 
 ## Textures
@@ -114,9 +93,6 @@ __all__ = [
     'color_from_rgba8',
     'color_from_hex',
     'ConfigPropertyColorRGBA',
-    'DrawPropertyColorRGBA',
-    'DrawPos',
-    'DrawPropertyPos',
 ]
 
 

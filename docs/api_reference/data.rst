@@ -16,8 +16,6 @@ Data
     dpg_import_color
     dpg_export_color
     ColorRGBA
-    Pos2D
-    DrawPos
 
 Colors
 ------
@@ -40,12 +38,3 @@ Predefined Colors
 
 A selection of predefined color values are available from the :mod:`dearpygui_obj.colors` module.
 
-
-DrawPos
--------
-
-.. autodata:: Pos2D
-
-.. autoclass:: DrawPos
-    :members:
-    :undoc-members:
