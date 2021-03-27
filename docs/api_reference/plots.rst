@@ -16,8 +16,7 @@ Plots
     PlotXAxisConfig
     PlotYAxisConfig
     PlotOptYAxisConfig
-    ~dataseries.DataSeries
-    ~dataseries.DataSeriesConfig
+    PlotAnnotation
 
 Plot
 ----
@@ -45,29 +44,13 @@ Axis Configuration
     :members:
     :undoc-members:
 
-DataSeries
-^^^^^^^^^^
+Annotations
+^^^^^^^^^^^
 
-.. currentmodule:: dearpygui_obj.plots.dataseries
-
-.. autoclass:: DataSeries
+.. autoclass:: PlotAnnotation
     :members:
     :undoc-members:
 
-DataSeriesConfig
-^^^^^^^^^^^^^^^^
-
-.. autoclass:: DataSeriesConfig
-    :members:
-    :undoc-members:
-
-.. autoclass:: DataSeriesConfigColorRGBA
-    :members:
-    :undoc-members:
-
-.. autoclass:: DataSeriesConfigMarker
-    :members:
-    :undoc-members:
 
 Data Series
 -----------
@@ -211,3 +194,27 @@ Stem Series
     :members:
     :undoc-members:
 
+
+DataSeries Base Class
+---------------------
+
+.. automodule:: dearpygui_obj.wrapper.dataseries
+
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+
+    DataSeries
+    DataSeriesConfig
+
+.. autoclass:: DataSeries
+    :members:
+    :undoc-members:
+
+DataSeriesConfig
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: DataSeriesConfig
+    :members:
+    :undoc-members:

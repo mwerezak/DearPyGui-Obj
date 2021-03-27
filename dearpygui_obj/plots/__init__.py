@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, cast
 
 import dearpygui.core as dpgcore
 
-from dearpygui_obj import _register_item_type
+from dearpygui_obj import _register_item_type, _generate_id
+from dearpygui_obj.data import ColorRGBA, dpg_export_color
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
 
 if TYPE_CHECKING:
@@ -190,6 +192,107 @@ class Plot(Widget, ItemWidget):
             dpgcore.reset_yticks(self.id)
         else:
             dpgcore.set_yticks(self.id, ticks)
+
+    def add_annotation(self, text: str, pos: Tuple[float, float], offset: Tuple[float, float], *,
+                       color: ColorRGBA, clamped: bool = True) -> PlotAnnotation:
+        """Creates a :class:`.PlotAnnotation` and adds it to the plot."""
+        return PlotAnnotation(self, text, pos, offset, color=color, clamped=clamped)
+
+
+
+class PlotAnnotation:
+    """A plot annotation.
+
+    Note:
+        DPG does not support modifying existing plot annoations (other than to delete).
+        Any methods provided that "mutate" the annotation actually delete and
+        re-create the annotation in DPG.
+    """
+
+    plot: Plot
+    text: str
+    color: ColorRGBA
+    clamped: bool #: If ``True``, the label will be free to shift so that it is not clipped by the plot limits.
+
+    x: float
+    y: float
+    offset: Tuple[float, float]
+
+    _tag_id: str = None
+    def __init__(self,
+                 plot: Plot,
+                 text: str,
+                 pos: Tuple[float, float],
+                 offset: Tuple[float, float], *,
+                 color: ColorRGBA = ColorRGBA(0,0,0),
+                 clamped: bool = True):
+
+        self._tag_id = _generate_id(self)
+        self._plot = plot
+        self._text = text
+        self._pos = pos
+        self._offset = offset
+        self._color = color
+        self._clamped = clamped
+        self._create_annotation()
+
+    def _create_annotation(self) -> None:
+        x, y = self._pos
+        xoff, yoff = self.offset
+        dpgcore.add_annotation(
+            self._plot.id, self._text, x, y, xoff, yoff,
+            color=dpg_export_color(self.color), clamped=self.clamped,
+            tag=self._tag_id
+        )
+
+    def _delete_annotation(self) -> None:
+        dpgcore.delete_annotation(self._plot.id, self._tag_id)
+
+    def delete(self) -> None:
+        self._delete_annotation()
+        del self._tag_id
+
+    @property
+    def is_valid(self) -> bool:
+        """``False`` if the annotation has been deleted."""
+        return self._tag_id is not None
+
+    @property
+    def id(self) -> str: return self._tag_id
+    @property
+    def plot(self) -> Plot: return self._plot
+    @property
+    def text(self) -> str: return self._text
+    @property
+    def color(self) -> ColorRGBA: return self._color
+    @property
+    def clamped(self) -> bool: return self._clamped
+    @property
+    def x(self) -> float: return self._pos[0]
+    @property
+    def y(self) -> float: return self._pos[1]
+    @property
+    def offset(self) -> Tuple[float, float]: return self._offset
+
+    def set_text(self, text: str) -> None:
+        self._text = text
+        self._delete_annotation()
+        self._create_annotation()
+
+    def set_color(self, color: ColorRGBA) -> None:
+        self._color = color
+        self._delete_annotation()
+        self._create_annotation()
+
+    def set_position(self, x: float, y: float) -> None:
+        self._pos = (x, y)
+        self._delete_annotation()
+        self._create_annotation()
+
+    def set_offset(self, xoffset: float, yoffset: float) -> None:
+        self._offset = (xoffset, yoffset)
+        self._delete_annotation()
+        self._create_annotation()
 
 
 __all__ = [

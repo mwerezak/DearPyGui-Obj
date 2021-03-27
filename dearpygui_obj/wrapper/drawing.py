@@ -90,6 +90,7 @@ class DrawCommand(ABC):
             setattr(cls, '_draw_properties', draw_properties)
         return draw_properties
 
+    _tag_id: str = None
     def __init__(self, canvas: DrawingCanvas, *args, tag_id: str = None, **kwargs: Any):
         self._canvas = canvas
         if tag_id is not None:
@@ -124,11 +125,16 @@ class DrawCommand(ABC):
         return self._tag_id
 
     @property
+    def is_valid(self) -> bool:
+        return self._tag_id is not None
+
+    @property
     def canvas(self) -> DrawingCanvas:
         return self._canvas
 
     def delete(self) -> None:
         dpgcore.delete_draw_command(self.canvas.id, self.id)
+        del self._tag_id
 
     def get_config(self) -> DrawConfigData:
         return dpgcore.get_draw_command(self.canvas.id, self.id)
