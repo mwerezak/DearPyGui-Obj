@@ -61,6 +61,19 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.input.SliderInt3
     dearpygui_obj.input.SliderInt4
 
+.. rubric:: Drag Inputs
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.input.DragFloat
+    dearpygui_obj.input.DragFloat2
+    dearpygui_obj.input.DragFloat3
+    dearpygui_obj.input.DragFloat4
+    dearpygui_obj.input.DragInt
+    dearpygui_obj.input.DragInt2
+    dearpygui_obj.input.DragInt3
+    dearpygui_obj.input.DragInt4
 
 .. rubric:: Colors
 

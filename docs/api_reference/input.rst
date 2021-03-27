@@ -28,6 +28,14 @@ Input Widgets
     SliderInt2
     SliderInt3
     SliderInt4
+    DragFloat
+    DragFloat2
+    DragFloat3
+    DragFloat4
+    DragInt
+    DragInt2
+    DragInt3
+    DragInt4
     ColorPicker
     ColorEdit
     ColorButton
@@ -174,6 +182,69 @@ Integer Sliders
 
     .. autoattribute:: value
 
+
+Drag Inputs
+-----------
+
+.. autoclass:: DragInput
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+Float Drag Input
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: DragFloat
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+.. autoclass:: DragFloat2
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+.. autoclass:: DragFloat3
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+.. autoclass:: DragFloat4
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+Integer Drag Input
+^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: DragInt
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+.. autoclass:: DragInt2
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+.. autoclass:: DragInt3
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
+
+.. autoclass:: DragInt4
+    :members:
+    :undoc-members:
+
+    .. autoattribute:: value
 
 Color Input
 -----------
