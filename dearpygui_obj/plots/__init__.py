@@ -194,7 +194,7 @@ class Plot(Widget, ItemWidget):
             dpgcore.set_yticks(self.id, ticks)
 
     def add_annotation(self, text: str, pos: Tuple[float, float], offset: Tuple[float, float], *,
-                       color: ColorRGBA, clamped: bool = True) -> PlotAnnotation:
+                       color: ColorRGBA = None, clamped: bool = True) -> PlotAnnotation:
         """Creates a :class:`.PlotAnnotation` and adds it to the plot."""
         return PlotAnnotation(self, text, pos, offset, color=color, clamped=clamped)
 
@@ -211,7 +211,7 @@ class PlotAnnotation:
 
     plot: Plot
     text: str
-    color: ColorRGBA
+    color: Optional[ColorRGBA] #: If ``None``, then the annotation will have no callout bubble.
     clamped: bool #: If ``True``, the label will be free to shift so that it is not clipped by the plot limits.
 
     x: float
@@ -224,7 +224,7 @@ class PlotAnnotation:
                  text: str,
                  pos: Tuple[float, float],
                  offset: Tuple[float, float], *,
-                 color: ColorRGBA = ColorRGBA(0,0,0),
+                 color: ColorRGBA = None,
                  clamped: bool = True):
 
         self._tag_id = _generate_id(self)
@@ -239,9 +239,10 @@ class PlotAnnotation:
     def _create_annotation(self) -> None:
         x, y = self._pos
         xoff, yoff = self.offset
+        color = dpg_export_color(self._color) if self._color is not None else (0,0,0,-1)
         dpgcore.add_annotation(
             self._plot.id, self._text, x, y, xoff, yoff,
-            color=dpg_export_color(self.color), clamped=self.clamped,
+            color=color, clamped=self.clamped,
             tag=self._tag_id
         )
 
@@ -279,7 +280,7 @@ class PlotAnnotation:
         self._delete_annotation()
         self._create_annotation()
 
-    def set_color(self, color: ColorRGBA) -> None:
+    def set_color(self, color: Optional[ColorRGBA]) -> None:
         self._color = color
         self._delete_annotation()
         self._create_annotation()
