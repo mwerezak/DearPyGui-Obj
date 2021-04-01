@@ -14,7 +14,7 @@ from dearpygui_obj import (
 )
 
 if TYPE_CHECKING:
-    from typing import Callable, Mapping, Any, Optional, Type, Iterable, Tuple, Sequence
+    from typing import Callable, Mapping, Any, Optional, Type, Iterable, Tuple, Sequence, Dict
     from dearpygui_obj import PyGuiCallback
 
     ## Type Aliases
@@ -176,7 +176,7 @@ class Widget(ABC):
     ## Overrides
 
     @abstractmethod
-    def _setup_add_widget(self, dpg_args: Mapping[str, Any]) -> None:
+    def _setup_add_widget(self, dpg_args: Dict[str, Any]) -> None:
         """This should create the widget using DearPyGui's ``add_*()`` functions."""
 
     def _setup_preexisting(self) -> None:
@@ -485,7 +485,7 @@ class DefaultWidget(Widget, ItemWidget):
     have a wrapper object class associated with it, an instance of this type is created as
     a fallback."""
 
-    def _setup_add_widget(self, dpg_args: Mapping[str, Any]) -> None:
+    def _setup_add_widget(self, dpg_args: Dict[str, Any]) -> None:
         pass
 
 

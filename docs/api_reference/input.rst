@@ -6,6 +6,10 @@ Input Widgets
 .. contents:: Contents
     :local:
 
+
+Input Boxes
+-----------
+
 .. rubric:: Summary
 
 .. autosummary:: 
@@ -20,30 +24,6 @@ Input Widgets
     InputInt2
     InputInt3
     InputInt4
-    SliderFloat
-    SliderFloat2
-    SliderFloat3
-    SliderFloat4
-    SliderInt
-    SliderInt2
-    SliderInt3
-    SliderInt4
-    DragFloat
-    DragFloat2
-    DragFloat3
-    DragFloat4
-    DragInt
-    DragInt2
-    DragInt3
-    DragInt4
-    ColorPicker
-    ColorEdit
-    ColorButton
-    ColorEdit
-    ColorPicker
-
-Input Boxes
------------
 
 Text Input
 ^^^^^^^^^^
@@ -122,6 +102,20 @@ Integer Input
 Sliders
 -------
 
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+    
+    SliderFloat
+    SliderFloat2
+    SliderFloat3
+    SliderFloat4
+    SliderInt
+    SliderInt2
+    SliderInt3
+    SliderInt4
+
 .. autoclass:: SliderInput
     :members:
     :undoc-members:
@@ -186,6 +180,20 @@ Integer Sliders
 Drag Inputs
 -----------
 
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+    
+    DragFloat
+    DragFloat2
+    DragFloat3
+    DragFloat4
+    DragInt
+    DragInt2
+    DragInt3
+    DragInt4
+
 .. autoclass:: DragInput
     :members:
     :undoc-members:
@@ -249,6 +257,17 @@ Integer Drag Input
 Color Input
 -----------
 
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+    
+    ColorPicker
+    ColorEdit
+    ColorButton
+    ColorEdit
+    ColorPicker
+
 .. autoclass:: ColorButton
     :members:
     :undoc-members:
@@ -264,3 +283,25 @@ Color Input
     :undoc-members:
 
     .. autoattribute:: value
+
+.. autoclass:: ColorFormatMode
+    :members:
+    :undoc-members:
+
+Date and Time Input
+-------------------
+
+.. rubric:: Summary
+
+.. autosummary:: 
+    :nosignatures:
+
+    DatePicker
+
+.. autoclass:: DatePicker
+    :members:
+    :undoc-members:
+
+.. autoclass:: DatePickerMode
+    :members:
+    :undoc-members:

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import string
+import datetime
+import calendar
+from datetime import date, time
 from typing import TYPE_CHECKING, NamedTuple
 
 from dearpygui_obj.wrapper.widget import ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Any, List, Iterable, Union
+    from typing import Any, List, Iterable, Union, Mapping
     from dearpygui_obj.wrapper.widget import Widget, ItemConfigData
 
 
@@ -72,7 +75,37 @@ class ConfigPropertyColorRGBA(ConfigProperty):
     def fconfig(self, instance: Widget, value: ColorRGBA) -> ItemConfigData:
         return {self.key : dpg_export_color(value)}
 
+## Date/Time
 
+MINYEAR = 1970 #: the smallest year number supported by DPG.
+MAXYEAR = 2999 #: the largest year number supported by DPG.
+
+def _clamp(value, min_val, max_val):
+    return min(max(min_val, value), max_val)
+
+def dpg_import_date(date_data: Mapping[str, int]) -> date:
+    """Convert date data used by DPG into a :class:`~datetime.date` object."""
+    year = _clamp(date_data.get('year', MINYEAR), datetime.MINYEAR, datetime.MAXYEAR)
+    month = _clamp(date_data.get('month', 1), 1, 12)
+
+    _, max_day = calendar.monthrange(year, month)
+    day = _clamp(date_data.get('month_day', 1), 1, max_day)
+    return date(year, month, day)
+
+def dpg_export_date(date_val: date) -> Mapping:
+    """Convert a :class:`date` into date data used by DPG.
+
+    Unfortunately the range of year numbers supported by DPG is smaller than that of python.
+    See the :data:`.MINYEAR` and :data:`.MAXYEAR` constants.
+
+    If a date outside of the supported range is given, this function will still return a value,
+    however that value may not produce desired results when supplied to DPG's date widgets
+    (should get clamped)."""
+    return {
+        'month_day': date_val.day,
+        'month': date_val.month,
+        'year': date_val.year - 1900
+    }
 
 
 ## Textures

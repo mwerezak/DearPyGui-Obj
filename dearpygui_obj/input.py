@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from enum import Enum
+
 from typing import TYPE_CHECKING, TypeVar, Generic, Tuple
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA, dpg_import_color, dpg_export_color
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget, ConfigProperty
 
 if TYPE_CHECKING:
@@ -273,7 +273,120 @@ class SliderInt4(SliderInput[int, Tuple[int, int, int, int]]):
         dpgcore.add_slider_int4(self.id, **dpg_args)
 
 
+## Drag Input Boxes
+
+# noinspection PyAbstractClass
+class DragInput(Widget, ItemWidget, ValueWidget[_TInput], Generic[_TElem, _TInput]):
+    """Base class for drag input boxes."""
+    value: _TInput  #: The inputted value.
+    _default_value: _TInput
+
+    label: str = ConfigProperty()
+    min_value: _TElem = ConfigProperty()
+    max_value: _TElem = ConfigProperty()
+    format: str = ConfigProperty()  #: number format
+
+    #: Control whether a value can be manually entered using CTRL+Click
+    no_input: bool = ConfigProperty()
+
+    #: Whether to clamp the value when using manual input. By default CTRL+Click allows going out of bounds.
+    clamped: bool = ConfigProperty()
+
+    def __init__(self, label: str = None, value: _TElem = None, *, name_id: str = None, **config):
+        value = value or self._default_value
+        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+
+@_register_item_type('mvAppItemType::DragFloat')
+class DragFloat(DragInput[float, float]):
+    """A drag input for a float value.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+
+    _default_value = 0.0
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_float(self.id, **dpg_args)
+
+@_register_item_type('mvAppItemType::DragFloat2')
+class DragFloat2(DragInput[float, Tuple[float, float]]):
+    """A drag input for 2 float values.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+    _default_value = (0.0, 0.0)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_float2(self.id, **dpg_args)
+
+@_register_item_type('mvAppItemType::DragFloat3')
+class DragFloat3(DragInput[float, Tuple[float, float, float]]):
+    """A drag input for 3 float values.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+    _default_value = (0.0, 0.0, 0.0)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_float3(self.id, **dpg_args)
+
+@_register_item_type('mvAppItemType::DragFloat4')
+class DragFloat4(DragInput[float, Tuple[float, float, float, float]]):
+    """A drag input for 4 float values.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+    _default_value = (0.0, 0.0, 0.0, 0.0)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_float4(self.id, **dpg_args)
+
+@_register_item_type('mvAppItemType::DragInt')
+class DragInt(DragInput[int, int]):
+    """A drag input for an integer value.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+    _default_value = 0
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_int(self.id, **dpg_args)
+
+@_register_item_type('mvAppItemType::DragInt2')
+class DragInt2(DragInput[int, Tuple[int, int]]):
+    """A drag input for 2 integer values.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+    _default_value = (0, 0)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_int2(self.id, **dpg_args)
+
+@_register_item_type('mvAppItemType::DragInt3')
+class DragInt3(DragInput[int, Tuple[int, int, int]]):
+    """A drag input for 3 integer values.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+    _default_value = (0, 0, 0)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_int3(self.id, **dpg_args)
+
+@_register_item_type('mvAppItemType::DragInt4')
+class DragInt4(DragInput[int, Tuple[int, int, int, int]]):
+    """A drag input for 4 integer values.
+
+    If not disabled using the :attr:`no_input` property, the drag input can be CTRL+Clicked to turn it
+    into an input box for manual input of a value."""
+    _default_value = (0, 0, 0, 0)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drag_int4(self.id, **dpg_args)
+
 ## Color
+from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA, dpg_import_color, dpg_export_color
 
 @_register_item_type('mvAppItemType::ColorButton')
 class ColorButton(Widget, ItemWidget):
@@ -409,10 +522,54 @@ class ColorPicker(Widget, ItemWidget, ValueWidget[ColorRGBA]):
     def _set_value(self, color: ColorRGBA) -> None:
         super()._set_value(dpg_export_color(color))
 
+## Date/Time
+from datetime import date, time
+from dearpygui_obj.data import dpg_import_date, dpg_export_date
+
+class DatePickerMode(Enum):
+    """The picking mode shown in a :class:`.DatePicker`."""
+    Day   = 0
+    Month = 1
+    Year  = 2
+
+@_register_item_type('mvAppItemType::DatePicker')
+class DatePicker(Widget, ItemWidget, ValueWidget[date]):
+    """A date selector widget."""
+
+    value: date
+
+    mode: DatePickerMode
+    @ConfigProperty(key='level')
+    def mode(self) -> DatePickerMode:
+        """The current picking mode."""
+        config = self.get_config()
+        return DatePickerMode(config['level'])
+
+    @mode.getconfig
+    def mode(self, level: DatePickerMode):
+        return {'level' : level.value}
+
+    def __init__(self, value: date = None, *, name_id: str = None, **config):
+        super().__init__(default_value=value, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        value = dpg_args.get('default_value')
+        if value is not None:
+            dpg_args['default_value'] = dpg_export_date(value)
+        elif 'default_value' in dpg_args:
+            del dpg_args['default_value']
+        dpgcore.add_date_picker(self.id, **dpg_args)
+
+    def _get_value(self) -> date:
+        return dpg_import_date(super()._get_value())
+
+    def _set_value(self, value: date) -> None:
+        super()._set_value(dpg_export_date(value))
 
 
 __all__ = [
     'InputText',
+
     'InputFloat',
     'InputFloat2',
     'InputFloat3',
@@ -421,6 +578,7 @@ __all__ = [
     'InputInt2',
     'InputInt3',
     'InputInt4',
+
     'SliderFloat',
     'SliderFloat2',
     'SliderFloat3',
@@ -429,8 +587,21 @@ __all__ = [
     'SliderInt2',
     'SliderInt3',
     'SliderInt4',
+
+    'DragFloat',
+    'DragFloat2',
+    'DragFloat3',
+    'DragFloat4',
+    'DragInt',
+    'DragInt2',
+    'DragInt3',
+    'DragInt4',
+
     'ColorButton',
     'ColorFormatMode',
     'ColorEdit',
     'ColorPicker',
+
+    'DatePickerMode',
+    'DatePicker',
 ]

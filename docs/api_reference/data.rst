@@ -16,6 +16,10 @@ Data
     dpg_import_color
     dpg_export_color
     ColorRGBA
+    MINYEAR
+    MAXYEAR
+    dpg_import_date
+    dpg_export_date
 
 Colors
 ------
@@ -38,3 +42,13 @@ Predefined Colors
 
 A selection of predefined color values are available from the :mod:`dearpygui_obj.colors` module.
 
+Date/Time
+---------
+
+.. autodata:: MINYEAR
+
+.. autodata:: MAXYEAR
+
+.. autofunction:: dpg_import_date
+
+.. autofunction:: dpg_export_date

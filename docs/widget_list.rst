@@ -84,6 +84,12 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.input.ColorEdit
     dearpygui_obj.input.ColorPicker
 
+.. rubric:: Date/Time Input
+
+.. autosummary::
+    :nosignatures:
+
+    dearpygui_obj.input.DatePicker
 
 .. rubric:: Layout
 
