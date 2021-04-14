@@ -90,6 +90,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     :nosignatures:
 
     dearpygui_obj.input.DatePicker
+    dearpygui_obj.input.TimePicker
 
 .. rubric:: Layout
 

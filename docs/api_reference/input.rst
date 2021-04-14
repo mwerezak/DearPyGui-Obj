@@ -297,11 +297,23 @@ Date and Time Input
     :nosignatures:
 
     DatePicker
+    DatePickerMode
+    TimePicker
+    TimePickerFormat
+
 
 .. autoclass:: DatePicker
     :members:
     :undoc-members:
 
 .. autoclass:: DatePickerMode
+    :members:
+    :undoc-members:
+
+.. autoclass:: TimePicker
+    :members:
+    :undoc-members:
+
+.. autoclass:: TimePickerFormat
     :members:
     :undoc-members:
