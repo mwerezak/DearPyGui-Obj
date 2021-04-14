@@ -358,3 +358,7 @@ __all__ = [
     'XYData',
     'PlotMarker',
 ]
+
+if TYPE_CHECKING:
+    from dearpygui_obj.wrapper.dataseries import DataSeries
+    __all__.append('DataSeries')

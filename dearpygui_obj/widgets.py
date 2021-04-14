@@ -105,3 +105,10 @@ __all__ = [
     'AboutWindow',
 ]
 
+if TYPE_CHECKING:
+    from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget
+    __all__.extend([
+        'Widget',
+        'ItemWidget',
+        'ValueWidget',
+    ])

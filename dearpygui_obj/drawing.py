@@ -263,3 +263,7 @@ __all__ = [
     'DrawPolygon',
     'DrawBezierCurve',
 ]
+
+if TYPE_CHECKING:
+    from dearpygui_obj.wrapper.drawing import DrawCommand
+    __all__.append('DrawCommand')
