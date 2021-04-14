@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, NamedTuple
 
 from dearpygui import core as dpgcore
@@ -11,18 +12,17 @@ from dearpygui_obj.wrapper.drawing import DrawCommand, DrawProperty
 if TYPE_CHECKING:
     from typing import Any, Optional, Tuple, Sequence
     from dearpygui_obj.data import ColorRGBA
+    from dearpygui_obj.window import Window
     from dearpygui_obj.wrapper.drawing import DrawConfigData
 
 
-@_register_item_type('mvAppItemType::Drawing')
-class DrawingCanvas(Widget, ItemWidget):
-    """A widget that displays the result of drawing commands."""
+class DrawingCanvas(ABC):
+    """Abstract base class for drawing."""
 
-    def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
-        super().__init__(size=size, name_id=name_id, **config)
-
-    def _setup_add_widget(self, dpg_args) -> None:
-        dpgcore.add_drawing(self.id, **dpg_args)
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        ...
 
     def clear(self) -> None:
         """Clears the drawing.
@@ -34,12 +34,6 @@ class DrawingCanvas(Widget, ItemWidget):
             This includes reading or writing to any properties of :class:`DrawCommand` objects.
         """
         dpgcore.clear_drawing(self.id)
-
-    def get_mouse_pos(self) -> Optional[Tuple[int, int]]:
-        """Get the mouse position within the drawing, or ``None`` if the drawing is not hovered."""
-        if not self.is_hovered():
-            return None
-        return dpgcore.get_drawing_mouse_pos()
 
     def draw_line(self, p1: Tuple[float, float], p2: Tuple[float, float], color: ColorRGBA, thickness: int) -> DrawLine:
         """See :class:`.DrawLine`"""
@@ -80,6 +74,55 @@ class DrawingCanvas(Widget, ItemWidget):
     def draw_bezier_curve(self, p1: Tuple[float, float], p2: Tuple[float, float], p3: Tuple[float, float], p4: Tuple[float, float], color: ColorRGBA, **kwargs: Any) -> DrawBezierCurve:
         """See :class:`.DrawBezierCurve` for keyword arguments."""
         return DrawBezierCurve(self, p1, p2, p3, p4, color, **kwargs)
+
+
+@_register_item_type('mvAppItemType::Drawing')
+class Drawing(Widget, ItemWidget, DrawingCanvas):
+    """A widget that displays the result of drawing commands."""
+
+    def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
+        super().__init__(size=size, name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_drawing(self.id, **dpg_args)
+
+    def get_mouse_pos(self) -> Optional[Tuple[int, int]]:
+        """Get the mouse position within the drawing, or ``None`` if the drawing is not hovered."""
+        if not self.is_hovered():
+            return None
+        return dpgcore.get_drawing_mouse_pos()
+
+class WindowCanvas(DrawingCanvas):
+    """A :class:`.DrawingCanvas` that can be used to draw onto a window.
+
+    Can also be obtained from :meth:`.Window.get_canvas`."""
+
+    def __init__(self, window: Window):
+        self._id = window.id
+
+    @property
+    def id(self) -> str:
+        return self._id
+
+class ForegroundCanvas(DrawingCanvas):
+    id = '##FOREGROUND'
+
+#: A special :class:`.DrawingCanvas` that can be used to draw on the foreground of the viewport.
+#:
+#: Warning:
+#:     The viewport only exists (and can be drawn on) when the GUI engine is running
+#:     (see :func:`dearpygui_obj.is_running`).
+ForegroundCanvas = ForegroundCanvas()
+
+class BackgroundCanvas(DrawingCanvas):
+    id = '##BACKGROUND'
+
+#: A special :class:`.DrawingCanvas` that can be used to draw on the background of the viewport.
+#:
+#: Warning:
+#:     The viewport only exists (and can be drawn on) when the GUI engine is running
+#:     (see :func:`dearpygui_obj.is_running`).
+BackgroundCanvas = BackgroundCanvas()
 
 
 ## Draw Commands
@@ -251,7 +294,11 @@ class DrawBezierCurve(DrawCommand):
 ## class DrawImage TODO
 
 __all__ = [
-    'DrawingCanvas',
+    'Drawing',
+    'BackgroundCanvas',
+    'ForegroundCanvas',
+    'WindowCanvas',
+
     'DrawLine',
     'DrawRectangle',
     'DrawCircle',
@@ -266,4 +313,7 @@ __all__ = [
 
 if TYPE_CHECKING:
     from dearpygui_obj.wrapper.drawing import DrawCommand
-    __all__.append('DrawCommand')
+    __all__.extend([
+        'DrawingCanvas',
+        'DrawCommand',
+    ])

@@ -12,6 +12,7 @@ Drawing
     :nosignatures:
 
     DrawingCanvas
+    Drawing
     DrawLine
     DrawRectangle
     DrawCircle
@@ -27,6 +28,18 @@ Drawing Canvas
 --------------
 
 .. autoclass:: DrawingCanvas
+    :members:
+    :undoc-members:
+
+.. autodata:: ForegroundCanvas
+
+.. autodata:: BackgroundCanvas
+
+.. autoclass:: WindowCanvas
+    :members:
+    :undoc-members:
+
+.. autoclass:: Drawing
     :members:
     :undoc-members:
 

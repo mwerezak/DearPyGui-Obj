@@ -15,7 +15,6 @@ if TYPE_CHECKING:
     GetDrawValueFunc = Callable[['DrawCommand'], Any]
     GetDrawConfigFunc = Callable[['DrawCommand', Any], DrawConfigData]
 
-
 class DrawProperty:
     """Descriptor used to get or set a draw command's configuration."""
 

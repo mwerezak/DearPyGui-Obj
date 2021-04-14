@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type, wrap_callback
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.drawing import WindowCanvas
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
     from dearpygui_obj import PyGuiCallback
     from dearpygui_obj.wrapper.widget import ItemConfigData
-
 
 class MainWindow:
     """Container for static functions used to manipulate the main window.
@@ -146,6 +146,10 @@ class Window(Widget):
         """Set resized callback, can be used as a decorator."""
         dpgcore.set_resize_callback(wrap_callback(callback), handler=self.id)
         return callback
+
+    def get_canvas(self) -> WindowCanvas:
+        """Obtain a :class:`.WindowCanvas` that can be used to draw on the window using the drawing API."""
+        return WindowCanvas(self)
 
 
 ## Menu Bars and Menus

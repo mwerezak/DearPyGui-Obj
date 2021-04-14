@@ -87,7 +87,7 @@ __all__ = [
     'SimplePlot',
     'Plot',
 
-    'DrawingCanvas',
+    'Drawing',
 
     'NodeEditor',
     'Node',

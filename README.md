@@ -123,7 +123,7 @@ counter = 0
 modifier = 2
 
 with Window("Tutorial", size=(800, 800)):
-    canvas = DrawingCanvas(size=(700, 700))
+    canvas = Drawing(size=(700, 700))
     circle = canvas.draw_circle((0, 0), 5, colors.from_rgba8(255, 255, 255))
 
 @dearpygui_obj.set_render_callback
