@@ -386,7 +386,7 @@ class DragInt4(DragInput[int, Tuple[int, int, int, int]]):
         dpgcore.add_drag_int4(self.id, **dpg_args)
 
 ## Color
-from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA, dpg_import_color, dpg_export_color
+from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA, import_color_from_dpg, export_color_to_dpg
 
 @_register_item_type('mvAppItemType::ColorButton')
 class ColorButton(Widget, ItemWidget):
@@ -402,7 +402,7 @@ class ColorButton(Widget, ItemWidget):
     no_drag_drop: bool = ConfigProperty()
 
     def __init__(self, color: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(color=dpg_export_color(color), name_id=name_id, **config)
+        super().__init__(color=export_color_to_dpg(color), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_button(self.id, **dpg_args)
@@ -455,16 +455,16 @@ class ColorEdit(Widget, ItemWidget, ValueWidget[ColorRGBA]):
         raise ValueError('invalid color format mode')
 
     def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=dpg_export_color(value), name_id=name_id, **config)
+        super().__init__(label=label, default_value=export_color_to_dpg(value), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_edit4(self.id, **dpg_args)
 
     def _get_value(self) -> ColorRGBA:
-        return dpg_import_color(super()._get_value())
+        return import_color_from_dpg(super()._get_value())
 
     def _set_value(self, color: ColorRGBA) -> None:
-        super()._set_value(dpg_export_color(color))
+        super()._set_value(export_color_to_dpg(color))
 
 
 @_register_item_type('mvAppItemType::ColorPicker4')
@@ -511,20 +511,20 @@ class ColorPicker(Widget, ItemWidget, ValueWidget[ColorRGBA]):
         raise ValueError('invalid color format mode')
 
     def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=dpg_export_color(value), name_id=name_id, **config)
+        super().__init__(label=label, default_value=export_color_to_dpg(value), name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_color_picker4(self.id, **dpg_args)
 
     def _get_value(self) -> ColorRGBA:
-        return dpg_import_color(super()._get_value())
+        return import_color_from_dpg(super()._get_value())
 
     def _set_value(self, color: ColorRGBA) -> None:
-        super()._set_value(dpg_export_color(color))
+        super()._set_value(export_color_to_dpg(color))
 
 ## Date/Time
 from datetime import date, time
-from dearpygui_obj.data import dpg_import_date, dpg_import_time
+from dearpygui_obj.data import import_date_from_dpg, import_time_from_dpg
 
 class DatePickerMode(Enum):
     """The picking mode shown in a :class:`.DatePicker`."""
@@ -560,7 +560,7 @@ class DatePicker(Widget, ItemWidget, ValueWidget[date]):
         dpgcore.add_date_picker(self.id, **dpg_args)
 
     def _get_value(self) -> date:
-        return dpg_import_date(super()._get_value())
+        return import_date_from_dpg(super()._get_value())
 
     def _set_value(self, value: date) -> None:
         raise NotImplementedError('not supported in Dear PyGui 0.6')
@@ -597,7 +597,7 @@ class TimePicker(Widget, ValueWidget[time]):
         dpgcore.add_time_picker(self.id, **dpg_args)
 
     def _get_value(self) -> time:
-        return dpg_import_time(super()._get_value())
+        return import_time_from_dpg(super()._get_value())
 
     def _set_value(self, value: time) -> None:
         raise NotImplementedError('not supported in Dear PyGui 0.6')

@@ -13,13 +13,13 @@ Data
 
     color_from_rgba8
     color_from_hex
-    dpg_import_color
-    dpg_export_color
+    import_color_from_dpg
+    export_color_to_dpg
     ColorRGBA
     MINYEAR
     MAXYEAR
-    dpg_import_date
-    dpg_export_date
+    import_date_from_dpg
+    export_date_to_dpg
 
 Colors
 ------
@@ -28,9 +28,9 @@ Colors
 
 .. autofunction:: color_from_hex
 
-.. autofunction:: dpg_import_color
+.. autofunction:: import_color_from_dpg
 
-.. autofunction:: dpg_export_color
+.. autofunction:: export_color_to_dpg
 
 .. autoclass:: ColorRGBA
     :members:
@@ -49,6 +49,6 @@ Date/Time
 
 .. autodata:: MAXYEAR
 
-.. autofunction:: dpg_import_date
+.. autofunction:: import_date_from_dpg
 
-.. autofunction:: dpg_export_date
+.. autofunction:: export_date_to_dpg

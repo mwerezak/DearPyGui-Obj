@@ -61,19 +61,19 @@ def color_from_hex(color: str) -> ColorRGBA:
 
     return color_from_rgba8(*(int(value, 16) for value in values))
 
-def dpg_import_color(colorlist: List[number]) -> ColorRGBA:
+def import_color_from_dpg(colorlist: List[number]) -> ColorRGBA:
     """Create a ColorRGBA from DPG color data."""
     return ColorRGBA(*(min(max(0, value), 255) for value in colorlist))
 
-def dpg_export_color(color: Iterable[number]) -> List[number]:
+def export_color_to_dpg(color: Iterable[number]) -> List[number]:
     """Convert a :class:`ColorRGBA`-like iterable into DPG color data (list of floats 0-255)"""
     return [min(max(0, value), 255) for value in color]
 
 class ConfigPropertyColorRGBA(ConfigProperty):
     def fvalue(self, instance: Widget) -> Any:
-        return dpg_import_color(instance.get_config()[self.key])
+        return import_color_from_dpg(instance.get_config()[self.key])
     def fconfig(self, instance: Widget, value: ColorRGBA) -> ItemConfigData:
-        return {self.key : dpg_export_color(value)}
+        return {self.key : export_color_to_dpg(value)}
 
 ## Date/Time
 
@@ -83,7 +83,7 @@ MAXYEAR = 2999 #: the largest year number supported by DPG.
 def _clamp(value, min_val, max_val):
     return min(max(min_val, value), max_val)
 
-def dpg_import_date(date_data: Mapping[str, int]) -> date:
+def import_date_from_dpg(date_data: Mapping[str, int]) -> date:
     """Convert date data used by DPG into a :class:`~datetime.date` object."""
     year = _clamp(date_data.get('year', MINYEAR), datetime.MINYEAR, datetime.MAXYEAR)
     month = _clamp(date_data.get('month', 1), 1, 12)
@@ -92,7 +92,7 @@ def dpg_import_date(date_data: Mapping[str, int]) -> date:
     day = _clamp(date_data.get('month_day', 1), 1, max_day)
     return date(year, month, day)
 
-def dpg_export_date(date_val: date) -> Mapping:
+def export_date_to_dpg(date_val: date) -> Mapping:
     """Convert a :class:`date` into date data used by DPG.
 
     Unfortunately the range of year numbers supported by DPG is smaller than that of python.
@@ -107,10 +107,10 @@ def dpg_export_date(date_val: date) -> Mapping:
         'year': date_val.year - 1900
     }
 
-def dpg_import_time(time_data: Mapping[str, int]) -> time:
+def import_time_from_dpg(time_data: Mapping[str, int]) -> time:
     return time(hour = time_data['hour'], minute = time_data['min'], second = time_data['sec'])
 
-def dpg_export_time(tm: time) -> Mapping[str, int]:
+def export_time_to_dpg(tm: time) -> Mapping[str, int]:
     return dict(hour = tm.hour, min = tm.minute, sec = tm.second)
 
 
@@ -132,6 +132,13 @@ __all__ = [
     'color_from_rgba8',
     'color_from_hex',
     'ConfigPropertyColorRGBA',
+
+    'MINYEAR',
+    'MAXYEAR',
+    'import_date_from_dpg',
+    'export_date_to_dpg',
+    'dpg_import_time',
+    'dpg_export_time',
 ]
 
 

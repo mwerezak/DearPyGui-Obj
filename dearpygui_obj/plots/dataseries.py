@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, NamedTuple
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.data import dpg_import_color, dpg_export_color
+from dearpygui_obj.data import import_color_from_dpg, export_color_to_dpg
 from dearpygui_obj.wrapper.dataseries import DataSeries, DataSeriesConfig, DataSeriesField
 
 if TYPE_CHECKING:
@@ -29,9 +29,9 @@ class PlotMarker(Enum):
 
 class DataSeriesConfigColorRGBA(DataSeriesConfig):
     def fvalue(self, config: Any) -> ColorRGBA:
-        return dpg_import_color(config)
+        return import_color_from_dpg(config)
     def fconfig(self, color: ColorRGBA) -> Any:
-        return dpg_export_color(color)
+        return export_color_to_dpg(color)
 
 class DataSeriesConfigMarker(DataSeriesConfig):
     def fvalue(self, config: Any) -> PlotMarker:

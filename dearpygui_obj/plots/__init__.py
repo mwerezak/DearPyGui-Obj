@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, cast
 import dearpygui.core as dpgcore
 
 from dearpygui_obj import _register_item_type, _generate_id
-from dearpygui_obj.data import ColorRGBA, dpg_export_color
+from dearpygui_obj.data import ColorRGBA, export_color_to_dpg
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
 
 if TYPE_CHECKING:
@@ -240,7 +240,7 @@ class PlotAnnotation:
     def _create_annotation(self) -> None:
         x, y = self._pos
         xoff, yoff = self.offset
-        color = dpg_export_color(self._color) if self._color is not None else (0,0,0,-1)
+        color = export_color_to_dpg(self._color) if self._color is not None else (0, 0, 0, -1)
         dpgcore.add_annotation(
             self._plot.id, self._text, x, y, xoff, yoff,
             color=color, clamped=self.clamped,

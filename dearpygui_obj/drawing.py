@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from dearpygui import core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.data import dpg_export_color, dpg_import_color
+from dearpygui_obj.data import export_color_to_dpg, import_color_from_dpg
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget
 from dearpygui_obj.wrapper.drawing import DrawCommand, DrawProperty
 
@@ -92,9 +92,9 @@ class Pos2D(NamedTuple):
 
 class DrawPropertyColorRGBA(DrawProperty):
     def fvalue(self, instance: Widget) -> Any:
-        return dpg_import_color(instance.get_config()[self.key])
+        return import_color_from_dpg(instance.get_config()[self.key])
     def fconfig(self, instance: Widget, value: ColorRGBA) -> DrawConfigData:
-        return {self.key : dpg_export_color(value)}
+        return {self.key : export_color_to_dpg(value)}
 
 class DrawPropertyPos2D(DrawProperty):
     def fvalue(self, instance: DrawCommand) -> Pos2D:
