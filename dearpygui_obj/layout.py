@@ -8,7 +8,7 @@ from dearpygui_obj import _register_item_type
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Sequence
+    from typing import Any, Sequence
 
 @_register_item_type('mvAppItemType::Spacing')
 class VSpacing(Widget, ItemWidget):
