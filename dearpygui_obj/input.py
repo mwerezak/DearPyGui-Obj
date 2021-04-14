@@ -49,7 +49,7 @@ _TElem = TypeVar('_TElem')
 _TInput = TypeVar('_TInput')
 
 # noinspection PyAbstractClass
-class NumberInput(Widget, ItemWidget, ValueWidget[_TInput], Generic[_TElem, _TInput]):
+class NumberInput(Generic[_TElem, _TInput], Widget, ItemWidget, ValueWidget[_TInput]):
     """Base class for number input boxes."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -162,7 +162,7 @@ class InputInt4(NumberInput[int, Tuple[int, int, int, int]]):
 ## Sliders
 
 # noinspection PyAbstractClass
-class SliderInput(Widget, ItemWidget, ValueWidget[_TInput], Generic[_TElem, _TInput]):
+class SliderInput(Generic[_TElem, _TInput], Widget, ItemWidget, ValueWidget[_TInput]):
     """Base class for slider types."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -276,7 +276,7 @@ class SliderInt4(SliderInput[int, Tuple[int, int, int, int]]):
 ## Drag Input Boxes
 
 # noinspection PyAbstractClass
-class DragInput(Widget, ItemWidget, ValueWidget[_TInput], Generic[_TElem, _TInput]):
+class DragInput(Generic[_TElem, _TInput], Widget, ItemWidget, ValueWidget[_TInput]):
     """Base class for drag input boxes."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -524,7 +524,7 @@ class ColorPicker(Widget, ItemWidget, ValueWidget[ColorRGBA]):
 
 ## Date/Time
 from datetime import date, time
-from dearpygui_obj.data import dpg_import_date, dpg_export_date
+from dearpygui_obj.data import dpg_import_date, dpg_import_time
 
 class DatePickerMode(Enum):
     """The picking mode shown in a :class:`.DatePicker`."""
@@ -534,7 +534,11 @@ class DatePickerMode(Enum):
 
 @_register_item_type('mvAppItemType::DatePicker')
 class DatePicker(Widget, ItemWidget, ValueWidget[date]):
-    """A date selector widget."""
+    """A date picker widget.
+    Warning:
+        Setting the :attr:`value` property currently does not work. This is an issue with DPG 0.6.
+        Attempting to do so will raise a :class:`.NotImplementedError`.
+    """
 
     value: date
 
@@ -549,22 +553,54 @@ class DatePicker(Widget, ItemWidget, ValueWidget[date]):
     def mode(self, level: DatePickerMode):
         return {'level' : level.value}
 
-    def __init__(self, value: date = None, *, name_id: str = None, **config):
-        super().__init__(default_value=value, name_id=name_id, **config)
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
 
     def _setup_add_widget(self, dpg_args) -> None:
-        value = dpg_args.get('default_value')
-        if value is not None:
-            dpg_args['default_value'] = dpg_export_date(value)
-        elif 'default_value' in dpg_args:
-            del dpg_args['default_value']
         dpgcore.add_date_picker(self.id, **dpg_args)
 
     def _get_value(self) -> date:
         return dpg_import_date(super()._get_value())
 
     def _set_value(self, value: date) -> None:
-        super()._set_value(dpg_export_date(value))
+        raise NotImplementedError('not supported in Dear PyGui 0.6')
+
+
+class TimePickerFormat(Enum):
+    """The time format used by :class:`.TimePicker`."""
+    Hour12 = False
+    Hour24 = True
+
+@_register_item_type('mvAppItemType::TimePicker')
+class TimePicker(Widget, ValueWidget[time]):
+    """A time picker widget.
+    Warning:
+        Setting the :attr:`value` property currently does not work. This is an issue with DPG 0.6.
+        Attempting to do so will raise a :class:`.NotImplementedError`.
+    """
+
+    format: TimePickerFormat
+    @ConfigProperty(key='hour24')
+    def mode(self) -> TimePickerFormat:
+        """The current picking mode."""
+        config = self.get_config()
+        return TimePickerFormat(config['hour24'])
+
+    @mode.getconfig
+    def mode(self, format: TimePickerFormat):
+        return {'hour24' : format.value}
+
+    def __init__(self, *, name_id: str = None, **config):
+        super().__init__(name_id=name_id, **config)
+
+    def _setup_add_widget(self, dpg_args) -> None:
+        dpgcore.add_time_picker(self.id, **dpg_args)
+
+    def _get_value(self) -> time:
+        return dpg_import_time(super()._get_value())
+
+    def _set_value(self, value: time) -> None:
+        raise NotImplementedError('not supported in Dear PyGui 0.6')
 
 
 __all__ = [

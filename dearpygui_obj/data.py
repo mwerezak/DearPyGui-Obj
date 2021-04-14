@@ -107,6 +107,12 @@ def dpg_export_date(date_val: date) -> Mapping:
         'year': date_val.year - 1900
     }
 
+def dpg_import_time(time_data: Mapping[str, int]) -> time:
+    return time(hour = time_data['hour'], minute = time_data['min'], second = time_data['sec'])
+
+def dpg_export_time(tm: time) -> Mapping[str, int]:
+    return dict(hour = tm.hour, min = tm.minute, sec = tm.second)
+
 
 ## Textures
 
