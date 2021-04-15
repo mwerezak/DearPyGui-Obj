@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type, wrap_callback
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
-from dearpygui_obj.drawing import WindowCanvas
+from dearpygui_obj.drawing import DrawingCanvas, WindowCanvas
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Callable
@@ -16,6 +16,12 @@ class MainWindow:
     """Container for static functions used to manipulate the main window.
 
     Attempting to instantiate this class will raise a :class:`TypeError`.
+
+    Warning:
+        The viewport only exists when the GUI engine is running
+        (see :func:`dearpygui_obj.is_running`). Some of the methods
+        contained in this class may fail if called when the engine
+        is not running.
     """
 
     def __new__(cls):
@@ -73,6 +79,18 @@ class MainWindow:
                 with the main window viewport.
         """
         dpgcore.enable_docking(**kwargs)
+
+    class _ForegroundCanvas(DrawingCanvas):
+        id = '##FOREGROUND'
+
+    class _BackgroundCanvas(DrawingCanvas):
+        id = '##BACKGROUND'
+
+    #: A special :class:`.DrawingCanvas` that can be used to draw on the foreground of the viewport.
+    foreground = _ForegroundCanvas()
+
+    #: A special :class:`.DrawingCanvas` that can be used to draw on the background of the viewport.
+    background = _BackgroundCanvas()
 
 
 @_register_item_type('mvAppItemType::Window')

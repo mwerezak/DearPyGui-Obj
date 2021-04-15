@@ -104,26 +104,6 @@ class WindowCanvas(DrawingCanvas):
     def id(self) -> str:
         return self._id
 
-class ForegroundCanvas(DrawingCanvas):
-    id = '##FOREGROUND'
-
-#: A special :class:`.DrawingCanvas` that can be used to draw on the foreground of the viewport.
-#:
-#: Warning:
-#:     The viewport only exists (and can be drawn on) when the GUI engine is running
-#:     (see :func:`dearpygui_obj.is_running`).
-ForegroundCanvas = ForegroundCanvas()
-
-class BackgroundCanvas(DrawingCanvas):
-    id = '##BACKGROUND'
-
-#: A special :class:`.DrawingCanvas` that can be used to draw on the background of the viewport.
-#:
-#: Warning:
-#:     The viewport only exists (and can be drawn on) when the GUI engine is running
-#:     (see :func:`dearpygui_obj.is_running`).
-BackgroundCanvas = BackgroundCanvas()
-
 
 ## Draw Commands
 
