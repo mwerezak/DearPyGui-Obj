@@ -14,7 +14,7 @@ from dearpygui_obj import (
 )
 
 if TYPE_CHECKING:
-    from typing import Callable, Mapping, Any, Optional, Type, Iterable, Tuple, Sequence, Dict
+    from typing import Any, Union, Optional, Type, Callable, Iterable, Tuple, Sequence, Mapping, MutableMapping
     from dearpygui_obj import PyGuiCallback
 
     ## Type Aliases
@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 
     GetValueFunc = Callable[['Widget'], Any]
     GetConfigFunc = Callable[['Widget', Any], ItemConfigData]
+
+    Intersection = Union  # remove this when Intersection type hints are finally added
 
 
 ## WIDGET WRAPPERS
@@ -176,7 +178,7 @@ class Widget(ABC):
     ## Overrides
 
     @abstractmethod
-    def _setup_add_widget(self, dpg_args: Dict[str, Any]) -> None:
+    def _setup_add_widget(self, dpg_args: MutableMapping[str, Any]) -> None:
         """This should create the widget using DearPyGui's ``add_*()`` functions."""
 
     def _setup_preexisting(self) -> None:
@@ -268,7 +270,7 @@ class Widget(ABC):
         """Checks if DPG considers this item to be a container."""
         return dpgcore.is_item_container(self.id)
 
-    def iter_children(self) -> Iterable[ItemWidget]:
+    def iter_children(self) -> Iterable[Union[Widget, ItemWidget]]:
         """Iterates all of the item's children."""
         children = dpgcore.get_item_children(self.id)
         if not children:
@@ -485,7 +487,7 @@ class DefaultWidget(Widget, ItemWidget):
     have a wrapper object class associated with it, an instance of this type is created as
     a fallback."""
 
-    def _setup_add_widget(self, dpg_args: Dict[str, Any]) -> None:
+    def _setup_add_widget(self, dpg_args: MutableMapping[str, Any]) -> None:
         pass
 
 
