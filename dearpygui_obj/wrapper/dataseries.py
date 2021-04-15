@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, TypeVar, MutableSequence, overload
 from dearpygui_obj import _generate_id
 from dearpygui_obj.plots import Plot
 if TYPE_CHECKING:
-    from typing import Any, Union, Optional, Type, Callable, Mapping, Iterable, Sequence, NoReturn
+    from typing import Any, Optional, Type, Callable, Mapping, Iterable, Sequence, NoReturn
     from dearpygui_obj.plots import PlotYAxis, YAxis
 
     ConvertFunc = Callable[[Any], Any]
@@ -281,7 +281,13 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         for field_idx, value in enumerate(item):
             self._data[field_idx][index] = value
 
-    def __delitem__(self, index: Union[int, slice]) -> None:
+    @overload
+    def __delitem__(self, index: int) -> None: ...
+
+    @overload
+    def __delitem__(self, index: slice) -> None: ...
+
+    def __delitem__(self, index):
         for seq in self._data:
             del seq[index]
 

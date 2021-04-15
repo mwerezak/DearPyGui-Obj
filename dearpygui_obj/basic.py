@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from warnings import warn
 from enum import Enum
-from typing import TYPE_CHECKING, Sequence, MutableSequence
+from typing import TYPE_CHECKING, Sequence, MutableSequence, overload
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
@@ -173,15 +173,33 @@ class RadioButtons(Widget, ItemWidget, ValueWidget[int], MutableSequence[str]):
     def __len__(self) -> int:
         return len(self._get_items())
 
-    def __getitem__(self, idx: int) -> str:
+    @overload
+    def __getitem__(self, idx: int) -> str: ...
+
+    @overload
+    def __getitem__(self, idx: slice) -> Iterable[str]: ...
+
+    def __getitem__(self, idx):
         return self._get_items()[idx]
 
-    def __setitem__(self, idx: int, label: str) -> None:
+    @overload
+    def __setitem__(self, idx: int, label: str) -> None: ...
+
+    @overload
+    def __setitem__(self, idx: slice, label: Iterable[str]) -> None: ...
+
+    def __setitem__(self, idx, label) -> None:
         items = self._get_items()
         items[idx] = label
         self.set_config(items=items)
 
-    def __delitem__(self, idx: int) -> None:
+    @overload
+    def __delitem__(self, idx: int) -> None: ...
+
+    @overload
+    def __delitem__(self, idx: slice) -> None: ...
+
+    def __delitem__(self, idx):
         items = self._get_items()
         del items[idx]
         self.set_config(items=items)
@@ -253,15 +271,33 @@ class Combo(Widget, ItemWidget, ValueWidget[str], MutableSequence[str]):
     def __len__(self) -> int:
         return len(self._get_items())
 
-    def __getitem__(self, idx: int) -> str:
+    @overload
+    def __getitem__(self, idx: int) -> str: ...
+
+    @overload
+    def __getitem__(self, idx: slice) -> Iterable[str]: ...
+
+    def __getitem__(self, idx):
         return self._get_items()[idx]
 
-    def __setitem__(self, idx: int, label: str) -> None:
+    @overload
+    def __setitem__(self, idx: int, label: str) -> None: ...
+
+    @overload
+    def __setitem__(self, idx: slice, label: Iterable[str]) -> None: ...
+
+    def __setitem__(self, idx, label):
         items = self._get_items()
         items[idx] = label
         self.set_config(items=items)
 
-    def __delitem__(self, idx: int) -> None:
+    @overload
+    def __delitem__(self, idx: int) -> None: ...
+
+    @overload
+    def __delitem__(self, idx: slice) -> None: ...
+
+    def __delitem__(self, idx):
         items = self._get_items()
         del items[idx]
         self.set_config(items=items)
@@ -302,15 +338,33 @@ class ListBox(Widget, ItemWidget, ValueWidget[int], MutableSequence[str]):
     def __len__(self) -> int:
         return len(self._get_items())
 
-    def __getitem__(self, idx: int) -> str:
+    @overload
+    def __getitem__(self, idx: int) -> str: ...
+
+    @overload
+    def __getitem__(self, idx: slice) -> Iterable[str]: ...
+
+    def __getitem__(self, idx):
         return self._get_items()[idx]
 
-    def __setitem__(self, idx: int, label: str) -> None:
+    @overload
+    def __setitem__(self, idx: int, label: str) -> None: ...
+
+    @overload
+    def __setitem__(self, idx: slice, label: Iterable[str]) -> None: ...
+
+    def __setitem__(self, idx, label):
         items = self._get_items()
         items[idx] = label
         self.set_config(items=items)
 
-    def __delitem__(self, idx: int) -> None:
+    @overload
+    def __delitem__(self, idx: int) -> None: ...
+
+    @overload
+    def __delitem__(self, idx: slice) -> None: ...
+
+    def __delitem__(self, idx):
         items = self._get_items()
         del items[idx]
         self.set_config(items=items)

@@ -51,7 +51,7 @@ class Table(Widget, ItemWidget):
     def _setup_add_widget(self, dpg_args: MutableMapping[str, Any]) -> None:
         dpgcore.add_table(self.id, **dpg_args)
 
-    def set_headers(self, headers: Union[int, Iterable[str]]) -> None:
+    def set_headers(self, headers: Union[Iterable[str], int]) -> None:
         """Set the table headers.
 
         This determines the number of displayed columns (distinct from the number of data columns!).
