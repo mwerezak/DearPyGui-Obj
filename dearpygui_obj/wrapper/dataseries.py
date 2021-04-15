@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, NamedTuple, TypeVar, MutableSequence
+from typing import TYPE_CHECKING, TypeVar, MutableSequence
 
 from dearpygui_obj import _generate_id
 from dearpygui_obj.plots import Plot
 if TYPE_CHECKING:
-    from typing import Any, Optional, Union, Type, Callable, Mapping, Iterable, Sequence
-    from dearpygui_obj.plots import PlotYAxis, PlotYAxisConfig, YAxis
+    from typing import Any, Optional, Type, Callable, Mapping, Iterable, Sequence
+    from dearpygui_obj.plots import PlotYAxis, YAxis
 
     ConvertFunc = Callable[[Any], Any]
 

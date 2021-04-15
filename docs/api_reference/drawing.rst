@@ -31,13 +31,13 @@ Drawing Canvas
     :members:
     :undoc-members:
 
-.. autodata:: ForegroundCanvas
-
-.. autodata:: BackgroundCanvas
-
 .. autoclass:: WindowCanvas
     :members:
     :undoc-members:
+
+
+Drawing Widget
+--------------
 
 .. autoclass:: Drawing
     :members:

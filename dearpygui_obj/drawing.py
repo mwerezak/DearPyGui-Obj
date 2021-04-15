@@ -95,7 +95,10 @@ class Drawing(Widget, ItemWidget, DrawingCanvas):
 class WindowCanvas(DrawingCanvas):
     """A :class:`.DrawingCanvas` that can be used to draw onto a window.
 
-    Can also be obtained from :meth:`.Window.get_canvas`."""
+    Can also be obtained from :meth:`.Window.get_canvas`.
+
+    To draw on the foreground or background of the main viewport, see :attr:`.MainWindow.foreground`
+    and :attr:`.MainWindow.background`."""
 
     def __init__(self, window: Window):
         self._id = window.id
@@ -275,8 +278,6 @@ class DrawBezierCurve(DrawCommand):
 
 __all__ = [
     'Drawing',
-    'BackgroundCanvas',
-    'ForegroundCanvas',
     'WindowCanvas',
 
     'DrawLine',

@@ -131,14 +131,16 @@ __all__ = [
     'color_from_float',
     'color_from_rgba8',
     'color_from_hex',
+    'import_color_from_dpg',
+    'export_color_to_dpg',
     'ConfigPropertyColorRGBA',
 
     'MINYEAR',
     'MAXYEAR',
     'import_date_from_dpg',
     'export_date_to_dpg',
-    'dpg_import_time',
-    'dpg_export_time',
+    'import_time_from_dpg',
+    'export_time_to_dpg',
 ]
 
 
