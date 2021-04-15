@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, TypeVar, MutableSequence
+from typing import TYPE_CHECKING, TypeVar, MutableSequence, overload
 
 from dearpygui_obj import _generate_id
 from dearpygui_obj.plots import Plot
 if TYPE_CHECKING:
-    from typing import Any, Optional, Type, Callable, Mapping, Iterable, Sequence
+    from typing import Any, Union, Optional, Type, Callable, Mapping, Iterable, Sequence, NoReturn
     from dearpygui_obj.plots import PlotYAxis, YAxis
 
     ConvertFunc = Callable[[Any], Any]
@@ -66,6 +66,42 @@ class DataSeriesCollection(MutableSequence[TValue]):
         self.series = series
         self.key = key
 
+    def __len__(self) -> int:
+        return len(self.series._data[self.key])
+
+    def __iter__(self) -> Iterable[TValue]:
+        return iter(self.series._data[self.key])
+
+    @overload
+    def __getitem__(self, index: int) -> TValue:
+        ...
+
+    @overload
+    def __getitem__(self, index: slice) -> Iterable[TValue]:
+        ...
+
+    def __getitem__(self, index):
+        """Get values for a particular data field using index or slice."""
+        return self.series._data[self.key][index]
+
+    @overload
+    def __setitem__(self, index: int, value: TValue) -> None:
+        ...
+
+    @overload
+    def __setitem__(self, index: slice, value: Iterable[TValue]) -> None:
+        ...
+
+    def __setitem__(self, index, value):
+        """Set values for a particular data field using index or slice.
+
+        Raises:
+            TypeError: if the slice assignment would change the length of the sequence."""
+        if isinstance(index, slice):
+            self._set_slice(index, value)
+        else:
+            self.series._data[self.key][index] = value
+
     # raises a TypeError if the slice will change the length of the sequence
     def _set_slice(self, s: slice, value: Iterable) -> None:
         if not hasattr(value, '__len__'):
@@ -74,22 +110,12 @@ class DataSeriesCollection(MutableSequence[TValue]):
             raise TypeError('cannot change length of individual DataSeries field')
         self.series._data[self.key][s] = value
 
-    def __len__(self) -> int:
-        return len(self.series._data[self.key])
-
-    def __getitem__(self, index: int) -> TValue:
-        return self.series._data[self.key][index]
-
-    def __setitem__(self, index: int, value: TValue) -> None:
-        if isinstance(index, slice):
-            self._set_slice(index, value)
-        else:
-            self.series._data[self.key][index] = value
-
-    def __delitem__(self, index: int) -> None:
+    def __delitem__(self, index: Any) -> NoReturn:
+        """Always raises :class:`.TypeError`."""
         raise TypeError('cannot change length of individual DataSeries field')
 
-    def insert(self, index: int, value: TValue) -> None:
+    def insert(self, index: int, value: TValue) -> NoReturn:
+        """Always raises :class:`.TypeError`."""
         raise TypeError('cannot change length of individual DataSeries field')
 
 class DataSeriesField:
@@ -211,20 +237,51 @@ class DataSeries(ABC, MutableSequence[TRecord]):
     ## Mutable Sequence Implementation
 
     def __len__(self) -> int:
+        """Get the size of the data series."""
         return len(self._data[0])  # they should all be the same length
 
     def __iter__(self) -> Iterable[TRecord]:
+        """Iterate the data series."""
         for values in zip(*self._data):
             yield self._create_record(*values)
 
-    def __getitem__(self, index: int) -> TRecord:
-        return self._create_record(*(seq[index] for seq in self._data))
+    # def _iter_slice(self, iterable: Iterable, s: slice) -> Iterable:
+    #     return itertools.islice(iterable, s.start or 0, )
 
-    def __setitem__(self, index: int, item: Any) -> None:
+    @overload
+    def __getitem__(self, index: int) -> TRecord:
+        ...
+
+    @overload
+    def __getitem__(self, index: slice) -> Iterable[TRecord]:
+        ...
+
+    def __getitem__(self, index):
+        """Get data from the dataseries using an index or slice."""
+        if isinstance(index, slice):
+            return (
+                self._create_record(*values)
+                for values in zip(*(field[index] for field in self._data))
+            )
+        else:
+            return self._create_record(*(field[index] for field in self._data))
+
+    @overload
+    def __setitem__(self, index: int, item: TRecord) -> None:
+        ...
+
+    @overload
+    def __setitem__(self, index: slice, item: Iterable[TRecord]) -> None:
+        ...
+
+    def __setitem__(self, index, item) -> None:
+        """Modify the data series using an index or slice."""
+        if isinstance(index, slice):
+            item = zip(*item)
         for field_idx, value in enumerate(item):
             self._data[field_idx][index] = value
 
-    def __delitem__(self, index: int) -> None:
+    def __delitem__(self, index: Union[int, slice]) -> None:
         for seq in self._data:
             del seq[index]
 
