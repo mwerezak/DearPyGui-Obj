@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, overload
 
 import dearpygui.core as dpgcore
 
@@ -7,7 +7,7 @@ from dearpygui_obj import _register_item_type
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
 
 if TYPE_CHECKING:
-    from typing import Any, Union, Tuple, Iterable, List, MutableMapping
+    from typing import Any, Union, Tuple, Iterable, Sequence, List, MutableMapping
 
 @_register_item_type('mvAppItemType::Table')
 class Table(Widget, ItemWidget):
@@ -77,7 +77,23 @@ class Table(Widget, ItemWidget):
             return len(data[0])
         return 0
 
-    def __getitem__(self, indices: Tuple[Any, Any]) -> Any:
+    @overload
+    def __getitem__(self, indices: Tuple[int, int]) -> str:
+        ...
+
+    @overload
+    def __getitem__(self, indices: Tuple[int, slice]) -> Sequence[str]:
+        ...
+
+    @overload
+    def __getitem__(self, indices: Tuple[slice, int]) -> Sequence[str]:
+        ...
+
+    @overload
+    def __getitem__(self, indices: Tuple[slice, slice]) -> Sequence[Sequence[str]]:
+        ...
+
+    def __getitem__(self, indices):
         """Get table data using indices or slices."""
         row_idx, col_idx = indices
         if isinstance(row_idx, slice) and isinstance(col_idx, slice):
@@ -89,29 +105,46 @@ class Table(Widget, ItemWidget):
         else:
             return dpgcore.get_table_item(self.id, row_idx, col_idx)
 
-    def __setitem__(self, indices: Tuple[Any, Any], value: Any):
+
+    @overload
+    def __setitem__(self, indices: Tuple[int, int], value: str) -> None:
+        ...
+
+    @overload
+    def __setitem__(self, indices: Tuple[int, slice], value: Iterable[str]) -> None:
+        ...
+
+    @overload
+    def __setitem__(self, indices: Tuple[slice, int], value: Iterable[str]) -> None:
+        ...
+
+    @overload
+    def __setitem__(self, indices: Tuple[slice, slice], value: Iterable[Iterable[str]]) -> None:
+        ...
+
+    def __setitem__(self, indices, value):
         """Set table data using indices or slices.
         The shape of the **value** argument must match the provided indices."""
         row_idx, col_idx = indices
 
-        ## both row_idx and col_idx are slices. value is a sequence of sequences
+        ## both row_idx and col_idx are slices. value is an iterable of iterables
         if isinstance(row_idx, slice) and isinstance(col_idx, slice):
             if row_idx == slice(None) and col_idx == slice(None):
                 data = value  # overwrite entire table data
             else:
                 data = self._get_data()  # overwrite just sliced rows and columns
-                for data_row, new_row in zip(data[row_idx], value):
-                    data_row[col_idx] = new_row
+                for data_row, set_row in zip(data[row_idx], value):
+                    data_row[col_idx] = set_row
             dpgcore.set_table_data(self.id, data)
 
-        ## just row_idx is a slice. value is a sequence
+        ## just row_idx is a slice. value is an iterable
         elif isinstance(row_idx, slice):
             data = self._get_data()
             for row, s in zip(data[row_idx], value):
                 row[col_idx] = s
             dpgcore.set_table_data(self.id, data)
 
-        ## just col_idx is a slice. value is a sequence
+        ## just col_idx is a slice. value is an iterable
         elif isinstance(col_idx, slice):
             data = self._get_data()
             data[row_idx][col_idx] = value
@@ -157,7 +190,7 @@ class TableSelection:
         for pair in dpgcore.get_table_selections(self.table.id):
             yield tuple(pair)
 
-    def __setitem__(self, indices: Tuple[Any, Any], selected: bool) -> None:
+    def __setitem__(self, indices: Tuple[Union[int, slice], Union[int, slice]], selected: bool) -> None:
         """Set the selected state of table cells.
 
         Uses the same syntax as table indexing, allowing the selection of multiple cells to be
