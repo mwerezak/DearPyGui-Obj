@@ -54,11 +54,11 @@ with Window('Example') as win:
     print('slope:', (p2.y - p1.y)/(p2.x - p1.x))  # elements are named tuples
     lineseries.append((10, 2))  # but methods will accept any compatible sequence
 
-    ## can also access and modify data as individual 1D sequences,
+    ## you can also access and modify data as individual 1D sequences,
     ## as long as the length does not change
     print(*lineseries.y[0:3])  # prints -9 -4 11
-    lineseries.y[2] += 1
-    lineseries.y[3:5] = (7, 5)
+    lineseries.y[3] += 1
+    lineseries.y[0:3] = (-4, 7, -2)
     lineseries.x[:] = [1, 2, 3, 4, 5, 6]
     #lineseries.x = [1, 2, 3]  # TypeError: cannot change length of individual DataSeries field
 
