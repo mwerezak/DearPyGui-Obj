@@ -41,7 +41,7 @@ class Table(Widget, ItemWidget):
     #: selection state.
     selected: TableSelection
 
-    def __init__(self, headers: Union[int, Iterable[str]], *, name_id: str = None, **config: Any):
+    def __init__(self, headers: Union[int, Iterable[str]] = 2, *, name_id: str = None, **config: Any):
         if isinstance(headers, int):
             super().__init__(headers=['' for i in range(headers)], hide_headers=True, name_id=name_id, **config)
         else:
