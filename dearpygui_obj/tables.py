@@ -217,3 +217,7 @@ class TableSelection:
             ## neither are slices
             dpgcore.set_table_selection(self.table.id, row_idx, col_idx, selected)
 
+
+__all__ = [
+    'Table',
+]

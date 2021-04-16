@@ -6,6 +6,7 @@ if TYPE_CHECKING:
 
 from dearpygui_obj.window import *
 from dearpygui_obj.basic import *
+from dearpygui_obj.tables import *
 from dearpygui_obj.input import *
 from dearpygui_obj.containers import *
 from dearpygui_obj.layout import *
@@ -31,6 +32,8 @@ __all__ = [
     'Combo',
     'ListBox',
     'ProgressBar',
+
+    'Table',
 
     'InputText',
     'InputFloat',
