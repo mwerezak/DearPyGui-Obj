@@ -13,9 +13,18 @@ if TYPE_CHECKING:
 class Table(Widget, ItemWidget):
     """Adds a simple table that can hold text.
 
+    A Table's data consists of a sequence of rows, each row being a sequence of strings.
+
+    Note that a Table has two different kinds of "columns". A Table will have a number of *data*
+    columns and a number of *header* columns.
+
+    These won't always match. If you have more data columns than header columns, only a subsection
+    of the data will actually get shown. This will be the case even if :attr:`hide_headers` is
+    ``True``.
+
     Parameters:
         headers: can be an iterable of header strings or an integer. If an integer is used,
-            it will set the number of displayed columns and the :attr:`hide_headers` property
+            it will set the number of header columns and the :attr:`hide_headers` property
             will be set to ``True``.
 
     To get/set values in the table, indexing syntax can be used. For example:
