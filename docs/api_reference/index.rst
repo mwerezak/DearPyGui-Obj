@@ -10,6 +10,7 @@ API Reference
    wrapper
    windows
    basic
+   tables
    input
    layout
    containers

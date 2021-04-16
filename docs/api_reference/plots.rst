@@ -77,6 +77,7 @@ Data Series
 
     ~dearpygui_obj.wrapper.dataseries.DataSeries
     ~dearpygui_obj.wrapper.dataseries.DataSeriesConfig
+    ~dearpygui_obj.wrapper.dataseries.DataSeriesCollection
     AreaSeries
     BarSeries
     CandleSeries
@@ -98,10 +99,17 @@ Base Class
 .. autoclass:: dearpygui_obj.wrapper.dataseries.DataSeries
     :members:
     :undoc-members:
+    :special-members: __getitem__, __setitem__, __delitem__
 
 .. autoclass:: dearpygui_obj.wrapper.dataseries.DataSeriesConfig
     :members:
     :undoc-members:
+
+
+.. autoclass:: dearpygui_obj.wrapper.dataseries.DataSeriesCollection
+    :members:
+    :undoc-members:
+    :special-members: __len__, __iter__, __getitem__, __setitem__, __delitem__
 
 
 XYData

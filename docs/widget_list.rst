@@ -32,6 +32,15 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.basic.Combo
     dearpygui_obj.basic.SimplePlot
 
+
+.. rubric:: Tables
+
+.. autosummary:: 
+    :nosignatures:
+
+    dearpygui_obj.tables.Table
+
+
 .. rubric:: Input Boxes
 
 .. autosummary:: 
@@ -47,6 +56,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.input.InputInt3
     dearpygui_obj.input.InputInt4
 
+
 .. rubric:: Sliders
 
 .. autosummary:: 
@@ -60,6 +70,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.input.SliderInt2
     dearpygui_obj.input.SliderInt3
     dearpygui_obj.input.SliderInt4
+
 
 .. rubric:: Drag Inputs
 
@@ -75,6 +86,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.input.DragInt3
     dearpygui_obj.input.DragInt4
 
+
 .. rubric:: Colors
 
 .. autosummary:: 
@@ -84,6 +96,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.input.ColorEdit
     dearpygui_obj.input.ColorPicker
 
+
 .. rubric:: Date/Time Input
 
 .. autosummary::
@@ -91,6 +104,7 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
 
     dearpygui_obj.input.DatePicker
     dearpygui_obj.input.TimePicker
+
 
 .. rubric:: Layout
 

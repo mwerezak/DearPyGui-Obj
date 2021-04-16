@@ -37,16 +37,16 @@ class Table(Widget, ItemWidget):
 
     hide_headers: bool = ConfigProperty()  #: If ``True``, table headers will not be displayed.
 
-    #: An iterable of :class:`.SelectedCells` that can also be used to modify the table's cell
-    #: selecting using indexing assignment.
-    selection: TableSelection
+    #: A :class:`.TableSelection` instance that can be used to get or modify the table's cell
+    #: selection state.
+    selected: TableSelection
 
     def __init__(self, headers: Union[int, Iterable[str]], *, name_id: str = None, **config: Any):
         if isinstance(headers, int):
             super().__init__(headers=['' for i in range(headers)], hide_headers=True, name_id=name_id, **config)
         else:
             super().__init__(headers=headers, name_id=name_id, **config)
-        self.selection = TableSelection(self)
+        self.selected = TableSelection(self)
 
     def _setup_add_widget(self, dpg_args: MutableMapping[str, Any]) -> None:
         dpgcore.add_table(self.id, **dpg_args)
@@ -124,7 +124,7 @@ class Table(Widget, ItemWidget):
 
     def __setitem__(self, indices, value):
         """Set table data using indices or slices.
-        The shape of the **value** argument must match the provided indices."""
+        The shape of the **value** argument must match the provided indices/slices."""
         row_idx, col_idx = indices
 
         ## both row_idx and col_idx are slices. value is an iterable of iterables
@@ -186,12 +186,12 @@ class TableSelection:
         self.table = table
 
     def __iter__(self) -> Iterable[Tuple[int, int]]:
-        """Iterate the selected cells as (row, col) pairs."""
+        """Iterate the selected cells as ``(row, col)`` pairs."""
         for pair in dpgcore.get_table_selections(self.table.id):
             yield tuple(pair)
 
     def __setitem__(self, indices: Tuple[Union[int, slice], Union[int, slice]], selected: bool) -> None:
-        """Set the selected state of table cells.
+        """Modify the cell selection state.
 
         Uses the same syntax as table indexing, allowing the selection of multiple cells to be
         modified at once using slices."""
