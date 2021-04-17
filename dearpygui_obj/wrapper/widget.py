@@ -345,7 +345,7 @@ class Widget(ABC):
 
 
 class ContainerFinalizedError(Exception):
-    """Raised when a :class:`ContainerWidget` is used as contextmanager after being finalized."""
+    """Raised when a :class:`ContainerWidget` is used after being finalized."""
 
 _TSelf = TypeVar('_TSelf', bound='ContainerWidget')
 class ContainerWidget(ABC, Generic[_TSelf]):
@@ -355,10 +355,13 @@ class ContainerWidget(ABC, Generic[_TSelf]):
     This behavior is a result of DPG's container stack and it makes it simple to create
     declarative-style GUIs.
 
-    Once a container is used as a context manager, it is popped from DPG's container stack and
+    After a container is used as a context manager, it is popped from DPG's container stack and
     cannot be re-added. Attempting to use it as a context manager for a second time will
     raise a :class:`.ContainerFinalizedError`. This can also be checked using the
-    :attr:`finalized` property."""
+    :attr:`finalized` property.
+
+    Once a container is finalized, additional children can still be added using the
+    :meth:`add_child` method."""
 
     _finalized = False
 
@@ -374,6 +377,10 @@ class ContainerWidget(ABC, Generic[_TSelf]):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         self._finalized = True
+        self.__finalize__()
+
+    def __finalize__(self) -> None:
+        """Should finalize the container in DPG."""
         dpgcore.end()
 
     @property
@@ -390,7 +397,9 @@ class ContainerWidget(ABC, Generic[_TSelf]):
             yield get_item_by_id(child)
 
     def add_child(self, child: ItemWidget) -> None:
-        """Alternative to :meth:`set_parent`."""
+        """Move an :class:`.ItemWidget` into this container.
+
+        Equivalent to calling :meth:`ItemWidget.set_parent` on the child."""
         dpgcore.move_item(child.id, parent=self.id)
 
 
@@ -430,7 +439,9 @@ class ItemWidget(ABC):
         return get_item_by_id(parent_id)
 
     def set_parent(self, parent: ContainerWidget) -> None:
-        """Re-parent the item, moving it."""
+        """Re-parent the item, moving it.
+
+        Equivalent to calling :meth:`ContainerWidget.add_child` on the parent."""
         dpgcore.move_item(self.id, parent=parent.id)
 
     def move_up(self) -> None:
@@ -521,7 +532,7 @@ class ValueWidget(ABC, Generic[_TValue]):
 
 
 class DefaultWidget(Widget, ItemWidget):
-    """Fallback type used when getting a widget that does not have a wrapper class.
+    """Fallback type for getting a widget that does not have a wrapper class.
 
     When :func:`.get_item_by_id` is called to retrieve an item whose widget type does not
     have a wrapper object class associated with it, an instance of this type is created as

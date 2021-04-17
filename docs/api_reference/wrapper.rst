@@ -12,6 +12,8 @@ Widget Objects
     :nosignatures:
 
     Widget
+    ContainerWidget
+    ContainerFinalizedError
     ItemWidget
     DefaultWidget
     ConfigProperty
@@ -43,15 +45,6 @@ Widget
         set_callback
         callback_data
 
-    **Containers**
-
-    .. autosummary::
-        :nosignatures:
-
-        is_container
-        iter_children
-        add_child
-
     **Other Properties and Status**
 
     .. autosummary::
@@ -77,6 +70,15 @@ Widget
     :members:
     :undoc-members:
 
+
+ContainerWidget
+---------------
+
+.. autoclass:: ContainerWidget
+    :members:
+    :undoc-members:
+
+.. autoexception:: ContainerFinalizedError
 
 ItemWidget
 ----------

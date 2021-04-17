@@ -70,7 +70,7 @@ class IndentLayout(Widget, ItemWidget, ContainerWidget['IndentLayout']):
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_indent(name=self.id, **dpg_args)
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __finalize__(self) -> None:
         dpgcore.unindent()  # doesn't use dpgcore.end()
 
 
