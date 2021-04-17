@@ -19,7 +19,7 @@ class VSpacing(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_spacing(name=self.id, **dpg_args)
 
 
@@ -34,7 +34,7 @@ class HAlignNext(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
 def group_horizontal(spacing: float = -1, *, name_id: str = None, **config: Any) -> Group:
@@ -54,7 +54,7 @@ class Group(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_group(self.id, **dpg_args)
 
     def __enter__(self) -> Group:
@@ -72,7 +72,7 @@ class IndentLayout(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_indent(name=self.id, **dpg_args)
 
     def __enter__(self) -> IndentLayout:
@@ -94,7 +94,7 @@ class ColumnLayout(Widget, ItemWidget):
     def __init__(self, columns: int = 2, *, name_id: str = None, **config):
         super().__init__(columns=columns, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_managed_columns(name=self.id, **dpg_args)
 
     def __enter__(self) -> ColumnLayout:
@@ -142,7 +142,7 @@ class ChildView(Widget, ItemWidget):
     #: Allow horizontal scrollbar to appear.
     horizontal_scrollbar: bool = ConfigProperty()
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_child(self.id, **dpg_args)
 
     def __enter__(self) -> ChildView:
@@ -158,7 +158,7 @@ class Dummy(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_dummy(name=self.id, **dpg_args)
 
 

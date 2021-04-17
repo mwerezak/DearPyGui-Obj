@@ -16,7 +16,7 @@ class DebugWindow(Window):
         super().__init__(name_id=name_id, **config)
 
     """Developer tool, creates a window containing handy GUI debugging info."""
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_debug_window(self.id, **dpg_args)
         dpgcore.end()
 
@@ -38,7 +38,7 @@ class MetricsWindow(Window):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_metrics_window(self.id, **dpg_args)
         dpgcore.end()
 
@@ -59,7 +59,7 @@ class StyleEditorWindow(Window):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_style_window(self.id, **dpg_args)
         dpgcore.end()
 
@@ -80,7 +80,7 @@ class DocumentationWindow(Window):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_doc_window(self.id, **dpg_args)
         dpgcore.end()
 
@@ -101,7 +101,7 @@ class AboutWindow(Window):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_about_window(self.id, **dpg_args)
         dpgcore.end()
 

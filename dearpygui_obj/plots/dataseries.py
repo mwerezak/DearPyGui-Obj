@@ -49,9 +49,9 @@ class XYData(NamedTuple):
 
 class AreaSeries(DataSeries[XYData]):
     """Adds an area series to a plot."""
-    _update_func = dpgcore.add_area_series
-    _create_record = XYData
-    _data_keywords = 'x y'
+    __update_func__ = dpgcore.add_area_series
+    __create_record__ = XYData
+    __data_keywords__ = 'x y'
 
     x: MutableSequence[float] = DataSeriesField()
     y: MutableSequence[float] = DataSeriesField()
@@ -67,9 +67,9 @@ class AreaSeries(DataSeries[XYData]):
 
 class BarSeries(DataSeries[XYData]):
     """Adds a bar series to a plot."""
-    _update_func = dpgcore.add_bar_series
-    _create_record = XYData
-    _data_keywords = 'x y'
+    __update_func__ = dpgcore.add_bar_series
+    __create_record__ = XYData
+    __data_keywords__ = 'x y'
 
     x: MutableSequence[float] = DataSeriesField()
     y: MutableSequence[float] = DataSeriesField()
@@ -90,9 +90,9 @@ class CandleSeriesData(NamedTuple):
 
 class CandleSeries(DataSeries[CandleSeriesData]):
     """Adds a candle series to a plot."""
-    _update_func = dpgcore.add_candle_series
-    _create_record = CandleSeriesData
-    _data_keywords = 'date opens highs lows closes'
+    __update_func__ = dpgcore.add_candle_series
+    __create_record__ = CandleSeriesData
+    __data_keywords__ = 'date opens highs lows closes'
 
     date: MutableSequence[float] = DataSeriesField()
     opens: MutableSequence[float] = DataSeriesField()
@@ -118,9 +118,9 @@ class ErrorSeriesData(NamedTuple):
 
 class ErrorSeries(DataSeries[ErrorSeriesData]):
     """Adds an error series to a plot."""
-    _update_func = dpgcore.add_error_series
-    _create_record = ErrorSeriesData
-    _data_keywords = 'x y negative positive'
+    __update_func__ = dpgcore.add_error_series
+    __create_record__ = ErrorSeriesData
+    __data_keywords__ = 'x y negative positive'
 
 
     x: MutableSequence[float] = DataSeriesField()
@@ -136,8 +136,8 @@ class ErrorSeries(DataSeries[ErrorSeriesData]):
 
 class HeatSeries(DataSeries[tuple]):
     """Adds a heat series to a plot."""
-    _update_func = dpgcore.add_heat_series
-    _data_keywords = 'values'
+    __update_func__ = dpgcore.add_heat_series
+    __data_keywords__ = 'values'
 
     values: MutableSequence[float] = DataSeriesField()
 
@@ -169,8 +169,8 @@ class HeatSeries(DataSeries[tuple]):
 
 class HLineSeries(DataSeries[tuple]):
     """Adds an infinite horizontal line series to a plot."""
-    _update_func = dpgcore.add_hline_series
-    _data_keywords = 'x'
+    __update_func__ = dpgcore.add_hline_series
+    __data_keywords__ = 'x'
 
     x: MutableSequence[float] = DataSeriesField()
 
@@ -183,8 +183,8 @@ class HLineSeries(DataSeries[tuple]):
 
 class VLineSeries(DataSeries[tuple]):
     """Adds an infinite vertical line series to a plot."""
-    _update_func = dpgcore.add_vline_series
-    _data_keywords = 'x'
+    __update_func__ = dpgcore.add_vline_series
+    __data_keywords__ = 'x'
 
     x: MutableSequence[float] = DataSeriesField()
 
@@ -201,9 +201,9 @@ class VLineSeries(DataSeries[tuple]):
 
 class LineSeries(DataSeries[XYData]):
     """Adds a line series to a plot."""
-    _update_func = dpgcore.add_line_series
-    _create_record = XYData
-    _data_keywords = 'x y'
+    __update_func__ = dpgcore.add_line_series
+    __create_record__ = XYData
+    __data_keywords__ = 'x y'
 
     x: MutableSequence[float] = DataSeriesField()
     y: MutableSequence[float] = DataSeriesField()
@@ -221,9 +221,9 @@ class PieSeriesData(NamedTuple):
 
 class PieSeries(DataSeries[PieSeriesData]):
     """Adds a pie chart to a plot."""
-    _update_func = dpgcore.add_pie_series
-    _create_record = PieSeriesData
-    _data_keywords = 'values labels'
+    __update_func__ = dpgcore.add_pie_series
+    __create_record__ = PieSeriesData
+    __data_keywords__ = 'values labels'
 
     values: MutableSequence[float] = DataSeriesField()
     labels: MutableSequence[str] = DataSeriesField()
@@ -243,9 +243,9 @@ class PieSeries(DataSeries[PieSeriesData]):
 
 class ScatterSeries(DataSeries[XYData]):
     """Adds a scatter series to a plot."""
-    _update_func = dpgcore.add_scatter_series
-    _create_record = XYData
-    _data_keywords = 'x y'
+    __update_func__ = dpgcore.add_scatter_series
+    __create_record__ = XYData
+    __data_keywords__ = 'x y'
 
     x: MutableSequence[float] = DataSeriesField()
     y: MutableSequence[float] = DataSeriesField()
@@ -263,9 +263,9 @@ class ScatterSeries(DataSeries[XYData]):
 
 class ShadeSeries(DataSeries[XYData]):
     """Adds a single-sided shade series to a plot."""
-    _update_func = dpgcore.add_scatter_series
-    _create_record = XYData
-    _data_keywords = 'x y1'
+    __update_func__ = dpgcore.add_scatter_series
+    __create_record__ = XYData
+    __data_keywords__ = 'x y1'
 
     x: MutableSequence[float] = DataSeriesField()
     y1: MutableSequence[float] = DataSeriesField()
@@ -286,9 +286,9 @@ class ShadeRangeData(NamedTuple):
 
 class ShadeRangeSeries(DataSeries[ShadeRangeData]):
     """Adds a single-sided shade series to a plot."""
-    _update_func = dpgcore.add_scatter_series
-    _create_record = ShadeRangeData
-    _data_keywords = 'x y1 y2'
+    __update_func__ = dpgcore.add_scatter_series
+    __create_record__ = ShadeRangeData
+    __data_keywords__ = 'x y1 y2'
 
     x: MutableSequence[float] = DataSeriesField()
     y1: MutableSequence[float] = DataSeriesField()
@@ -304,9 +304,9 @@ class ShadeRangeSeries(DataSeries[ShadeRangeData]):
 
 class StairSeries(DataSeries[XYData]):
     """Add a stair series to a plot."""
-    _update_func = dpgcore.add_stair_series
-    _create_record = XYData
-    _data_keywords = 'x y'
+    __update_func__ = dpgcore.add_stair_series
+    __create_record__ = XYData
+    __data_keywords__ = 'x y'
 
     x: MutableSequence[float] = DataSeriesField()
     y: MutableSequence[float] = DataSeriesField()
@@ -320,9 +320,9 @@ class StairSeries(DataSeries[XYData]):
 
 class StemSeries(DataSeries[XYData]):
     """Add a stem series to a plot."""
-    _update_func = dpgcore.add_stem_series
-    _create_record = XYData
-    _data_keywords = 'x y'
+    __update_func__ = dpgcore.add_stem_series
+    __create_record__ = XYData
+    __data_keywords__ = 'x y'
 
     x: MutableSequence[float] = DataSeriesField()
     y: MutableSequence[float] = DataSeriesField()

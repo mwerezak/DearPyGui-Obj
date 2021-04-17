@@ -107,10 +107,10 @@ class DrawCommand(ABC):
             if prop is not None:
                 draw_data.update(prop.fconfig(self, value))
 
-        self._draw_internal(draw_data)
+        self.__draw_internal__(draw_data)
 
     @abstractmethod
-    def _draw_internal(self, draw_args: Mapping[str, Any]) -> None:
+    def __draw_internal__(self, draw_args: Mapping[str, Any]) -> None:
         """This should execute the draw using DearPyGui's ``draw_*()`` functions."""
 
     def __eq__(self, other: Any) -> bool:

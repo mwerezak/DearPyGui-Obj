@@ -138,7 +138,7 @@ class Window(Widget):
         """
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_window(self.id, on_close=self._on_close, **dpg_args)
 
     def __enter__(self) -> Window:
@@ -179,7 +179,7 @@ class MenuBar(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_menu_bar(self.id, **dpg_args)
 
     def __enter__(self) -> MenuBar:

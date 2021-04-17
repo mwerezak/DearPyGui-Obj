@@ -65,7 +65,7 @@ class NodeEditor(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node_editor(
             self.id, link_callback=self._on_link, delink_callback=self._on_delink, **dpg_args,
         )
@@ -180,7 +180,7 @@ class Node(Widget, ItemWidget):
     def __init__(self, label: str = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node(self.id, **dpg_args)
 
     def __enter__(self) -> Node:
@@ -230,7 +230,7 @@ class NodeAttribute(Widget, ItemWidget):
     def __init__(self, type: NodeAttributeType = NodeAttributeType.Input, *, name_id: str = None, **config):
         super().__init__(type=type, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node_attribute(self.id, **dpg_args)
 
     def __enter__(self) -> NodeAttribute:

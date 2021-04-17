@@ -95,7 +95,7 @@ class Widget(ABC):
 
     Keyword arguments passed to ``__init__`` will be used to set the initial values of any
     config properties that belong to the class. Any left over keywords will be passed to the
-    :meth:`_setup_add_widget` method to be given to DPG.
+    :meth:`__setup_add_widget__` method to be given to DPG.
 
     You can find out what config properties there are using the
     :meth:`get_config_properties` method.
@@ -134,7 +134,7 @@ class Widget(ABC):
             self._name_id = _generate_id(self)
 
         if dpgcore.does_item_exist(self.id):
-            self._setup_preexisting()
+            self.__setup_preexisting__()
         else:
             # at no point should a Widget object exist for an item that hasn't
             # actually been added, so if the item doesn't exist we need to add it now.
@@ -143,7 +143,7 @@ class Widget(ABC):
             if 'label' in kwargs and kwargs['label'] is None:
                 kwargs['label'] = self.id
 
-            # subclasses will pass both config values and keywords to _setup_add_widget()
+            # subclasses will pass both config values and keywords to __setup_add_widget__()
             # separate them now
             config_props = self._get_config_properties()
             config_args = {}
@@ -153,7 +153,7 @@ class Widget(ABC):
                     config_args[prop] = kwargs.pop(name)
 
             # just keywords left in kwargs
-            self._setup_add_widget(kwargs)
+            self.__setup_add_widget__(kwargs)
 
             config_data = {}
             for prop, value in config_args.items():
@@ -178,10 +178,10 @@ class Widget(ABC):
     ## Overrides
 
     @abstractmethod
-    def _setup_add_widget(self, dpg_args: MutableMapping[str, Any]) -> None:
+    def __setup_add_widget__(self, dpg_args: MutableMapping[str, Any]) -> None:
         """This should create the widget using DearPyGui's ``add_*()`` functions."""
 
-    def _setup_preexisting(self) -> None:
+    def __setup_preexisting__(self) -> None:
         """This can be overriden by subclasses to setup an object wrapper that has been created
         for a pre-existing GUI item.
 
@@ -466,17 +466,17 @@ class ValueWidget(ABC, Generic[_TValue]):
     @property
     def value(self) -> _TValue:
         """Get or set the widget's value."""
-        return self._get_value()
+        return self.__get_value__()
 
     @value.setter
     def value(self, v: _TValue) -> None:
-        self._set_value(v)
+        self.__set_value__(v)
 
     # these are here to make it easier for subclasses to override the value property.
-    def _get_value(self) -> _TValue:
+    def __get_value__(self) -> _TValue:
         return self.data_source.value
 
-    def _set_value(self, v: _TValue) -> None:
+    def __set_value__(self, v: _TValue) -> None:
         self.data_source.value = v
 
 
@@ -487,7 +487,7 @@ class DefaultWidget(Widget, ItemWidget):
     have a wrapper object class associated with it, an instance of this type is created as
     a fallback."""
 
-    def _setup_add_widget(self, dpg_args: MutableMapping[str, Any]) -> None:
+    def __setup_add_widget__(self, dpg_args: MutableMapping[str, Any]) -> None:
         pass
 
 

@@ -57,7 +57,7 @@ class Table(Widget, ItemWidget):
             super().__init__(headers=headers, name_id=name_id, **config)
         self.selected = TableSelection(self)
 
-    def _setup_add_widget(self, dpg_args: MutableMapping[str, Any]) -> None:
+    def __setup_add_widget__(self, dpg_args: MutableMapping[str, Any]) -> None:
         dpgcore.add_table(self.id, **dpg_args)
 
     def set_headers(self, headers: Union[Iterable[str], int]) -> None:

@@ -138,27 +138,27 @@ class DataSeries(ABC, MutableSequence[TRecord]):
 
     @property
     @abstractmethod
-    def _update_func(self) -> Callable:
+    def __update_func__(self) -> Callable:
         """The DPG function used to add/update the data series."""
         ...
 
     @staticmethod
-    def _create_record(*values: Any) -> TRecord:
+    def __create_record__(*values: Any) -> TRecord:
         """Factory function used to create records when retrieving individual data points."""
         return tuple(values)
 
     #: The keywords used to give the data to the DPG ``add_*_series()`` function.
-    #: The order of keywords is used when creating records using :meth:`_create_record`.
-    _data_keywords: Sequence[str]
+    #: The order of keywords is used when creating records using :meth:`__create_record__`.
+    __data_keywords__: Sequence[str]
 
     @classmethod
     def _get_data_keywords(cls) -> Iterable[str]:
-        if cls._data_keywords is None:
+        if cls.__data_keywords__ is None:
             # noinspection PyUnresolvedReferences
             return cls._record_type._fields
-        if isinstance(cls._data_keywords, str):
-            cls._data_keywords = cls._data_keywords.split()
-        return cls._data_keywords
+        if isinstance(cls.__data_keywords__, str):
+            cls.__data_keywords__ = cls.__data_keywords__.split()
+        return cls.__data_keywords__
 
     @classmethod
     def _get_config_properties(cls) -> Mapping[str, DataSeriesConfig]:
@@ -229,7 +229,7 @@ class DataSeries(ABC, MutableSequence[TRecord]):
             plot: the :class:`.Plot` to update.
             update_bounds: also update plot bounds if ``True``.
         """
-        self._update_func(
+        self.__update_func__(
             plot.id, self.id, axis=self._axis.index, update_bounds=update_bounds,
             **self._config, **dict(zip(self._get_data_keywords(), self._data))
         )
@@ -243,7 +243,7 @@ class DataSeries(ABC, MutableSequence[TRecord]):
     def __iter__(self) -> Iterable[TRecord]:
         """Iterate the data series."""
         for values in zip(*self._data):
-            yield self._create_record(*values)
+            yield self.__create_record__(*values)
 
     # def _iter_slice(self, iterable: Iterable, s: slice) -> Iterable:
     #     return itertools.islice(iterable, s.start or 0, )
@@ -260,11 +260,11 @@ class DataSeries(ABC, MutableSequence[TRecord]):
         """Get data from the dataseries using an index or slice."""
         if isinstance(index, slice):
             return (
-                self._create_record(*values)
+                self.__create_record__(*values)
                 for values in zip(*(field[index] for field in self._data))
             )
         else:
-            return self._create_record(*(field[index] for field in self._data))
+            return self.__create_record__(*(field[index] for field in self._data))
 
     @overload
     def __setitem__(self, index: int, item: TRecord) -> None:

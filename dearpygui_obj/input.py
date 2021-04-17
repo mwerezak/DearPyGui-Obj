@@ -37,7 +37,7 @@ class InputText(Widget, ItemWidget, ValueWidget[str]):
     def __init__(self, label: str = None, value: str = '', *, name_id: str = None, **config):
         super().__init__(label=label, default_value=value, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_text(self.id, **dpg_args)
 
 
@@ -99,7 +99,7 @@ class InputFloat(NumberInput[float, float]):
     """A float input box."""
     _default_value = 0.0
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_float(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::InputFloat2')
@@ -107,7 +107,7 @@ class InputFloat2(NumberInput[float, Tuple[float, float]]):
     """An input box for 2 floats."""
     _default_value = (0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_float2(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::InputFloat3')
@@ -115,7 +115,7 @@ class InputFloat3(NumberInput[float, Tuple[float, float, float]]):
     """An input box for 3 floats."""
     _default_value = (0.0, 0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_float3(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::InputFloat4')
@@ -123,7 +123,7 @@ class InputFloat4(NumberInput[float, Tuple[float, float, float, float]]):
     """An input box for 4 floats."""
     _default_value = (0.0, 0.0, 0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_float4(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::InputInt')
@@ -131,7 +131,7 @@ class InputInt(NumberInput[int, int]):
     """An integer input box."""
     _default_value = 0
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_int(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::InputInt2')
@@ -139,7 +139,7 @@ class InputInt2(NumberInput[int, Tuple[int, int]]):
     """An input box for 2 ints."""
     _default_value = (0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_int2(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::InputInt3')
@@ -147,7 +147,7 @@ class InputInt3(NumberInput[int, Tuple[int, int, int]]):
     """An input box for 3 ints."""
     _default_value = (0, 0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_int3(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::InputInt4')
@@ -155,7 +155,7 @@ class InputInt4(NumberInput[int, Tuple[int, int, int, int]]):
     """An input box for 4 ints."""
     _default_value = (0, 0, 0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_int4(self.id, **dpg_args)
 
 
@@ -192,7 +192,7 @@ class SliderFloat(SliderInput[float, float]):
 
     _default_value = 0.0
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_float(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::SliderFloat2')
@@ -203,7 +203,7 @@ class SliderFloat2(SliderInput[float, Tuple[float, float]]):
     into an input box for manual input of a value."""
     _default_value = (0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_float2(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::SliderFloat3')
@@ -214,7 +214,7 @@ class SliderFloat3(SliderInput[float, Tuple[float, float, float]]):
     into an input box for manual input of a value."""
     _default_value = (0.0, 0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_float3(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::SliderFloat4')
@@ -225,7 +225,7 @@ class SliderFloat4(SliderInput[float, Tuple[float, float, float, float]]):
     into an input box for manual input of a value."""
     _default_value = (0.0, 0.0, 0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_float4(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::SliderInt')
@@ -236,7 +236,7 @@ class SliderInt(SliderInput[int, int]):
     into an input box for manual input of a value."""
     _default_value = 0
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_int(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::SliderInt2')
@@ -247,7 +247,7 @@ class SliderInt2(SliderInput[int, Tuple[int, int]]):
     into an input box for manual input of a value."""
     _default_value = (0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_int2(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::SliderInt3')
@@ -258,7 +258,7 @@ class SliderInt3(SliderInput[int, Tuple[int, int, int]]):
     into an input box for manual input of a value."""
     _default_value = (0, 0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_int3(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::SliderInt4')
@@ -269,7 +269,7 @@ class SliderInt4(SliderInput[int, Tuple[int, int, int, int]]):
     into an input box for manual input of a value."""
     _default_value = (0, 0, 0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_slider_int4(self.id, **dpg_args)
 
 
@@ -305,7 +305,7 @@ class DragFloat(DragInput[float, float]):
 
     _default_value = 0.0
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_float(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::DragFloat2')
@@ -316,7 +316,7 @@ class DragFloat2(DragInput[float, Tuple[float, float]]):
     into an input box for manual input of a value."""
     _default_value = (0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_float2(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::DragFloat3')
@@ -327,7 +327,7 @@ class DragFloat3(DragInput[float, Tuple[float, float, float]]):
     into an input box for manual input of a value."""
     _default_value = (0.0, 0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_float3(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::DragFloat4')
@@ -338,7 +338,7 @@ class DragFloat4(DragInput[float, Tuple[float, float, float, float]]):
     into an input box for manual input of a value."""
     _default_value = (0.0, 0.0, 0.0, 0.0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_float4(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::DragInt')
@@ -349,7 +349,7 @@ class DragInt(DragInput[int, int]):
     into an input box for manual input of a value."""
     _default_value = 0
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_int(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::DragInt2')
@@ -360,7 +360,7 @@ class DragInt2(DragInput[int, Tuple[int, int]]):
     into an input box for manual input of a value."""
     _default_value = (0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_int2(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::DragInt3')
@@ -371,7 +371,7 @@ class DragInt3(DragInput[int, Tuple[int, int, int]]):
     into an input box for manual input of a value."""
     _default_value = (0, 0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_int3(self.id, **dpg_args)
 
 @_register_item_type('mvAppItemType::DragInt4')
@@ -382,7 +382,7 @@ class DragInt4(DragInput[int, Tuple[int, int, int, int]]):
     into an input box for manual input of a value."""
     _default_value = (0, 0, 0, 0)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drag_int4(self.id, **dpg_args)
 
 ## Color
@@ -404,7 +404,7 @@ class ColorButton(Widget, ItemWidget):
     def __init__(self, color: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
         super().__init__(color=export_color_to_dpg(color), name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_color_button(self.id, **dpg_args)
 
 class ColorFormatMode(Enum):
@@ -457,14 +457,14 @@ class ColorEdit(Widget, ItemWidget, ValueWidget[ColorRGBA]):
     def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
         super().__init__(label=label, default_value=export_color_to_dpg(value), name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_color_edit4(self.id, **dpg_args)
 
-    def _get_value(self) -> ColorRGBA:
-        return import_color_from_dpg(super()._get_value())
+    def __get_value__(self) -> ColorRGBA:
+        return import_color_from_dpg(super().__get_value__())
 
-    def _set_value(self, color: ColorRGBA) -> None:
-        super()._set_value(export_color_to_dpg(color))
+    def __set_value__(self, color: ColorRGBA) -> None:
+        super().__set_value__(export_color_to_dpg(color))
 
 
 @_register_item_type('mvAppItemType::ColorPicker4')
@@ -513,14 +513,14 @@ class ColorPicker(Widget, ItemWidget, ValueWidget[ColorRGBA]):
     def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
         super().__init__(label=label, default_value=export_color_to_dpg(value), name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_color_picker4(self.id, **dpg_args)
 
-    def _get_value(self) -> ColorRGBA:
-        return import_color_from_dpg(super()._get_value())
+    def __get_value__(self) -> ColorRGBA:
+        return import_color_from_dpg(super().__get_value__())
 
-    def _set_value(self, color: ColorRGBA) -> None:
-        super()._set_value(export_color_to_dpg(color))
+    def __set_value__(self, color: ColorRGBA) -> None:
+        super().__set_value__(export_color_to_dpg(color))
 
 ## Date/Time
 from datetime import date, time
@@ -556,13 +556,13 @@ class DatePicker(Widget, ItemWidget, ValueWidget[date]):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_date_picker(self.id, **dpg_args)
 
-    def _get_value(self) -> date:
-        return import_date_from_dpg(super()._get_value())
+    def __get_value__(self) -> date:
+        return import_date_from_dpg(super().__get_value__())
 
-    def _set_value(self, value: date) -> None:
+    def __set_value__(self, value: date) -> None:
         raise NotImplementedError('not supported in Dear PyGui 0.6')
 
 
@@ -593,13 +593,13 @@ class TimePicker(Widget, ValueWidget[time]):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_time_picker(self.id, **dpg_args)
 
-    def _get_value(self) -> time:
-        return import_time_from_dpg(super()._get_value())
+    def __get_value__(self) -> time:
+        return import_time_from_dpg(super().__get_value__())
 
-    def _set_value(self, value: time) -> None:
+    def __set_value__(self, value: time) -> None:
         raise NotImplementedError('not supported in Dear PyGui 0.6')
 
 

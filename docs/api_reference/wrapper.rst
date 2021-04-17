@@ -69,8 +69,8 @@ Widget
         is_hovered
         is_focused
 
-    .. automethod:: _setup_add_widget
-    .. automethod:: _setup_preexisting
+    .. automethod:: __setup_add_widget__
+    .. automethod:: __setup_preexisting__
 
 
 .. autoclass:: DefaultWidget

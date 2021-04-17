@@ -37,7 +37,7 @@ class TreeNode(Widget, ItemWidget, ValueWidget[bool]):
         config.setdefault('show', True)  # workaround for DPG 0.6
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tree_node(self.id, **dpg_args)
 
     def __enter__(self) -> TreeNode:
@@ -51,7 +51,7 @@ class TreeNode(Widget, ItemWidget, ValueWidget[bool]):
 class TreeNodeHeader(TreeNode):
     """Similar to :class:`.TreeNode`, but the label is visually emphasized."""
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_collapsing_header(self.id, **dpg_args)
 
 ## Tab Container
@@ -69,7 +69,7 @@ class TabBar(Widget, ItemWidget):
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab_bar(self.id, **dpg_args)
 
     def __enter__(self) -> TabBar:
@@ -123,7 +123,7 @@ class TabItem(Widget, ItemWidget):
     def __init__(self, label: str = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab(self.id, **dpg_args)
 
     def __enter__(self) -> TabItem:
@@ -170,7 +170,7 @@ class TabButton(Widget, ItemWidget):
     def __init__(self, label: str = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab_button(self.id, **dpg_args)
 
 
@@ -189,7 +189,7 @@ class Menu(Widget, ItemWidget):
     def __init__(self, label: str = None, *, name_id: str = None, **config):
         super().__init__(label=label, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_menu(self.id, **dpg_args)
 
     def __enter__(self) -> Menu:
@@ -216,7 +216,7 @@ class MenuItem(Widget, ItemWidget):
         if value is not None:
             self.value = value
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_menu_item(self.id, **dpg_args)
 
 
@@ -257,7 +257,7 @@ class Popup(Widget):
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_popup(self._popup_parent.id, self.id, **dpg_args)
 
     parent: ItemWidget

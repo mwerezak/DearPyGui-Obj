@@ -83,7 +83,7 @@ class Drawing(Widget, ItemWidget, DrawingCanvas):
     def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
         super().__init__(size=size, name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drawing(self.id, **dpg_args)
 
     def get_mouse_pos(self) -> Optional[Tuple[int, int]]:
@@ -137,7 +137,7 @@ class DrawLine(DrawCommand):
     color: ColorRGBA = DrawPropertyColorRGBA()
     thickness: int = DrawProperty()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_line(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawRectangle(DrawCommand):
@@ -151,7 +151,7 @@ class DrawRectangle(DrawCommand):
     rounding: float = DrawProperty()
     thickness: float = DrawProperty()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_rectangle(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawCircle(DrawCommand):
@@ -165,7 +165,7 @@ class DrawCircle(DrawCommand):
     thickness: float = DrawProperty()
     fill: ColorRGBA = DrawPropertyColorRGBA()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_circle(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawText(DrawCommand):
@@ -177,7 +177,7 @@ class DrawText(DrawCommand):
     color: ColorRGBA = DrawPropertyColorRGBA()
     font_size: int = DrawProperty(key='size')
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_text(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawArrow(DrawCommand):
@@ -189,7 +189,7 @@ class DrawArrow(DrawCommand):
     thickness: int = DrawProperty()
     arrow_size: int = DrawProperty(key='size')
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_arrow(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawPolyLine(DrawCommand):
@@ -208,7 +208,7 @@ class DrawPolyLine(DrawCommand):
     closed: bool = DrawProperty()
     thickness: float = DrawProperty()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_polyline(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawTriangle(DrawCommand):
@@ -222,7 +222,7 @@ class DrawTriangle(DrawCommand):
     fill: ColorRGBA = DrawPropertyColorRGBA()
     thickness: float = DrawProperty()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_triangle(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawQuad(DrawCommand):
@@ -237,7 +237,7 @@ class DrawQuad(DrawCommand):
     fill: ColorRGBA = DrawPropertyColorRGBA()
     thickness: float = DrawProperty()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_quad(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawPolygon(DrawCommand):
@@ -256,7 +256,7 @@ class DrawPolygon(DrawCommand):
     fill: ColorRGBA = DrawPropertyColorRGBA()
     thickness: float = DrawProperty()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_polygon(self.canvas.id, tag=self.id, **draw_args)
 
 class DrawBezierCurve(DrawCommand):
@@ -271,7 +271,7 @@ class DrawBezierCurve(DrawCommand):
     thickness: float = DrawProperty()
     segments: int = DrawProperty()
 
-    def _draw_internal(self, draw_args) -> None:
+    def __draw_internal__(self, draw_args) -> None:
         dpgcore.draw_bezier_curve(self.canvas.id, tag=self.id, **draw_args)
 
 ## class DrawImage TODO

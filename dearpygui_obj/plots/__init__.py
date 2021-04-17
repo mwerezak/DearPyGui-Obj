@@ -149,7 +149,7 @@ class Plot(Widget, ItemWidget):
 
         super().__init__(name_id=name_id, **config)
 
-    def _setup_add_widget(self, dpg_args) -> None:
+    def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_plot(self.id, **dpg_args)
 
     def add_dataseries(self, series: DataSeries, *, update_bounds: bool = True) -> None:
