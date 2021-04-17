@@ -105,6 +105,7 @@ class Widget(ABC):
 
     Parameters:
         name_id: optionally specify the unique widget ID.
+        callback: provide a callback that will be set with :meth:`set_callback`.
     """
 
     @classmethod
@@ -127,7 +128,7 @@ class Widget(ABC):
         and therefore can be given as keywords to ``__init__``."""
         return list(cls._get_config_properties().keys())
 
-    def __init__(self, *, name_id: Optional[str] = None, **kwargs: Any):
+    def __init__(self, *, name_id: Optional[str] = None, callback: PyGuiCallback = None, **kwargs: Any):
         if name_id is not None:
             self._name_id = name_id
         else:
@@ -160,6 +161,9 @@ class Widget(ABC):
                 config_data.update(prop.fconfig(self, value))
 
             dpgcore.configure_item(self.id, **config_data)
+
+            if callback is not None:
+                self.set_callback(callback)
 
         _register_item(self.id, self)
 
