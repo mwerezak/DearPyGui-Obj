@@ -12,9 +12,9 @@ Layout
     HAlignNext
     Dummy
     group_horizontal
-    LayoutGroup
-    LayoutColumns
-    LayoutIndent
+    Group
+    ColumnLayout
+    IndentLayout
     ChildView
 
 Simple Layout
@@ -37,17 +37,17 @@ Containers
 
 .. autofunction:: group_horizontal
 
-.. autoclass:: LayoutGroup
+.. autoclass:: Group
     :members:
     :undoc-members:
     :special-members: __exit__
 
-.. autoclass:: LayoutColumns
+.. autoclass:: ColumnLayout
     :members:
     :undoc-members:
     :special-members: __exit__
 
-.. autoclass:: LayoutIndent
+.. autoclass:: IndentLayout
     :members:
     :undoc-members:
     :special-members: __exit__

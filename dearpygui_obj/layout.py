@@ -37,12 +37,12 @@ class HAlignNext(Widget, ItemWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
-def group_horizontal(spacing: float = -1, *, name_id: str = None, **config: Any) -> LayoutGroup:
-    """Shortcut constructor for ``LayoutGroup(horizontal=True)``"""
-    return LayoutGroup(horizontal=True, horizontal_spacing=spacing, name_id=name_id, **config)
+def group_horizontal(spacing: float = -1, *, name_id: str = None, **config: Any) -> Group:
+    """Shortcut constructor for ``Group(horizontal=True)``"""
+    return Group(horizontal=True, horizontal_spacing=spacing, name_id=name_id, **config)
 
 @_register_item_type('mvAppItemType::Group')
-class LayoutGroup(Widget, ItemWidget):
+class Group(Widget, ItemWidget):
     """Grouped widgets behave as a single unit when acted on by other layout widgets.
 
     They can optionally have their contents flow horizontally instead of vertically.
@@ -57,14 +57,14 @@ class LayoutGroup(Widget, ItemWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_group(self.id, **dpg_args)
 
-    def __enter__(self) -> LayoutGroup:
+    def __enter__(self) -> Group:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         dpgcore.end()
 
 @_register_item_type('mvAppItemType::Indent')
-class LayoutIndent(Widget, ItemWidget):
+class IndentLayout(Widget, ItemWidget):
     """Adds an indent to contained items."""
 
     offset: float = ConfigProperty()
@@ -75,7 +75,7 @@ class LayoutIndent(Widget, ItemWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_indent(name=self.id, **dpg_args)
 
-    def __enter__(self) -> LayoutIndent:
+    def __enter__(self) -> IndentLayout:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
@@ -83,7 +83,7 @@ class LayoutIndent(Widget, ItemWidget):
 
 
 @_register_item_type('mvAppItemType::ManagedColumns')
-class LayoutColumns(Widget, ItemWidget):
+class ColumnLayout(Widget, ItemWidget):
     """Places contents into columns.
 
     Each new widget added will be placed in the next column, wrapping around to the start."""
@@ -97,7 +97,7 @@ class LayoutColumns(Widget, ItemWidget):
     def _setup_add_widget(self, dpg_args) -> None:
         dpgcore.add_managed_columns(name=self.id, **dpg_args)
 
-    def __enter__(self) -> LayoutColumns:
+    def __enter__(self) -> ColumnLayout:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
@@ -166,9 +166,9 @@ __all__ = [
     'VSpacing',
     'HAlignNext',
     'group_horizontal',
-    'LayoutGroup',
-    'LayoutIndent',
-    'LayoutColumns',
+    'Group',
+    'IndentLayout',
+    'ColumnLayout',
     'ChildView',
     'Dummy',
 ]

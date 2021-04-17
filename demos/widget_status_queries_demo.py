@@ -5,9 +5,9 @@ from dearpygui_obj.data import ColorRGBA
 from dearpygui_obj.window import Window
 from dearpygui_obj.basic import Text, Button, Separator
 from dearpygui_obj.input import InputText, SliderFloat
-from dearpygui_obj.layout import group_horizontal, LayoutGroup
+from dearpygui_obj.layout import group_horizontal, Group
 
-class StatusFlags(LayoutGroup):
+class StatusFlags(Group):
     def __init__(self, target, **config):
         self.target = target
         super().__init__(**config)

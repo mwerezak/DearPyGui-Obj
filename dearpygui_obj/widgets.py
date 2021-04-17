@@ -81,9 +81,9 @@ __all__ = [
     'VSpacing',
     'HAlignNext',
     'group_horizontal',
-    'LayoutGroup',
-    'LayoutIndent',
-    'LayoutColumns',
+    'Group',
+    'IndentLayout',
+    'ColumnLayout',
     'ChildView',
     'Dummy',
 

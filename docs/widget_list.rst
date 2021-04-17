@@ -114,9 +114,9 @@ Most widgets can also be imported from the :mod:`dearpygui_obj.widgets` module.
     dearpygui_obj.layout.VSpacing
     dearpygui_obj.layout.HAlignNext
     dearpygui_obj.layout.group_horizontal
-    dearpygui_obj.layout.LayoutGroup
-    dearpygui_obj.layout.LayoutColumns
-    dearpygui_obj.layout.LayoutIndent
+    dearpygui_obj.layout.Group
+    dearpygui_obj.layout.ColumnLayout
+    dearpygui_obj.layout.IndentLayout
     dearpygui_obj.layout.ChildView
     dearpygui_obj.layout.Dummy
 
