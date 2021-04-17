@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Any, Sequence
@@ -42,7 +42,7 @@ def group_horizontal(spacing: float = -1, *, name_id: str = None, **config: Any)
     return Group(horizontal=True, horizontal_spacing=spacing, name_id=name_id, **config)
 
 @_register_item_type('mvAppItemType::Group')
-class Group(Widget, ItemWidget):
+class Group(Widget, ItemWidget, ContainerWidget['Group']):
     """Grouped widgets behave as a single unit when acted on by other layout widgets.
 
     They can optionally have their contents flow horizontally instead of vertically.
@@ -57,14 +57,9 @@ class Group(Widget, ItemWidget):
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_group(self.id, **dpg_args)
 
-    def __enter__(self) -> Group:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
 @_register_item_type('mvAppItemType::Indent')
-class IndentLayout(Widget, ItemWidget):
+class IndentLayout(Widget, ItemWidget, ContainerWidget['IndentLayout']):
     """Adds an indent to contained items."""
 
     offset: float = ConfigProperty()
@@ -75,15 +70,12 @@ class IndentLayout(Widget, ItemWidget):
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_indent(name=self.id, **dpg_args)
 
-    def __enter__(self) -> IndentLayout:
-        return self
-
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.unindent()
+        dpgcore.unindent()  # doesn't use dpgcore.end()
 
 
 @_register_item_type('mvAppItemType::ManagedColumns')
-class ColumnLayout(Widget, ItemWidget):
+class ColumnLayout(Widget, ItemWidget, ContainerWidget['ColumnLayout']):
     """Places contents into columns.
 
     Each new widget added will be placed in the next column, wrapping around to the start."""
@@ -96,12 +88,6 @@ class ColumnLayout(Widget, ItemWidget):
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_managed_columns(name=self.id, **dpg_args)
-
-    def __enter__(self) -> ColumnLayout:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
     @property
     def column_widths(self) -> Sequence[float]:
@@ -128,7 +114,7 @@ class ColumnLayout(Widget, ItemWidget):
 
 
 @_register_item_type('mvAppItemType::Child')
-class ChildView(Widget, ItemWidget):
+class ChildView(Widget, ItemWidget, ContainerWidget['ChildView']):
     """Adds an embedded child window with optional scollbars."""
 
     border: bool = ConfigProperty()
@@ -144,12 +130,6 @@ class ChildView(Widget, ItemWidget):
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_child(self.id, **dpg_args)
-
-    def __enter__(self) -> ChildView:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
 
 @_register_item_type('mvAppItemType::Dummy')

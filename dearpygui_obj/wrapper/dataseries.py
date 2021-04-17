@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, TypeVar, MutableSequence, overload
+from typing import TYPE_CHECKING, TypeVar, Sequence, MutableSequence, overload
 
 from dearpygui_obj import _generate_id
 from dearpygui_obj.plots import Plot
 if TYPE_CHECKING:
-    from typing import Any, Optional, Type, Callable, Mapping, Iterable, Sequence, NoReturn
+    from typing import Any, Optional, Type, Callable, Mapping, Iterable, NoReturn
     from dearpygui_obj.plots import PlotYAxis, YAxis
 
     ConvertFunc = Callable[[Any], Any]
@@ -132,7 +132,7 @@ class DataSeriesField:
     def __set__(self, instance: DataSeries, value: Any) -> None:
         raise AttributeError('can\'t set attribute')
 
-TRecord = TypeVar('TRecord')
+TRecord = TypeVar('TRecord', bound=Sequence)
 class DataSeries(ABC, MutableSequence[TRecord]):
     """Abstract base class for plot data series."""
 

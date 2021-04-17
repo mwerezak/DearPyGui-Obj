@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, NamedTuple, overload
 from dearpygui import core as dpgcore
 
 from dearpygui_obj import _register_item_type, try_get_item_by_id, wrap_callback
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Iterable, Callable
@@ -56,7 +56,7 @@ def _get_link_from_ids(id1: str, id2: str) -> Optional[NodeLink]:
     return _get_link(end1, end2)
 
 @_register_item_type('mvAppItemType::NodeEditor')
-class NodeEditor(Widget, ItemWidget):
+class NodeEditor(Widget, ItemWidget, ContainerWidget['NodeEditor']):
     """A canvas specific to graph node workflow.
 
     Should only contain :class:`.Node` objects. Any other kind of widget will not be displayed.
@@ -69,12 +69,6 @@ class NodeEditor(Widget, ItemWidget):
         dpgcore.add_node_editor(
             self.id, link_callback=self._on_link, delink_callback=self._on_delink, **dpg_args,
         )
-
-    def __enter__(self) -> NodeEditor:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        dpgcore.end()
 
     ## Links
 
@@ -167,7 +161,7 @@ class NodeEditor(Widget, ItemWidget):
 
 
 @_register_item_type('mvAppItemType::Node')
-class Node(Widget, ItemWidget):
+class Node(Widget, ItemWidget, ContainerWidget['Node']):
     """A :class:`.NodeEditor` node.
 
     Should only contain :class:`.NodeAttribute` objects, any other kind of widget will not be
@@ -182,12 +176,6 @@ class Node(Widget, ItemWidget):
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node(self.id, **dpg_args)
-
-    def __enter__(self) -> Node:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        dpgcore.end()
 
 
 class NodeAttributeType(Enum):
@@ -209,7 +197,7 @@ def static_attribute(*, name_id: str = None) -> NodeAttribute:
     return NodeAttribute(NodeAttributeType.Static, name_id=name_id)
 
 @_register_item_type('mvAppItemType::NodeAttribute')
-class NodeAttribute(Widget, ItemWidget):
+class NodeAttribute(Widget, ItemWidget, ContainerWidget['NodeAttribute']):
     """An attachment point for a :class:`.Node`."""
 
     type: NodeAttributeType
@@ -232,12 +220,6 @@ class NodeAttribute(Widget, ItemWidget):
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node_attribute(self.id, **dpg_args)
-
-    def __enter__(self) -> NodeAttribute:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        dpgcore.end()
 
     def is_input(self) -> bool:
         """Shortcut for ``self.type == NodeAttributeType.Input``."""

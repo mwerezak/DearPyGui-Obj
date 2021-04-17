@@ -270,18 +270,6 @@ class Widget(ABC):
         """Checks if DPG considers this item to be a container."""
         return dpgcore.is_item_container(self.id)
 
-    def iter_children(self) -> Iterable[Union[Widget, ItemWidget]]:
-        """Iterates all of the item's children."""
-        children = dpgcore.get_item_children(self.id)
-        if not children:
-            return
-        for child in children:
-            yield get_item_by_id(child)
-
-    def add_child(self, child: ItemWidget) -> None:
-        """Alternative to :meth:`set_parent`."""
-        dpgcore.move_item(child.id, parent=self.id)
-
     ## Other properties and status
 
     #: The content of the tooltip that is shown when the widget is hovered.
@@ -356,7 +344,56 @@ class Widget(ABC):
         return dpgcore.is_item_deactivated_after_edit(self.id)
 
 
-# noinspection PyAbstractClass
+class ContainerFinalizedError(Exception):
+    """Raised when a :class:`ContainerWidget` is used as contextmanager after being finalized."""
+
+_TSelf = TypeVar('_TSelf', bound='ContainerWidget')
+class ContainerWidget(ABC, Generic[_TSelf]):
+    """Mixin for widgets that use the DPG container stack.
+
+    Typically when widgets are instantiated they are added to a container based on context.
+    This behavior is a result of DPG's container stack and it makes it simple to create
+    declarative-style GUIs.
+
+    Once a container is used as a context manager, it is popped from DPG's container stack and
+    cannot be re-added. Attempting to use it as a context manager for a second time will
+    raise a :class:`.ContainerFinalizedError`. This can also be checked using the
+    :attr:`finalized` property."""
+
+    _finalized = False
+
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        ...
+
+    def __enter__(self) -> _TSelf:
+        if self._finalized:
+            raise ContainerFinalizedError(self)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self._finalized = True
+        dpgcore.end()
+
+    @property
+    def finalized(self) -> bool:
+        """Whether this container has already been used as a context manager."""
+        return self._finalized
+
+    def iter_children(self) -> Iterable[Union[Widget, ItemWidget]]:
+        """Iterates all of the item's children."""
+        children = dpgcore.get_item_children(self.id)
+        if not children:
+            return
+        for child in children:
+            yield get_item_by_id(child)
+
+    def add_child(self, child: ItemWidget) -> None:
+        """Alternative to :meth:`set_parent`."""
+        dpgcore.move_item(child.id, parent=self.id)
+
+
 class ItemWidget(ABC):
     """Mixin class for all widgets that can belong to containers.
 
@@ -378,18 +415,21 @@ class ItemWidget(ABC):
     def id(self) -> str:
         ...
 
+    ## The **parent** and **before** keyword args are specific to Dear PyGui.
+    ## They are meant to be passed to :meth:`.Widget.__setup_widget__`
+    ## using Widget's kwargs mechanism
     @abstractmethod
-    def __init__(self, *args, parent: str, **kwargs):
+    def __init__(self, *args, parent: str, before: str, **kwargs):
         ...
 
-    def get_parent(self) -> Optional[Widget]:
+    def get_parent(self) -> Optional[Intersection[Widget, ContainerWidget]]:
         """Get this item's parent."""
         parent_id = dpgcore.get_item_parent(self.id)
         if not parent_id:
             return None
         return get_item_by_id(parent_id)
 
-    def set_parent(self, parent: Widget) -> None:
+    def set_parent(self, parent: ContainerWidget) -> None:
         """Re-parent the item, moving it."""
         dpgcore.move_item(self.id, parent=parent.id)
 
@@ -424,8 +464,8 @@ class ItemWidget(ABC):
         return cls(*args, parent=sibling.get_parent().id, before=sibling.id, **kwargs)
 
 
-_TValue = TypeVar('_TValue')
 
+_TValue = TypeVar('_TValue')
 class ValueWidget(ABC, Generic[_TValue]):
     """Mixin for all widgets that use the DPG value system.
 

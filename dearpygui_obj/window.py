@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type, wrap_callback
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ContainerWidget, ItemWidget, ConfigProperty
 from dearpygui_obj.drawing import DrawingCanvas, WindowCanvas
 
 if TYPE_CHECKING:
@@ -94,7 +94,7 @@ class MainWindow:
 
 
 @_register_item_type('mvAppItemType::Window')
-class Window(Widget):
+class Window(Widget, ContainerWidget['Window']):
     """Creates a new window."""
 
     label: str = ConfigProperty()
@@ -141,12 +141,6 @@ class Window(Widget):
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_window(self.id, on_close=self._on_close, **dpg_args)
 
-    def __enter__(self) -> Window:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
-
     ## workaround for the fact that you can't set the on_close callback in DPG
     _on_close_callback: Optional[Callable] = None
     def _on_close(self, sender, data) -> None:
@@ -173,7 +167,7 @@ class Window(Widget):
 ## Menu Bars and Menus
 
 @_register_item_type('mvAppItemType::MenuBar')
-class MenuBar(Widget, ItemWidget):
+class MenuBar(Widget, ItemWidget, ContainerWidget['MenuBar']):
     """A menu bar that can be added to a :class:`.Window`."""
 
     def __init__(self, *, name_id: str = None, **config):
@@ -181,12 +175,6 @@ class MenuBar(Widget, ItemWidget):
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_menu_bar(self.id, **dpg_args)
-
-    def __enter__(self) -> MenuBar:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
 
 __all__ = [

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget, ValueWidget, ConfigProperty
 
 if TYPE_CHECKING:
     pass
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 ## Tree Nodes
 
 @_register_item_type('mvAppItemType::TreeNode')
-class TreeNode(Widget, ItemWidget, ValueWidget[bool]):
+class TreeNode(Widget, ItemWidget, ContainerWidget['TreeNode'], ValueWidget[bool]):
     """A collapsing container with a label."""
 
     value: bool  #: ``True`` if the header is uncollapsed, otherwise ``False``.
@@ -40,15 +40,10 @@ class TreeNode(Widget, ItemWidget, ValueWidget[bool]):
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tree_node(self.id, **dpg_args)
 
-    def __enter__(self) -> TreeNode:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
 
 @_register_item_type('mvAppItemType::CollapsingHeader')
-class TreeNodeHeader(TreeNode):
+class TreeNodeHeader(TreeNode, ContainerWidget['TreeNodeHeader']):
     """Similar to :class:`.TreeNode`, but the label is visually emphasized."""
 
     def __setup_add_widget__(self, dpg_args) -> None:
@@ -57,7 +52,7 @@ class TreeNodeHeader(TreeNode):
 ## Tab Container
 
 @_register_item_type('mvAppItemType::TabBar')
-class TabBar(Widget, ItemWidget):
+class TabBar(Widget, ItemWidget, ContainerWidget['TabBar']):
     """A container that allows switching between different tabs.
 
     Note:
@@ -72,12 +67,6 @@ class TabBar(Widget, ItemWidget):
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab_bar(self.id, **dpg_args)
 
-    def __enter__(self) -> TabBar:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
-
 
 class TabOrderMode(Enum):
     """Specifies the ordering behavior of a tab items."""
@@ -87,7 +76,7 @@ class TabOrderMode(Enum):
     Trailing    = 'trailing'    #: Enforce the tab position to the right of the tab bar (before the scrolling buttons)
 
 @_register_item_type('mvAppItemType::TabItem')
-class TabItem(Widget, ItemWidget):
+class TabItem(Widget, ItemWidget, ContainerWidget['TabItem']):
     """A container whose contents will be displayed when selected in a :class:`.TabBar`.
 
     Note:
@@ -125,12 +114,6 @@ class TabItem(Widget, ItemWidget):
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab(self.id, **dpg_args)
-
-    def __enter__(self) -> TabItem:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
 
 @_register_item_type('mvAppItemType::TabButton')
@@ -177,7 +160,7 @@ class TabButton(Widget, ItemWidget):
 ## Menus and Menu Items
 
 @_register_item_type('mvAppItemType::Menu')
-class Menu(Widget, ItemWidget):
+class Menu(Widget, ItemWidget, ContainerWidget['Menu']):
     """A menu containing :class:`.MenuItem` objects.
 
     While they are often found inside a :class:`.MenuBar`, they are actually a general container
@@ -191,12 +174,6 @@ class Menu(Widget, ItemWidget):
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_menu(self.id, **dpg_args)
-
-    def __enter__(self) -> Menu:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
 
 @_register_item_type('mvAppItemType::MenuItem')
@@ -231,7 +208,7 @@ class PopupInteraction(Enum):
     MouseX2     = 4
 
 @_register_item_type('mvAppItemType::Popup')
-class Popup(Widget):
+class Popup(Widget, ContainerWidget['Popup']):
     """A container that appears when a :class:`.ItemWidget` is interacted with."""
 
     trigger: PopupInteraction  #: The interaction that will trigger the popup.
@@ -250,12 +227,6 @@ class Popup(Widget):
     def __init__(self, parent: ItemWidget, *, name_id: str = None, **config):
         self._popup_parent = parent
         super().__init__(name_id=name_id, **config)
-
-    def __enter__(self) -> Popup:
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        dpgcore.end()
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_popup(self._popup_parent.id, self.id, **dpg_args)
