@@ -77,6 +77,10 @@ ContainerWidget
 .. autoclass:: ContainerWidget
     :members:
     :undoc-members:
+    :special-members: __enter__, __exit__
+
+    .. .. automethod:: __finalize__
+
 
 .. autoexception:: ContainerFinalizedError
 
