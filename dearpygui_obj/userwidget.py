@@ -57,6 +57,8 @@ class UserContainer(Widget, ItemWidget, ContainerWidget[Any], ABC):
     This class is not yet implemented, as it requires adding to the parent stack which
     is not yet available in DPG 0.6."""
 
+    def __new__(cls, *args, **kwargs):
+        raise NotImplementedError
 
 __all__ = [
     'UserWidget',

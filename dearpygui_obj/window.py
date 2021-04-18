@@ -24,7 +24,7 @@ class MainWindow:
         is not running.
     """
 
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         raise TypeError('this class may not be instantiated')
 
     @staticmethod
