@@ -13,9 +13,10 @@ DearPyGui-Obj makes using DPG more concise and intuitive by allowing you to get 
 widget is easy using the `callback` decorator.
 
 #### Basic Usage
+If you've used Dear PyGui, using the object library should be familiar.
 
 ``` python
-import dearpygui_obj
+from dearpygui_obj import start_gui
 from dearpygui_obj import colors
 from dearpygui_obj.widgets import *
 
@@ -35,13 +36,13 @@ def callback():
 def callback():
     text.color = text_color.value
 
-dearpygui_obj.start_gui()
+start_gui()
 ```
 
 #### Plots and Data Series
 
 ``` python
-import dearpygui_obj
+from dearpygui_obj import start_gui
 from dearpygui_obj.widgets import *
 from dearpygui_obj.plots.dataseries import *
 
@@ -49,7 +50,7 @@ with Window('Example') as win:
     data = [ (-1, -9), (1, -4), (3, 11), (4, 5), (9, 7) ]
     lineseries = LineSeries('example', data)
 
-    ## plot data series are mutable sequences!
+    ## plot data series support indexing and all other MutableSequence methods
     p1, p2 = lineseries[-2], lineseries[-1]
     print('slope:', (p2.y - p1.y)/(p2.x - p1.x))  # elements are named tuples
     lineseries.append((10, 2))  # but methods will accept any compatible sequence
@@ -65,12 +66,12 @@ with Window('Example') as win:
     plot = Plot()
     plot.add_dataseries(lineseries)
 
-dearpygui_obj.start_gui()
+start_gui()
 ```
 
 #### Manipulate Tables using Slices
 ``` python
-import dearpygui_obj
+from dearpygui_obj import start_gui
 from dearpygui_obj.widgets import *
 
 with Window('Example') as win:
@@ -88,7 +89,59 @@ with Window('Example') as win:
         table.selected[::2, ::2] = True
         table.selected[1::2, 1::2] = True
 
-dearpygui_obj.start_gui()
+start_gui()
+```
+
+#### Defining Custom Widgets
+``` python
+from dataclasses import dataclass
+from dearpygui_obj import start_gui
+from dearpygui_obj.widgets import *
+
+@dataclass
+class Person:
+    firstname: str
+    lastname: str
+
+class PersonInfo(UserWidget):
+    def __setup_content__(self, person: Person):
+        Separator()
+        with group_horizontal():
+            self.selected_chk = Checkbox()
+            Button(arrow=ButtonArrow.Up, callback=self.move_up)
+            Button(arrow=ButtonArrow.Down, callback=self.move_down)
+            Text(f'First name: {person.firstname}')
+            Text(f'Last name: {person.lastname}')
+
+    @property
+    def selected(self) -> bool:
+        return self.selected_chk.value
+
+with Window('Person List Example'):
+    with Group() as container:
+        pass
+
+    Separator()
+
+    remove_btn = Button('Remove Selected')
+    add_btn = Button('Add Person')
+    fname_inp = InputText('First name')
+    lname_inp = InputText('Last name')
+
+@remove_btn.callback
+def callback():
+    for child in container.iter_children():
+        if child.selected:
+            child.delete()
+
+@add_btn.callback
+def callback():
+    person = Person(fname_inp.value, lname_inp.value)
+    PersonInfo.add_to(container, person)
+    fname_inp.value = ''
+    lname_inp.value = ''
+
+start_gui()
 ```
 
 #### Drawing API
@@ -96,7 +149,7 @@ This is the same dynamic drawing example given in the DPG Wiki. You can compare
 it with the [original code](https://github.com/hoffstadt/DearPyGui/wiki/Drawing-API#modification).
 
 ``` python
-import dearpygui_obj
+from dearpygui_obj import start_gui
 from dearpygui_obj import colors
 from dearpygui_obj.widgets import *
 
@@ -127,12 +180,12 @@ def on_render():
     circle.radius = 15 + modifier/2
     circle.segments = round(35-modifier/10)
 
-dearpygui_obj.start_gui()
+start_gui()
 ```
 
 #### Other Features
 ``` python
-import dearpygui_obj
+from dearpygui_obj import start_gui
 from dearpygui_obj import colors
 from dearpygui_obj.widgets import *
 
@@ -169,7 +222,7 @@ add_text = Button.add_to(win, 'Add Label')  # add to the end of a container
 def callback():
     Text.insert_before(add_text, 'Insert before.')  # insert before a widget
 
-dearpygui_obj.start_gui()
+start_gui()
 ```
 
 #### Using DearPyGui-Obj With Existing Dear PyGui Code
