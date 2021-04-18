@@ -22,3 +22,9 @@ UserWidget
     :undoc-members:
 
     .. automethod:: __setup_content__
+
+
+UserContainer
+-------------
+
+.. autoclass:: UserContainer
