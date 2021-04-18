@@ -353,13 +353,13 @@ class ContainerFinalizedError(Exception):
 
 _TSelf = TypeVar('_TSelf', bound='ContainerWidget')
 class ContainerWidget(ABC, Generic[_TSelf]):
-    """Mixin for widgets that use the DPG container stack.
+    """Mixin for widgets that use the DPG parent stack.
 
     Typically when widgets are instantiated they are added to a container based on context.
-    This behavior is a result of DPG's container stack and it makes it simple to create
+    This behavior is a result of DPG's parent stack and it makes it simple to create
     declarative-style GUIs.
 
-    After a container is used as a context manager, it is popped from DPG's container stack and
+    After a container is used as a context manager, it is popped from DPG's parent stack and
     cannot be re-added. Attempting to use it as a context manager for a second time will
     raise a :class:`.ContainerFinalizedError`. This can also be checked using the
     :attr:`finalized` property.
@@ -416,7 +416,7 @@ class ItemWidget(ABC):
     or within their own container.
 
     Typically when widgets are instantiated they are added to a container based on context.
-    This behavior is a result of DPG's container stack and it makes it simple to create
+    This behavior is a result of DPG's parent stack and it makes it simple to create
     declarative-style GUIs.
 
     If you need to add a new widget directly to a specific parent container, or just prefer a more

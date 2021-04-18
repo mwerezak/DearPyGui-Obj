@@ -10,6 +10,7 @@ from dearpygui_obj.tables import *
 from dearpygui_obj.input import *
 from dearpygui_obj.containers import *
 from dearpygui_obj.layout import *
+from dearpygui_obj.userwidget import *
 from dearpygui_obj.plots import *
 from dearpygui_obj.drawing import *
 from dearpygui_obj.node import *
@@ -86,6 +87,8 @@ __all__ = [
     'ColumnLayout',
     'ChildView',
     'Dummy',
+
+    'UserWidget',
 
     'SimplePlot',
     'Plot',

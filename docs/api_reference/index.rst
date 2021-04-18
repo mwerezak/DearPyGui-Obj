@@ -17,4 +17,5 @@ API Reference
    plots
    drawing
    nodes
+   userwidgets
    devtools
