@@ -215,6 +215,7 @@ class Plot(Widget, ItemWidget):
 
 
 class PlotQueryArea(NamedTuple):
+    """The position of a selected :class:`.Plot` query area."""
     x_min: float
     x_max: float
     y_min: float

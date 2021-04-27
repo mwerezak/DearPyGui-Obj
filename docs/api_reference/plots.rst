@@ -15,9 +15,14 @@ Plots
     :nosignatures:
 
     Plot
+    PlotQueryArea
     PlotAxisConfig
 
 .. autoclass:: Plot
+    :members:
+    :undoc-members:
+
+.. autoclass:: PlotQueryArea
     :members:
     :undoc-members:
 
