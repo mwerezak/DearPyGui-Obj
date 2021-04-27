@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import dearpygui.core as dpgcore
 from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget
-
-if TYPE_CHECKING:
-    from typing import Any
 
 class UserWidget(Widget, ItemWidget, ABC):
     """An abstract base class that is used to create custom widgets.
