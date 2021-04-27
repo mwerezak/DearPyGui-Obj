@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, NamedTuple, cast
 
 import dearpygui.core as dpgcore
 
@@ -198,7 +198,37 @@ class Plot(Widget, ItemWidget):
         """Creates a :class:`.PlotAnnotation` and adds it to the plot."""
         return PlotAnnotation(self, text, pos, offset, color=color, clamped=clamped)
 
+    def get_mouse_pos(self) -> Optional[Tuple[float, float]]:
+        """Returns the ``(x, y)`` mouse position in the plot if it is hovered, or ``None``."""
+        if not self.is_hovered():
+            return None
+        return dpgcore.get_plot_mouse_pos()
 
+    def get_selected_query_area(self) -> Optional[PlotQueryArea]:
+        """Returns a :class:`.PlotQueryArea` for the selected query area if there is one.
+
+        A query area can be selected by the user by holding control and right-click dragging in
+        a plot. If a query area has not been selected, this will return ``None``."""
+        if not dpgcore.is_plot_queried(self.id):
+            return None
+        return PlotQueryArea(*dpgcore.get_plot_query_area(self.id))
+
+
+class PlotQueryArea(NamedTuple):
+    x_min: float
+    x_max: float
+    y_min: float
+    y_max: float
+
+    @property
+    def min_corner(self) -> Tuple[float, float]:
+        """Returns ``(x_min, y_min)`` as a tuple."""
+        return self.x_min, self.y_min
+
+    @property
+    def max_corner(self) -> Tuple[float, float]:
+        """Returns ``(x_max, y_max)`` as a tuple."""
+        return self.x_max, self.y_max
 
 class PlotAnnotation:
     """Adds a plot annotation.
