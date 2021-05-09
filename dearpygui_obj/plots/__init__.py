@@ -6,7 +6,7 @@ import dearpygui.core as dpgcore
 
 from dearpygui_obj import _register_item_type, _generate_id
 from dearpygui_obj.data import ColorRGBA, export_color_to_dpg
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Any, Optional, Union, Type, Tuple, Iterable
@@ -103,7 +103,7 @@ class PlotYAxis(PlotAxis):
 ## Plot Class
 
 @_register_item_type('mvAppItemType::Plot')
-class Plot(Widget, ItemWidget):
+class Plot(Widget, ItemWidgetMx):
     """A rich plot widget."""
 
     ## Plot Axes

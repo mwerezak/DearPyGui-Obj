@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, TypeVar, Generic, Tuple
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ValueWidgetMx, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 ## Input Boxes
 
 @_register_item_type('mvAppItemType::InputText')
-class InputText(Widget, ItemWidget, ValueWidget[str]):
+class InputText(Widget, ItemWidgetMx, ValueWidgetMx[str]):
     """A text input box."""
 
     value: str  #: The inputted text.
@@ -49,7 +49,7 @@ _TElem = TypeVar('_TElem')
 _TInput = TypeVar('_TInput')
 
 # noinspection PyAbstractClass
-class NumberInput(Generic[_TElem, _TInput], Widget, ItemWidget, ValueWidget[_TInput]):
+class NumberInput(Generic[_TElem, _TInput], Widget, ItemWidgetMx, ValueWidgetMx[_TInput]):
     """Base class for number input boxes."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -162,7 +162,7 @@ class InputInt4(NumberInput[int, Tuple[int, int, int, int]]):
 ## Sliders
 
 # noinspection PyAbstractClass
-class SliderInput(Generic[_TElem, _TInput], Widget, ItemWidget, ValueWidget[_TInput]):
+class SliderInput(Generic[_TElem, _TInput], Widget, ItemWidgetMx, ValueWidgetMx[_TInput]):
     """Base class for slider types."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -276,7 +276,7 @@ class SliderInt4(SliderInput[int, Tuple[int, int, int, int]]):
 ## Drag Input Boxes
 
 # noinspection PyAbstractClass
-class DragInput(Generic[_TElem, _TInput], Widget, ItemWidget, ValueWidget[_TInput]):
+class DragInput(Generic[_TElem, _TInput], Widget, ItemWidgetMx, ValueWidgetMx[_TInput]):
     """Base class for drag input boxes."""
     value: _TInput  #: The inputted value.
     _default_value: _TInput
@@ -389,12 +389,12 @@ class DragInt4(DragInput[int, Tuple[int, int, int, int]]):
 from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA, import_color_from_dpg, export_color_to_dpg
 
 @_register_item_type('mvAppItemType::ColorButton')
-class ColorButton(Widget, ItemWidget):
+class ColorButton(Widget, ItemWidgetMx):
     """A button that displays and enables copying of color data.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget.
 
-    While it has color "value", this is not a :class:`.ValueWidget`!
+    While it has color "value", this is not a :class:`.ValueWidgetMx`!
     """
     color: ColorRGBA = ConfigPropertyColorRGBA(no_init=True)  #: The color to copy on drag-and-drop.
     no_border: bool = ConfigProperty()
@@ -413,7 +413,7 @@ class ColorFormatMode(Enum):
     Float = 1  #: Format as 0.0-1.0
 
 @_register_item_type('mvAppItemType::ColorEdit4')
-class ColorEdit(Widget, ItemWidget, ValueWidget[ColorRGBA]):
+class ColorEdit(Widget, ItemWidgetMx, ValueWidgetMx[ColorRGBA]):
     """A color editing widget.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget."""
@@ -468,7 +468,7 @@ class ColorEdit(Widget, ItemWidget, ValueWidget[ColorRGBA]):
 
 
 @_register_item_type('mvAppItemType::ColorPicker4')
-class ColorPicker(Widget, ItemWidget, ValueWidget[ColorRGBA]):
+class ColorPicker(Widget, ItemWidgetMx, ValueWidgetMx[ColorRGBA]):
     """A color picking widget.
 
     Clicking and draging the color square will copy the color to be applied on any other color widget.
@@ -533,7 +533,7 @@ class DatePickerMode(Enum):
     Year  = 2
 
 @_register_item_type('mvAppItemType::DatePicker')
-class DatePicker(Widget, ItemWidget, ValueWidget[date]):
+class DatePicker(Widget, ItemWidgetMx, ValueWidgetMx[date]):
     """A date picker widget.
     Warning:
         Setting the :attr:`value` property currently does not work. This is an issue with DPG 0.6.
@@ -572,7 +572,7 @@ class TimePickerFormat(Enum):
     Hour24 = True
 
 @_register_item_type('mvAppItemType::TimePicker')
-class TimePicker(Widget, ValueWidget[time]):
+class TimePicker(Widget, ValueWidgetMx[time]):
     """A time picker widget.
     Warning:
         Setting the :attr:`value` property currently does not work. This is an issue with DPG 0.6.

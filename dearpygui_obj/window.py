@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type, wrap_callback
-from dearpygui_obj.wrapper.widget import Widget, ContainerWidget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ContainerWidgetMx, ItemWidgetMx, ConfigProperty
 from dearpygui_obj.drawing import DrawingCanvas, WindowCanvas
 
 if TYPE_CHECKING:
@@ -94,7 +94,7 @@ class MainWindow:
 
 
 @_register_item_type('mvAppItemType::Window')
-class Window(Widget, ContainerWidget['Window']):
+class Window(Widget, ContainerWidgetMx['Window']):
     """Creates a new window."""
 
     label: str = ConfigProperty()
@@ -167,7 +167,7 @@ class Window(Widget, ContainerWidget['Window']):
 ## Menu Bars and Menus
 
 @_register_item_type('mvAppItemType::MenuBar')
-class MenuBar(Widget, ItemWidget, ContainerWidget['MenuBar']):
+class MenuBar(Widget, ItemWidgetMx, ContainerWidgetMx['MenuBar']):
     """A menu bar that can be added to a :class:`.Window`."""
 
     def __init__(self, *, name_id: str = None, **config):

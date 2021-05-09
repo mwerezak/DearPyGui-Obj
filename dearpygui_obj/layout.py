@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ContainerWidgetMx, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Any, Sequence
 
 @_register_item_type('mvAppItemType::Spacing')
-class VSpacing(Widget, ItemWidget):
+class VSpacing(Widget, ItemWidgetMx):
     """Adds vertical spacing."""
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
@@ -24,7 +24,7 @@ class VSpacing(Widget, ItemWidget):
 
 
 @_register_item_type('mvAppItemType::SameLine')
-class HAlignNext(Widget, ItemWidget):
+class HAlignNext(Widget, ItemWidgetMx):
     """Places a widget on the same line as the previous widget.
     Can also be used for horizontal spacing."""
 
@@ -42,7 +42,7 @@ def group_horizontal(spacing: float = -1, *, name_id: str = None, **config: Any)
     return Group(horizontal=True, horizontal_spacing=spacing, name_id=name_id, **config)
 
 @_register_item_type('mvAppItemType::Group')
-class Group(Widget, ItemWidget, ContainerWidget['Group']):
+class Group(Widget, ItemWidgetMx, ContainerWidgetMx['Group']):
     """Grouped widgets behave as a single unit when acted on by other layout widgets.
 
     They can optionally have their contents flow horizontally instead of vertically.
@@ -59,7 +59,7 @@ class Group(Widget, ItemWidget, ContainerWidget['Group']):
 
 
 @_register_item_type('mvAppItemType::Indent')
-class IndentLayout(Widget, ItemWidget, ContainerWidget['IndentLayout']):
+class IndentLayout(Widget, ItemWidgetMx, ContainerWidgetMx['IndentLayout']):
     """Adds an indent to contained items."""
 
     offset: float = ConfigProperty()
@@ -75,7 +75,7 @@ class IndentLayout(Widget, ItemWidget, ContainerWidget['IndentLayout']):
 
 
 @_register_item_type('mvAppItemType::ManagedColumns')
-class ColumnLayout(Widget, ItemWidget, ContainerWidget['ColumnLayout']):
+class ColumnLayout(Widget, ItemWidgetMx, ContainerWidgetMx['ColumnLayout']):
     """Places contents into columns.
 
     Each new widget added will be placed in the next column, wrapping around to the start."""
@@ -114,7 +114,7 @@ class ColumnLayout(Widget, ItemWidget, ContainerWidget['ColumnLayout']):
 
 
 @_register_item_type('mvAppItemType::Child')
-class ChildView(Widget, ItemWidget, ContainerWidget['ChildView']):
+class ChildView(Widget, ItemWidgetMx, ContainerWidgetMx['ChildView']):
     """Adds an embedded child window with optional scollbars."""
 
     border: bool = ConfigProperty()
@@ -133,7 +133,7 @@ class ChildView(Widget, ItemWidget, ContainerWidget['ChildView']):
 
 
 @_register_item_type('mvAppItemType::Dummy')
-class Dummy(Widget, ItemWidget):
+class Dummy(Widget, ItemWidgetMx):
     """Adds a spacer or 'dummy' widget."""
     def __init__(self, *, name_id: str = None, **config):
         super().__init__(name_id=name_id, **config)

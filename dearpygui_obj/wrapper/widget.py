@@ -25,6 +25,11 @@ if TYPE_CHECKING:
 
     Intersection = Union  # remove this when Intersection type hints are finally added
 
+    ## Type Aliases for Widgets with various widget mixins
+    ValueWidget = Intersection['Widget', 'ValueWidgetMx']
+    ItemWidget = Intersection['Widget', 'ItemWidgetMx']
+    ContainerWidget = Intersection['Widget', 'ContainerWidgetMx']
+
 
 ## WIDGET WRAPPERS
 
@@ -349,10 +354,10 @@ class Widget(ABC):
 
 
 class ContainerFinalizedError(Exception):
-    """Raised when a :class:`ContainerWidget` is used after being finalized."""
+    """Raised when a :class:`ContainerWidgetMx` is used after being finalized."""
 
-_TSelf = TypeVar('_TSelf', bound='ContainerWidget')
-class ContainerWidget(ABC, Generic[_TSelf]):
+_TSelf = TypeVar('_TSelf', bound='ContainerWidgetMx')
+class ContainerWidgetMx(ABC, Generic[_TSelf]):
     """Mixin for widgets that use the DPG parent stack.
 
     Typically when widgets are instantiated they are added to a container based on context.
@@ -392,7 +397,7 @@ class ContainerWidget(ABC, Generic[_TSelf]):
         """Whether this container has already been used as a context manager."""
         return self._finalized
 
-    def iter_children(self) -> Iterable[Union[Widget, ItemWidget]]:
+    def iter_children(self) -> Iterable[ItemWidget]:
         """Iterates all of the item's children."""
         children = dpgcore.get_item_children(self.id)
         if not children:
@@ -407,7 +412,7 @@ class ContainerWidget(ABC, Generic[_TSelf]):
         dpgcore.move_item(child.id, parent=self.id)
 
 
-class ItemWidget(ABC):
+class ItemWidgetMx(ABC):
     """Mixin class for all widgets that can belong to containers.
 
     This mixin class is used to mark :class:`.Widget` subtypes that can belong to a container
@@ -435,7 +440,7 @@ class ItemWidget(ABC):
     def __init__(self, *args, parent: str, before: str, **kwargs):
         ...
 
-    def get_parent(self) -> Optional[Intersection[Widget, ContainerWidget]]:
+    def get_parent(self) -> Optional[ContainerWidget]:
         """Get this item's parent."""
         parent_id = dpgcore.get_item_parent(self.id)
         if not parent_id:
@@ -445,7 +450,7 @@ class ItemWidget(ABC):
     def set_parent(self, parent: ContainerWidget) -> None:
         """Re-parent the item, moving it.
 
-        Equivalent to calling :meth:`ContainerWidget.add_child` on the parent."""
+        Equivalent to calling :meth:`ContainerWidgetMx.add_child` on the parent."""
         dpgcore.move_item(self.id, parent=parent.id)
 
     def move_up(self) -> None:
@@ -481,7 +486,7 @@ class ItemWidget(ABC):
 
 
 _TValue = TypeVar('_TValue')
-class ValueWidget(ABC, Generic[_TValue]):
+class ValueWidgetMx(ABC, Generic[_TValue]):
     """Mixin for all widgets that use the DPG value system.
 
     The use of the :attr:`value` property depends on the specific kind of widget.
@@ -535,7 +540,7 @@ class ValueWidget(ABC, Generic[_TValue]):
         self.data_source.value = v
 
 
-class DefaultWidget(Widget, ItemWidget):
+class DefaultWidget(Widget, ItemWidgetMx):
     """Fallback type for getting a widget that does not have a wrapper class.
 
     When :func:`.get_item_by_id` is called to retrieve an item whose widget type does not

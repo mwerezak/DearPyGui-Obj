@@ -12,9 +12,9 @@ Widget Objects
     :nosignatures:
 
     Widget
-    ContainerWidget
+    ContainerWidgetMx
     ContainerFinalizedError
-    ItemWidget
+    ItemWidgetMx
     DefaultWidget
     ConfigProperty
 
@@ -71,10 +71,10 @@ Widget
     :undoc-members:
 
 
-ContainerWidget
----------------
+ContainerWidgetMx
+-----------------
 
-.. autoclass:: ContainerWidget
+.. autoclass:: ContainerWidgetMx
     :members:
     :undoc-members:
     :special-members: __enter__, __exit__
@@ -84,18 +84,18 @@ ContainerWidget
 
 .. autoexception:: ContainerFinalizedError
 
-ItemWidget
-----------
+ItemWidgetMx
+------------
 
-.. autoclass:: ItemWidget
+.. autoclass:: ItemWidgetMx
     :members:
     :undoc-members:
 
 
-ValueWidget
------------
+ValueWidgetMx
+-------------
 
-.. autoclass:: ValueWidget
+.. autoclass:: ValueWidgetMx
     :members:
     :undoc-members:
 

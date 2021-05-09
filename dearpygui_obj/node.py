@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, NamedTuple, overload
 from dearpygui import core as dpgcore
 
 from dearpygui_obj import _register_item_type, try_get_item_by_id, wrap_callback
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ContainerWidgetMx, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Optional, Iterable, Callable
@@ -56,7 +56,7 @@ def _get_link_from_ids(id1: str, id2: str) -> Optional[NodeLink]:
     return _get_link(end1, end2)
 
 @_register_item_type('mvAppItemType::NodeEditor')
-class NodeEditor(Widget, ItemWidget, ContainerWidget['NodeEditor']):
+class NodeEditor(Widget, ItemWidgetMx, ContainerWidgetMx['NodeEditor']):
     """A canvas specific to graph node workflow.
 
     Should only contain :class:`.Node` objects. Any other kind of widget will not be displayed.
@@ -161,7 +161,7 @@ class NodeEditor(Widget, ItemWidget, ContainerWidget['NodeEditor']):
 
 
 @_register_item_type('mvAppItemType::Node')
-class Node(Widget, ItemWidget, ContainerWidget['Node']):
+class Node(Widget, ItemWidgetMx, ContainerWidgetMx['Node']):
     """A :class:`.NodeEditor` node.
 
     Should only contain :class:`.NodeAttribute` objects, any other kind of widget will not be
@@ -197,7 +197,7 @@ def static_attribute(*, name_id: str = None) -> NodeAttribute:
     return NodeAttribute(NodeAttributeType.Static, name_id=name_id)
 
 @_register_item_type('mvAppItemType::NodeAttribute')
-class NodeAttribute(Widget, ItemWidget, ContainerWidget['NodeAttribute']):
+class NodeAttribute(Widget, ItemWidgetMx, ContainerWidgetMx['NodeAttribute']):
     """An attachment point for a :class:`.Node`."""
 
     type: NodeAttributeType

@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING, overload
 import dearpygui.core as dpgcore
 
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ConfigProperty
 
 if TYPE_CHECKING:
     from typing import Any, Union, Tuple, Iterable, Sequence, List, MutableMapping
 
 @_register_item_type('mvAppItemType::Table')
-class Table(Widget, ItemWidget):
+class Table(Widget, ItemWidgetMx):
     """Adds a simple table that can hold text.
 
     A Table's data consists of a sequence of rows, each row being a sequence of strings.

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import dearpygui.core as dpgcore
 from dearpygui_obj import _register_item_type
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget, ValueWidget, ConfigProperty
+from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ContainerWidgetMx, ValueWidgetMx, ConfigProperty
 
 if TYPE_CHECKING:
     pass
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 ## Tree Nodes
 
 @_register_item_type('mvAppItemType::TreeNode')
-class TreeNode(Widget, ItemWidget, ContainerWidget['TreeNode'], ValueWidget[bool]):
+class TreeNode(Widget, ItemWidgetMx, ContainerWidgetMx['TreeNode'], ValueWidgetMx[bool]):
     """A collapsing container with a label."""
 
     value: bool  #: ``True`` if the header is uncollapsed, otherwise ``False``.
@@ -43,7 +43,7 @@ class TreeNode(Widget, ItemWidget, ContainerWidget['TreeNode'], ValueWidget[bool
 
 
 @_register_item_type('mvAppItemType::CollapsingHeader')
-class TreeNodeHeader(TreeNode, ContainerWidget['TreeNodeHeader']):
+class TreeNodeHeader(TreeNode, ContainerWidgetMx['TreeNodeHeader']):
     """Similar to :class:`.TreeNode`, but the label is visually emphasized."""
 
     def __setup_add_widget__(self, dpg_args) -> None:
@@ -52,7 +52,7 @@ class TreeNodeHeader(TreeNode, ContainerWidget['TreeNodeHeader']):
 ## Tab Container
 
 @_register_item_type('mvAppItemType::TabBar')
-class TabBar(Widget, ItemWidget, ContainerWidget['TabBar']):
+class TabBar(Widget, ItemWidgetMx, ContainerWidgetMx['TabBar']):
     """A container that allows switching between different tabs.
 
     Note:
@@ -76,7 +76,7 @@ class TabOrderMode(Enum):
     Trailing    = 'trailing'    #: Enforce the tab position to the right of the tab bar (before the scrolling buttons)
 
 @_register_item_type('mvAppItemType::TabItem')
-class TabItem(Widget, ItemWidget, ContainerWidget['TabItem']):
+class TabItem(Widget, ItemWidgetMx, ContainerWidgetMx['TabItem']):
     """A container whose contents will be displayed when selected in a :class:`.TabBar`.
 
     Note:
@@ -117,7 +117,7 @@ class TabItem(Widget, ItemWidget, ContainerWidget['TabItem']):
 
 
 @_register_item_type('mvAppItemType::TabButton')
-class TabButton(Widget, ItemWidget):
+class TabButton(Widget, ItemWidgetMx):
     """A button that can be added to a :class:`TabBar`.
 
     Note:
@@ -160,7 +160,7 @@ class TabButton(Widget, ItemWidget):
 ## Menus and Menu Items
 
 @_register_item_type('mvAppItemType::Menu')
-class Menu(Widget, ItemWidget, ContainerWidget['Menu']):
+class Menu(Widget, ItemWidgetMx, ContainerWidgetMx['Menu']):
     """A menu containing :class:`.MenuItem` objects.
 
     While they are often found inside a :class:`.MenuBar`, they are actually a general container
@@ -177,7 +177,7 @@ class Menu(Widget, ItemWidget, ContainerWidget['Menu']):
 
 
 @_register_item_type('mvAppItemType::MenuItem')
-class MenuItem(Widget, ItemWidget):
+class MenuItem(Widget, ItemWidgetMx):
     """An item for a :class:`.Menu`."""
 
     label: str = ConfigProperty()
@@ -208,8 +208,8 @@ class PopupInteraction(Enum):
     MouseX2     = 4
 
 @_register_item_type('mvAppItemType::Popup')
-class Popup(Widget, ContainerWidget['Popup']):
-    """A container that appears when a :class:`.ItemWidget` is interacted with."""
+class Popup(Widget, ContainerWidgetMx['Popup']):
+    """A container that appears when a :class:`.Widget` is interacted with."""
 
     trigger: PopupInteraction  #: The interaction that will trigger the popup.
     @ConfigProperty(key='mousebutton')
@@ -224,17 +224,17 @@ class Popup(Widget, ContainerWidget['Popup']):
     #: Prevent the user from interacting with other windows until the popup is closed.
     modal: bool = ConfigProperty()
 
-    def __init__(self, parent: ItemWidget, *, name_id: str = None, **config):
+    def __init__(self, parent: Widget, *, name_id: str = None, **config):
         self._popup_parent = parent
         super().__init__(name_id=name_id, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_popup(self._popup_parent.id, self.id, **dpg_args)
 
-    parent: ItemWidget
+    parent: Widget
     @property
-    def parent(self) -> ItemWidget:
-        """The :class:`.ItemWidget` that the popup is attached to. Cannot be changed."""
+    def parent(self) -> Widget:
+        """The :class:`.ItemWidgetMx` that the popup is attached to. Cannot be changed."""
         return self._popup_parent
 
     def close(self) -> None:

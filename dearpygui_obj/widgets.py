@@ -112,9 +112,9 @@ __all__ = [
 ]
 
 if TYPE_CHECKING:
-    from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ValueWidget
+    from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ValueWidgetMx
     __all__.extend([
         'Widget',
-        'ItemWidget',
-        'ValueWidget',
+        'ItemWidgetMx',
+        'ValueWidgetMx',
     ])

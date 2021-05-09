@@ -4,17 +4,17 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
 import dearpygui.core as dpgcore
-from dearpygui_obj.wrapper.widget import Widget, ItemWidget, ContainerWidget
+from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ContainerWidgetMx
 
-class UserWidget(Widget, ItemWidget, ABC):
+class UserWidget(Widget, ItemWidgetMx, ABC):
     """An abstract base class that is used to create custom widgets.
 
     This class provides a way to create custom widgets that are composed of other widgets.
     This can be useful for creating custom complex controls that you want to use like a single widget.
 
     Note that while the user widget is actually a container (it has to be, to hold the user's custom
-    content), it not meant to be used as a :class:`.ContainerWidget`. It does not have any of the
-    container widget methods like :meth:`.ContainerWidget.add_child` and cannot be used as a context
+    content), it not meant to be used as a :class:`.ContainerWidgetMx`. It does not have any of the
+    container widget methods like :meth:`.ContainerWidgetMx.add_child` and cannot be used as a context
     manager.
 
     This makes it ideal for custom controls whose contents are 'closed' and not meant to have
@@ -22,7 +22,7 @@ class UserWidget(Widget, ItemWidget, ABC):
     For custom 'open' containers, see :class:`.UserContainer` (not implemented yet).
 
     By default, any positional arguments passed to ``__init__()`` and any keyword arguments
-    that are not reserved by :class:`Widget` or :class:`ItemWidget` will be passed to the
+    that are not reserved by :class:`Widget` or :class:`ItemWidgetMx` will be passed to the
     :meth:`__setup_content__` method.
 
     This method should be overriden in subclasses to actually create the contents of the custom
@@ -48,7 +48,7 @@ class UserWidget(Widget, ItemWidget, ABC):
         ...
 
 
-class UserContainer(Widget, ItemWidget, ContainerWidget[Any], ABC):
+class UserContainer(Widget, ItemWidgetMx, ContainerWidgetMx[Any], ABC):
     """An abstract base class that is used to create custom containers.
 
     This class is not yet implemented, as it requires adding to the parent stack which
