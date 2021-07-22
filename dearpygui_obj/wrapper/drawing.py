@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from dearpygui import core as dpgcore
+from dearpygui import dearpygui as dpgcore
 
 from dearpygui_obj import _generate_id
 

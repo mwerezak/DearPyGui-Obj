@@ -4,7 +4,7 @@ from enum import Enum
 from warnings import warn
 from typing import TYPE_CHECKING, NamedTuple, overload
 
-from dearpygui import core as dpgcore
+from dearpygui import dearpygui as dpgcore
 
 from dearpygui_obj import _register_item_type, try_get_item_by_id, wrap_callback
 from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ContainerWidgetMx, ConfigProperty
