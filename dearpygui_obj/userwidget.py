@@ -30,7 +30,7 @@ class UserWidget(Widget, ItemWidgetMx, ABC):
     :meth:`__setup_widget__` that narrows down the
     arguments to the ones they actually need."""
 
-    def __init__(self, *args: Any, parent: str = 'None', before: str = None, name_id: str = None, **kwargs: Any):
+    def __init__(self, *args: Any, parent: str = 'None', before: str = None, **kwargs: Any):
         super().__init__(parent=parent, before=before, name_id=name_id)
         self.__setup_content__(*args, **kwargs)
         dpgcore.end()

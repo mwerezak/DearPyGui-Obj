@@ -5,10 +5,9 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from dearpygui import core as dpgcore
+from dearpygui import dearpygui as dpgcore
 from dearpygui_obj import (
-    _generate_id, _set_default_ctor,
-    _register_item, _unregister_item,
+    _set_default_ctor, _register_item, _unregister_item,
     wrap_callback, unwrap_callback,
     get_item_by_id, DataValue,
 )
@@ -133,21 +132,13 @@ class Widget(ABC):
         and therefore can be given as keywords to ``__init__``."""
         return list(cls._get_config_properties().keys())
 
-    def __init__(self, *, name_id: Optional[str] = None, callback: PyGuiCallback = None, **kwargs: Any):
-        if name_id is not None:
-            self._name_id = name_id
-        else:
-            self._name_id = _generate_id(self)
-
-        if dpgcore.does_item_exist(self.id):
+    def __init__(self, *, id: int = 0, callback: PyGuiCallback = None, **kwargs: Any):
+        if dpgcore.does_item_exist(id):
+            self._widget_id = id
             self.__setup_preexisting__()
         else:
             # at no point should a Widget object exist for an item that hasn't
             # actually been added, so if the item doesn't exist we need to add it now.
-
-            # labels are handled specially because they are very common
-            if 'label' in kwargs and kwargs['label'] is None:
-                kwargs['label'] = self.id
 
             # subclasses will pass both config values and keywords to __setup_add_widget__()
             # separate them now
@@ -159,7 +150,7 @@ class Widget(ABC):
                     config_args[prop] = kwargs.pop(name)
 
             # just keywords left in kwargs
-            self.__setup_add_widget__(kwargs)
+            self._widget_id = self.__setup_add_widget__(kwargs)
 
             config_data = {}
             for prop, value in config_args.items():
@@ -170,13 +161,10 @@ class Widget(ABC):
             if callback is not None:
                 self.set_callback(callback)
 
-        _register_item(self.id, self)
+        _register_item(self)
 
     def __repr__(self) -> str:
-        return f'<{self.__class__.__qualname__}({self.id!r})>'
-
-    def __str__(self) -> str:
-        return self.id
+        return f'<{self.__class__.__qualname__}: {self.id!r}>'
 
     def __eq__(self, other: Any) -> bool:
         """Two wrapper objects are considered equal if their IDs are equal."""
@@ -187,8 +175,8 @@ class Widget(ABC):
     ## Overrides
 
     @abstractmethod
-    def __setup_add_widget__(self, dpg_args: MutableMapping[str, Any]) -> None:
-        """This should create the widget using DearPyGui's ``add_*()`` functions."""
+    def __setup_add_widget__(self, dpg_args: MutableMapping[str, Any]) -> int:
+        """This should create the widget using DearPyGui's ``add_*()`` functions and return the widget ID."""
 
     def __setup_preexisting__(self) -> None:
         """This can be overriden by subclasses to setup an object wrapper that has been created
@@ -201,9 +189,9 @@ class Widget(ABC):
     ## item/name reference
 
     @property
-    def id(self) -> str:
+    def id(self) -> int:
         """The unique name used by DearPyGui to reference this GUI item."""
-        return self._name_id
+        return self._widget_id
 
     @property
     def is_valid(self) -> bool:

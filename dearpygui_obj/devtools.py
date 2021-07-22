@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 @_register_item_type('mvAppItemType::DebugWindow')
 class DebugWindow(Window):
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     """Developer tool, creates a window containing handy GUI debugging info."""
     def __setup_add_widget__(self, dpg_args) -> None:
@@ -35,8 +35,8 @@ class DebugWindow(Window):
 class MetricsWindow(Window):
     """Developer tool, creates a metrics window."""
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_metrics_window(self.id, **dpg_args)
@@ -56,8 +56,8 @@ class MetricsWindow(Window):
 class StyleEditorWindow(Window):
     """Developer tool, creates a window containing a GUI style editor.."""
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_style_window(self.id, **dpg_args)
@@ -77,8 +77,8 @@ class StyleEditorWindow(Window):
 class DocumentationWindow(Window):
     """Developer tool, creates a window showing DearPyGui documentation."""
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_doc_window(self.id, **dpg_args)
@@ -98,8 +98,8 @@ class DocumentationWindow(Window):
 class AboutWindow(Window):
     """Developer tool, creates window containing information about DearPyGui."""
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_about_window(self.id, **dpg_args)

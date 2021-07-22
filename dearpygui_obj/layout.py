@@ -16,8 +16,8 @@ class VSpacing(Widget, ItemWidgetMx):
 
     space: int = ConfigProperty(key='count') #: The amount of vertical space.
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_spacing(name=self.id, **dpg_args)
@@ -31,15 +31,15 @@ class HAlignNext(Widget, ItemWidgetMx):
     xoffset: float = ConfigProperty() #: offset from containing window
     spacing: float = ConfigProperty() #: offset from previous widget
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_same_line(name=self.id, **dpg_args)
 
-def group_horizontal(spacing: float = -1, *, name_id: str = None, **config: Any) -> Group:
+def group_horizontal(spacing: float = -1, **config: Any) -> Group:
     """Shortcut constructor for ``Group(horizontal=True)``"""
-    return Group(horizontal=True, horizontal_spacing=spacing, name_id=name_id, **config)
+    return Group(horizontal=True, horizontal_spacing=spacing, **config)
 
 @_register_item_type('mvAppItemType::Group')
 class Group(Widget, ItemWidgetMx, ContainerWidgetMx['Group']):
@@ -51,8 +51,8 @@ class Group(Widget, ItemWidgetMx, ContainerWidgetMx['Group']):
     horizontal: bool = ConfigProperty()
     horizontal_spacing: float = ConfigProperty()
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_group(self.id, **dpg_args)
@@ -64,8 +64,8 @@ class IndentLayout(Widget, ItemWidgetMx, ContainerWidgetMx['IndentLayout']):
 
     offset: float = ConfigProperty()
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_indent(name=self.id, **dpg_args)
@@ -83,8 +83,8 @@ class ColumnLayout(Widget, ItemWidgetMx, ContainerWidgetMx['ColumnLayout']):
     columns: int = ConfigProperty(no_init=True)  #: Number of columns.
     border: bool = ConfigProperty()  #: Draw a border between columns.
 
-    def __init__(self, columns: int = 2, *, name_id: str = None, **config):
-        super().__init__(columns=columns, name_id=name_id, **config)
+    def __init__(self, columns: int = 2, **config):
+        super().__init__(columns=columns, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_managed_columns(name=self.id, **dpg_args)
@@ -135,8 +135,8 @@ class ChildView(Widget, ItemWidgetMx, ContainerWidgetMx['ChildView']):
 @_register_item_type('mvAppItemType::Dummy')
 class Dummy(Widget, ItemWidgetMx):
     """Adds a spacer or 'dummy' widget."""
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_dummy(name=self.id, **dpg_args)

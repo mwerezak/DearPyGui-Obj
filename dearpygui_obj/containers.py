@@ -33,9 +33,9 @@ class TreeNode(Widget, ItemWidgetMx, ContainerWidgetMx['TreeNode'], ValueWidgetM
     #: and the arrow/bullet not shown (use as a convenience for leaf nodes).
     is_leaf: bool = ConfigProperty(key='leaf')
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, **config):
         config.setdefault('show', True)  # workaround for DPG 0.6
-        super().__init__(label=label, name_id=name_id, **config)
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tree_node(self.id, **dpg_args)
@@ -61,8 +61,8 @@ class TabBar(Widget, ItemWidgetMx, ContainerWidgetMx['TabBar']):
 
     reorderable: bool = ConfigProperty()
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab_bar(self.id, **dpg_args)
@@ -109,8 +109,8 @@ class TabItem(Widget, ItemWidgetMx, ContainerWidgetMx['TabItem']):
     #: Disable tooltip
     no_tooltip: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
-        super().__init__(label=label, name_id=name_id, **config)
+    def __init__(self, label: str = None, **config):
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab(self.id, **dpg_args)
@@ -150,8 +150,8 @@ class TabButton(Widget, ItemWidgetMx):
     #: Disable tooltip
     no_tooltip: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
-        super().__init__(label=label, name_id=name_id, **config)
+    def __init__(self, label: str = None, **config):
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_tab_button(self.id, **dpg_args)
@@ -169,8 +169,8 @@ class Menu(Widget, ItemWidgetMx, ContainerWidgetMx['Menu']):
 
     label: str = ConfigProperty()
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
-        super().__init__(label=label, name_id=name_id, **config)
+    def __init__(self, label: str = None, **config):
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_menu(self.id, **dpg_args)
@@ -188,8 +188,8 @@ class MenuItem(Widget, ItemWidgetMx):
     #: If ``True``, a checkmark is shown if the item's :attr:`value` is ``True``.
     enable_check: bool = ConfigProperty(key='check')
 
-    def __init__(self, label: str = None, value: bool = None, *, name_id: str = None, **config):
-        super().__init__(label=label, name_id=name_id, **config)
+    def __init__(self, label: str = None, value: bool = None, **config):
+        super().__init__(label=label, **config)
         if value is not None:
             self.value = value
 
@@ -224,9 +224,9 @@ class Popup(Widget, ContainerWidgetMx['Popup']):
     #: Prevent the user from interacting with other windows until the popup is closed.
     modal: bool = ConfigProperty()
 
-    def __init__(self, parent: Widget, *, name_id: str = None, **config):
+    def __init__(self, parent: Widget, **config):
         self._popup_parent = parent
-        super().__init__(name_id=name_id, **config)
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_popup(self._popup_parent.id, self.id, **dpg_args)

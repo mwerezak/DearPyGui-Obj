@@ -131,12 +131,12 @@ class Window(Widget, ContainerWidgetMx['Window']):
         width, height = value
         return {'x_pos': width, 'y_pos' : height}
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, **config):
         """
         Parameters:
              label: window label.
         """
-        super().__init__(label=label, name_id=name_id, **config)
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_window(self.id, on_close=self._on_close, **dpg_args)
@@ -170,8 +170,8 @@ class Window(Widget, ContainerWidgetMx['Window']):
 class MenuBar(Widget, ItemWidgetMx, ContainerWidgetMx['MenuBar']):
     """A menu bar that can be added to a :class:`.Window`."""
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_menu_bar(self.id, **dpg_args)

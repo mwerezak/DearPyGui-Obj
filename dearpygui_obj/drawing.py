@@ -80,8 +80,8 @@ class DrawingCanvas(ABC):
 class Drawing(Widget, ItemWidgetMx, DrawingCanvas):
     """A widget that displays the result of drawing commands."""
 
-    def __init__(self, size: Tuple[int, int] = (300, 300), *, name_id: str = None, **config):
-        super().__init__(size=size, name_id=name_id, **config)
+    def __init__(self, size: Tuple[int, int] = (300, 300), **config):
+        super().__init__(size=size, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_drawing(self.id, **dpg_args)

@@ -140,14 +140,14 @@ class Plot(Widget, ItemWidgetMx):
 
     anti_aliased: bool = ConfigProperty()
 
-    def __init__(self, *, name_id: str = None, **config):
+    def __init__(self, **config):
         # not super happy that we have to resort to typing.cast() here, but it works
         self._xaxis_config = PlotXAxisConfig(self, cast(PlotXAxis, Plot.xaxis))
         self._yaxis_config = PlotYAxisConfig(self, cast(PlotYAxis, Plot.yaxis))
         self._y2axis_config = PlotOptYAxisConfig(self, cast(PlotYAxis, Plot.y2axis))
         self._y3axis_config = PlotOptYAxisConfig(self, cast(PlotYAxis, Plot.y3axis))
 
-        super().__init__(name_id=name_id, **config)
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_plot(self.id, **dpg_args)

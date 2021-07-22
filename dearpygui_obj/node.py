@@ -62,8 +62,8 @@ class NodeEditor(Widget, ItemWidgetMx, ContainerWidgetMx['NodeEditor']):
     Should only contain :class:`.Node` objects. Any other kind of widget will not be displayed.
     """
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node_editor(
@@ -171,8 +171,8 @@ class Node(Widget, ItemWidgetMx, ContainerWidgetMx['Node']):
     label: str = ConfigProperty()
     draggable: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
-        super().__init__(label=label, name_id=name_id, **config)
+    def __init__(self, label: str = None, **config):
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node(self.id, **dpg_args)
@@ -184,15 +184,15 @@ class NodeAttributeType(Enum):
     Output = 'output'  #: Output nodes may only link to Input nodes.
     Static = 'static'  #: Static nodes do not link. They are still useful as containers to place widgets inside a node.
 
-def input_attribute(*, name_id: str = None) -> NodeAttribute:
+def input_attribute(*, widget_id: Optional[int] = None) -> NodeAttribute:
     """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Input)``"""
     return NodeAttribute(NodeAttributeType.Input, name_id=name_id)
 
-def output_attribute(*, name_id: str = None) -> NodeAttribute:
+def output_attribute(*, widget_id: Optional[int] = None) -> NodeAttribute:
     """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Output)``"""
     return NodeAttribute(NodeAttributeType.Output, name_id=name_id)
 
-def static_attribute(*, name_id: str = None) -> NodeAttribute:
+def static_attribute(*, widget_id: Optional[int] = None) -> NodeAttribute:
     """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Static)``"""
     return NodeAttribute(NodeAttributeType.Static, name_id=name_id)
 
@@ -215,8 +215,8 @@ class NodeAttribute(Widget, ItemWidgetMx, ContainerWidgetMx['NodeAttribute']):
             mode.value : (mode == value)  for mode in NodeAttributeType if mode.value is not None
         }
 
-    def __init__(self, type: NodeAttributeType = NodeAttributeType.Input, *, name_id: str = None, **config):
-        super().__init__(type=type, name_id=name_id, **config)
+    def __init__(self, type: NodeAttributeType = NodeAttributeType.Input, **config):
+        super().__init__(type=type, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_node_attribute(self.id, **dpg_args)

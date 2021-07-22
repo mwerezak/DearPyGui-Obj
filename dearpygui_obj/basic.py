@@ -29,8 +29,8 @@ class Text(Widget, ItemWidgetMx, ValueWidgetMx[str]):
 
     color: ColorRGBA = ConfigPropertyColorRGBA()
 
-    def __init__(self, value: str = '', *, name_id: str = None, **config):
-        super().__init__(default_value=value, name_id=name_id, **config)
+    def __init__(self, value: str = '', **config):
+        super().__init__(default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_text(self.id, **dpg_args)
@@ -48,8 +48,8 @@ class LabelText(Widget, ItemWidgetMx, ValueWidgetMx[str]):
     label: str = ConfigProperty()
     color: ColorRGBA = ConfigPropertyColorRGBA()
 
-    def __init__(self, label: str = None, value: str = '', *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+    def __init__(self, label: str = None, value: str = '', **config):
+        super().__init__(label=label, default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_label_text(self.id, **dpg_args)
@@ -58,8 +58,8 @@ class LabelText(Widget, ItemWidgetMx, ValueWidgetMx[str]):
 @_register_item_type('mvAppItemType::Separator')
 class Separator(Widget, ItemWidgetMx):
     """Adds a horizontal line."""
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_separator(name=self.id, **dpg_args)
@@ -102,8 +102,8 @@ class Button(Widget, ItemWidgetMx):
             return {'arrow': False}
         return {'arrow': True, 'direction': adir.value}
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
-        super().__init__(label=label, name_id=name_id, **config)
+    def __init__(self, label: str = None, **config):
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_button(self.id, **dpg_args)
@@ -117,8 +117,8 @@ class Checkbox(Widget, ItemWidgetMx, ValueWidgetMx[bool]):
 
     label: str = ConfigProperty()
 
-    def __init__(self, label: str = None, value: bool = False, *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+    def __init__(self, label: str = None, value: bool = False, **config):
+        super().__init__(label=label, default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_checkbox(self.id, **dpg_args)
@@ -132,8 +132,8 @@ class Selectable(Widget, ItemWidgetMx, ValueWidgetMx[bool]):
     label: str = ConfigProperty()
     span_columns: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, value: bool = False, *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+    def __init__(self, label: str = None, value: bool = False, **config):
+        super().__init__(label=label, default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_selectable(self.id, **dpg_args)
@@ -161,8 +161,8 @@ class RadioButtons(Widget, ItemWidgetMx, ValueWidgetMx[int], MutableSequence[str
     def items(self, items: Sequence[str]):
         return {'items':list(items)}
 
-    def __init__(self, items: Iterable[str], value: int = 0, *, name_id: str = None, **config):
-        super().__init__(items=items, default_value=value, name_id=name_id, **config)
+    def __init__(self, items: Iterable[str], value: int = 0, **config):
+        super().__init__(items=items, default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_radio_button(self.id, **dpg_args)
@@ -259,8 +259,8 @@ class Combo(Widget, ItemWidgetMx, ValueWidgetMx[str], MutableSequence[str]):
             mode.value : (mode == value)  for mode in ComboHeightMode
         }
 
-    def __init__(self, label: str = None, items: Iterable[str] = (), value: str = '', *, name_id: str = None, **config):
-        super().__init__(label=label, items=items, default_value=value, name_id=name_id, **config)
+    def __init__(self, label: str = None, items: Iterable[str] = (), value: str = '', **config):
+        super().__init__(label=label, items=items, default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_combo(self.id, **dpg_args)
@@ -326,8 +326,8 @@ class ListBox(Widget, ItemWidgetMx, ValueWidgetMx[int], MutableSequence[str]):
     def items(self, items: Sequence[str]):
         return {'items':list(items)}
 
-    def __init__(self, label: str = None, items: Iterable[str] = (), value: int = 0, *, name_id: str = None, **config):
-        super().__init__(label=label, items=items, default_value=value, name_id=name_id, **config)
+    def __init__(self, label: str = None, items: Iterable[str] = (), value: int = 0, **config):
+        super().__init__(label=label, items=items, default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_listbox(self.id, **dpg_args)
@@ -383,8 +383,8 @@ class ProgressBar(Widget, ItemWidgetMx, ValueWidgetMx[float]):
 
     overlay_text: str = ConfigProperty(key='overlay') #: Overlayed text.
 
-    def __init__(self, value: float = 0.0, *, name_id: str = None, **config):
-        super().__init__(default_value=value, name_id=name_id, **config)
+    def __init__(self, value: float = 0.0, **config):
+        super().__init__(default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_progress_bar(self.id, **dpg_args)
@@ -403,8 +403,8 @@ class SimplePlot(Widget, ItemWidgetMx, ValueWidgetMx[Sequence[float]]):
     maxscale: float = ConfigProperty()
     histogram: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, *, name_id: str = None, **config):
-        super().__init__(label=label, name_id=name_id, **config)
+    def __init__(self, label: str = None, **config):
+        super().__init__(label=label, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_simple_plot(self.id, **dpg_args)

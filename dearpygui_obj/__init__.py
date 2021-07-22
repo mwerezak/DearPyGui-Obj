@@ -15,14 +15,18 @@ if TYPE_CHECKING:
 
     ## Type Aliases
     PyGuiCallback = Union[
-        Callable[[Union[Widget, str], Any], None],
-        Callable[[Union[Widget, str]], None],
+        # accept any of these signatures for callbacks
+        Callable[[Widget, Any, Any], None],
+        Callable[[Widget, Any], None],
+        Callable[[Widget], None],
         Callable[[], None],
     ]
-    _DPGCallback = Callable[[str, Any], None]
 
-# DearPyGui's widget name scope is global, so I guess it's okay that this is too.
-_ITEM_LOOKUP: Dict[str, Widget] = {}
+    # signature used by DPG
+    _DPGCallback = Callable[[int, Any, Any], None]
+
+# DearPyGui's widget ID scope is global, so I guess it's okay that this is too.
+_ITEM_LOOKUP: Dict[int, Widget] = {}
 
 # Used to construct the correct type when getting an item
 # that was created outside the object wrapper library
@@ -32,7 +36,7 @@ _ITEM_TYPES: Dict[str, Callable[..., Widget]] = {}
 _default_ctor: Optional[Callable[..., Widget]] = None
 
 
-def get_item_by_id(name: str) -> Widget:
+def get_item_by_id(widget_id: int) -> Widget:
     """Retrieve an item using its unique name.
 
     If the item was created by instantiating a :class:`.Widget` object, this will return that
@@ -42,56 +46,56 @@ def get_item_by_id(name: str) -> Widget:
     Raises:
         KeyError: if name refers to an item that is invalid (deleted) or does not exist.
     """
-    if not dpgcore.does_item_exist(name):
-        raise KeyError(f"'{name}' item does not exist")
+    if not dpgcore.does_item_exist(widget_id):
+        raise KeyError(f"widget with id={widget_id} does not exist")
 
-    item = _ITEM_LOOKUP.get(name)
+    item = _ITEM_LOOKUP.get(widget_id)
     if item is not None:
         return item
 
-    item_type = dpgcore.get_item_type(name) ## WARNING: this will segfault if name does not exist
-    return _create_item_wrapper(name, item_type)
+    item_type = dpgcore.get_item_type(widget_id) ## WARNING: this will segfault if name does not exist
+    return _create_item_wrapper(widget_id, item_type)
 
-def try_get_item_by_id(name: str) -> Optional[Widget]:
+def try_get_item_by_id(widget_id: int) -> Optional[Widget]:
     """Retrieve an item using its unique name or ``None``.
 
     Similar to :func:`.get_item_by_id`, but returns ``None`` if the wrapper object could not be retrieved."""
-    if not dpgcore.does_item_exist(name):
+    if not dpgcore.does_item_exist(widget_id):
         return None
 
-    item = _ITEM_LOOKUP.get(name)
+    item = _ITEM_LOOKUP.get(widget_id)
     if item is not None:
         return item
 
-    item_type = dpgcore.get_item_type(name) ## WARNING: this will segfault if name does not exist
-    return _create_item_wrapper(name, item_type)
+    item_type = dpgcore.get_item_type(widget_id) ## WARNING: this will segfault if name does not exist
+    return _create_item_wrapper(widget_id, item_type)
 
-def _create_item_wrapper(name: str, item_type: str) -> Widget:
+def _create_item_wrapper(widget_id: int, item_type: str) -> Widget:
     ctor = _ITEM_TYPES.get(item_type, _default_ctor)
     if ctor is None:
-        raise ValueError(f"could not create wrapper for '{name}': no constructor for item type '{item_type}'")
-
-    return ctor(name_id = name)
+        raise ValueError(f"could not create wrapper for widget with id={widget_id}: no constructor for item type '{item_type}'")
+    return ctor(id=widget_id)
 
 def iter_all_items() -> Iterable[Widget]:
     """Iterate all items and yield their wrapper objects."""
-    for name in dpgcore.get_all_items():
-        yield get_item_by_id(name)
+    for widget_id in dpgcore.get_all_items():
+        yield get_item_by_id(widget_id)
 
 def iter_all_windows() -> Iterable[Widget]:
     """Iterate all windows and yield their wrapper objects."""
-    for name in dpgcore.get_windows():
-        yield get_item_by_id(name)
+    for window_id in dpgcore.get_windows():
+        yield get_item_by_id(window_id)
 
 def get_active_window() -> Widget:
     """Get the active window."""
-    active = dpgcore.get_active_window()
-    return get_item_by_id(active)
+    active_id = dpgcore.get_active_window()
+    return get_item_by_id(active_id)
 
-def _register_item(name: str, instance: Widget) -> None:
-    if name in _ITEM_LOOKUP:
-        warn(f"item with name '{name}' already exists in global item registry, overwriting")
-    _ITEM_LOOKUP[name] = instance
+def _register_item(instance: Widget) -> None:
+    item_id = instance.id
+    if item_id in _ITEM_LOOKUP:
+        warn(f"item with id='{item_id}' already exists in global item registry, overwriting")
+    _ITEM_LOOKUP[item_id] = instance
 
 def _unregister_item(name: str, unregister_children: bool = True) -> None:
     _ITEM_LOOKUP.pop(name, None)

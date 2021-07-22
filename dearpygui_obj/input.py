@@ -34,8 +34,8 @@ class InputText(Widget, ItemWidgetMx, ValueWidgetMx[str]):
     label: str = ConfigProperty()
     on_enter: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, value: str = '', *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+    def __init__(self, label: str = None, value: str = '', **config):
+        super().__init__(label=label, default_value=value, **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_input_text(self.id, **dpg_args)
@@ -89,9 +89,9 @@ class NumberInput(Generic[_TElem, _TInput], Widget, ItemWidgetMx, ValueWidgetMx[
             return {'max_clamped': False}
         return {'max_clamped': True, 'max_value': value}
 
-    def __init__(self, label: str = None, value: _TInput = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: _TInput = None, **config):
         value = value or self._default_value
-        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+        super().__init__(label=label, default_value=value, **config)
 
 
 @_register_item_type('mvAppItemType::InputFloat')
@@ -179,9 +179,9 @@ class SliderInput(Generic[_TElem, _TInput], Widget, ItemWidgetMx, ValueWidgetMx[
     #: Whether to clamp the value when using manual input. By default CTRL+Click allows going out of bounds.
     clamped: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, value: _TElem = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: _TElem = None, **config):
         value = value or self._default_value
-        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+        super().__init__(label=label, default_value=value, **config)
 
 @_register_item_type('mvAppItemType::SliderFloat')
 class SliderFloat(SliderInput[float, float]):
@@ -292,9 +292,9 @@ class DragInput(Generic[_TElem, _TInput], Widget, ItemWidgetMx, ValueWidgetMx[_T
     #: Whether to clamp the value when using manual input. By default CTRL+Click allows going out of bounds.
     clamped: bool = ConfigProperty()
 
-    def __init__(self, label: str = None, value: _TElem = None, *, name_id: str = None, **config):
+    def __init__(self, label: str = None, value: _TElem = None, **config):
         value = value or self._default_value
-        super().__init__(label=label, default_value=value, name_id=name_id, **config)
+        super().__init__(label=label, default_value=value, **config)
 
 @_register_item_type('mvAppItemType::DragFloat')
 class DragFloat(DragInput[float, float]):
@@ -401,8 +401,8 @@ class ColorButton(Widget, ItemWidgetMx):
     no_alpha: bool = ConfigProperty()  #: Don't include alpha channel.
     no_drag_drop: bool = ConfigProperty()
 
-    def __init__(self, color: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(color=export_color_to_dpg(color), name_id=name_id, **config)
+    def __init__(self, color: ColorRGBA = ColorRGBA(1, 0, 1), **config):
+        super().__init__(color=export_color_to_dpg(color), **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_color_button(self.id, **dpg_args)
@@ -454,8 +454,8 @@ class ColorEdit(Widget, ItemWidgetMx, ValueWidgetMx[ColorRGBA]):
             return {'uint8':True, 'floats':False}
         raise ValueError('invalid color format mode')
 
-    def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=export_color_to_dpg(value), name_id=name_id, **config)
+    def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), **config):
+        super().__init__(label=label, default_value=export_color_to_dpg(value), **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_color_edit4(self.id, **dpg_args)
@@ -510,8 +510,8 @@ class ColorPicker(Widget, ItemWidgetMx, ValueWidgetMx[ColorRGBA]):
             return {'uint8':True, 'floats':False}
         raise ValueError('invalid color format mode')
 
-    def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), *, name_id: str = None, **config):
-        super().__init__(label=label, default_value=export_color_to_dpg(value), name_id=name_id, **config)
+    def __init__(self, label: str = None, value: ColorRGBA = ColorRGBA(1, 0, 1), **config):
+        super().__init__(label=label, default_value=export_color_to_dpg(value), **config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_color_picker4(self.id, **dpg_args)
@@ -553,8 +553,8 @@ class DatePicker(Widget, ItemWidgetMx, ValueWidgetMx[date]):
     def mode(self, level: DatePickerMode):
         return {'level' : level.value}
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_date_picker(self.id, **dpg_args)
@@ -590,8 +590,8 @@ class TimePicker(Widget, ValueWidgetMx[time]):
     def mode(self, format: TimePickerFormat):
         return {'hour24' : format.value}
 
-    def __init__(self, *, name_id: str = None, **config):
-        super().__init__(name_id=name_id, **config)
+    def __init__(self, **config):
+        super().__init__(**config)
 
     def __setup_add_widget__(self, dpg_args) -> None:
         dpgcore.add_time_picker(self.id, **dpg_args)
