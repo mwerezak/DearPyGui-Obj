@@ -4,7 +4,7 @@ from warnings import warn
 from enum import Enum
 from typing import TYPE_CHECKING, Sequence, MutableSequence, overload
 
-import dearpygui.core as dpgcore
+from dearpygui import dearpygui as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.data import ColorRGBA, ConfigPropertyColorRGBA
 from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ValueWidgetMx, ConfigProperty

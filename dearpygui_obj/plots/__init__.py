@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple, cast
 
-import dearpygui.core as dpgcore
+from dearpygui import dearpygui as dpgcore
 
 from dearpygui_obj import _register_item_type, _generate_id
 from dearpygui_obj.data import ColorRGBA, export_color_to_dpg

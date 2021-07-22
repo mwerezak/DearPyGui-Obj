@@ -6,7 +6,7 @@ from enum import Enum
 
 from typing import TYPE_CHECKING, TypeVar, Generic, Tuple
 
-import dearpygui.core as dpgcore
+from dearpygui import dearpygui as dpgcore
 from dearpygui_obj import _register_item_type
 from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ValueWidgetMx, ConfigProperty
 

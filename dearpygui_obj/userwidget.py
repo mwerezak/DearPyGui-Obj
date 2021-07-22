@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
-import dearpygui.core as dpgcore
+from dearpygui import dearpygui as dpgcore
 from dearpygui_obj.wrapper.widget import Widget, ItemWidgetMx, ContainerWidgetMx
 
 class UserWidget(Widget, ItemWidgetMx, ABC):

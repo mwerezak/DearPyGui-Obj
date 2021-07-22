@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, NamedTuple
 
-import dearpygui.core as dpgcore
+from dearpygui import dearpygui as dpgcore
 from dearpygui_obj.data import import_color_from_dpg, export_color_to_dpg
 from dearpygui_obj.wrapper.dataseries import DataSeries, DataSeriesConfig, DataSeriesField
 

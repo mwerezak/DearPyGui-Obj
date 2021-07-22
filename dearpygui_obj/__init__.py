@@ -6,7 +6,7 @@ from warnings import warn
 from inspect import signature, Parameter
 from typing import TYPE_CHECKING
 
-import dearpygui.core as dpgcore
+from dearpygui import dearpygui as dpgcore
 
 if TYPE_CHECKING:
     from typing import Dict, Iterable, Optional, Callable, Any, Union
