@@ -97,13 +97,13 @@ def _register_item(instance: Widget) -> None:
         warn(f"item with id='{item_id}' already exists in global item registry, overwriting")
     _ITEM_LOOKUP[item_id] = instance
 
-def _unregister_item(name: str, unregister_children: bool = True) -> None:
-    _ITEM_LOOKUP.pop(name, None)
+def _unregister_item(widget_id: int, unregister_children: bool = True) -> None:
+    _ITEM_LOOKUP.pop(widget_id, None)
     if unregister_children:
-        children = dpgcore.get_item_children(name)
+        children = dpgcore.get_item_children(widget_id)
         if children is not None:
-            for child_name in children:
-                _unregister_item(child_name, True)
+            for child_id in children:
+                _unregister_item(child_id, True)
 
 def _register_item_type(item_type: str) -> Callable:
     """Associate a :class:`.Widget` class or constructor with a DearPyGui item type.
