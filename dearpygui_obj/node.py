@@ -184,17 +184,17 @@ class NodeAttributeType(Enum):
     Output = 'output'  #: Output nodes may only link to Input nodes.
     Static = 'static'  #: Static nodes do not link. They are still useful as containers to place widgets inside a node.
 
-def input_attribute(*, widget_id: Optional[int] = None) -> NodeAttribute:
+def input_attribute(*, id: Optional[int] = None) -> NodeAttribute:
     """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Input)``"""
-    return NodeAttribute(NodeAttributeType.Input, name_id=name_id)
+    return NodeAttribute(NodeAttributeType.Input, id=id)
 
-def output_attribute(*, widget_id: Optional[int] = None) -> NodeAttribute:
+def output_attribute(*, id: Optional[int] = None) -> NodeAttribute:
     """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Output)``"""
-    return NodeAttribute(NodeAttributeType.Output, name_id=name_id)
+    return NodeAttribute(NodeAttributeType.Output, id=id)
 
-def static_attribute(*, widget_id: Optional[int] = None) -> NodeAttribute:
+def static_attribute(*, id: Optional[int] = None) -> NodeAttribute:
     """Shortcut constructor for ``NodeAttribute(NodeAttributeType.Static)``"""
-    return NodeAttribute(NodeAttributeType.Static, name_id=name_id)
+    return NodeAttribute(NodeAttributeType.Static, id=id)
 
 @_register_item_type('mvAppItemType::NodeAttribute')
 class NodeAttribute(Widget, ItemWidgetMx, ContainerWidgetMx['NodeAttribute']):

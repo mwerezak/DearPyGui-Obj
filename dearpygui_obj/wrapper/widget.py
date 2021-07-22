@@ -132,7 +132,9 @@ class Widget(ABC):
         and therefore can be given as keywords to ``__init__``."""
         return list(cls._get_config_properties().keys())
 
-    def __init__(self, *, id: int = 0, callback: PyGuiCallback = None, **kwargs: Any):
+    def __init__(self, *, id: Optional[int] = 0, callback: PyGuiCallback = None, **kwargs: Any):
+        id = id or 0
+
         if dpgcore.does_item_exist(id):
             self._widget_id = id
             self.__setup_preexisting__()

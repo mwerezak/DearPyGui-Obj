@@ -31,7 +31,7 @@ class UserWidget(Widget, ItemWidgetMx, ABC):
     arguments to the ones they actually need."""
 
     def __init__(self, *args: Any, parent: str = 'None', before: str = None, **kwargs: Any):
-        super().__init__(parent=parent, before=before, name_id=name_id)
+        super().__init__(parent=parent, before=before)
         self.__setup_content__(*args, **kwargs)
         dpgcore.end()
 
